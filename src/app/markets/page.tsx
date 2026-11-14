@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { MarketsWorkspace } from "@/components/markets/MarketsWorkspace";
 import { PageIntro } from "@/components/shared/PageIntro";
 
-export const metadata: Metadata = { title: "Markets" };
+export const metadata: Metadata = { title: "Pasar" };
 
 export default function MarketsPage() {
   return (

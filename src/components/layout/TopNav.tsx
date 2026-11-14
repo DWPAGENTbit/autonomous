@@ -21,6 +21,7 @@ export const NAV = [
   { href: "/opportunities", index: "03", label: "Peluang", long: "Peluang" },
   { href: "/agent", index: "04", label: "Agen", long: "Agen" },
   { href: "/capital", index: "05", label: "Modal", long: "Modal" },
+  { href: "/akun", index: "06", label: "Akun", long: "Akun nyata" },
 ] as const;
 
 const isActive = (pathname: string, href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
@@ -42,7 +43,7 @@ function LiveStatus() {
       )}
       <span className="hidden items-center gap-2 sm:inline-flex" aria-hidden>
         <StatusDot tone={running ? meta.tone : "muted"} pulse={running && state !== "IDLE"} />
-        <span className={clsx("label min-w-[5.5rem]", running ? toneText[meta.tone] : "text-ink-3")}>{running ? meta.label : "Paused"}</span>
+        <span className={clsx("label min-w-[5.5rem]", running ? toneText[meta.tone] : "text-ink-3")}>{running ? meta.label : "Dijeda"}</span>
       </span>
       <span className="num font-mono text-xs text-ink-3" aria-label={`Waktu simulasi ${formatClock(simTime)}`}>
         {formatClock(simTime)}
@@ -130,7 +131,7 @@ export function MobileTabBar() {
       aria-label="Utama"
       className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-canvas/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-[2px] lg:hidden"
     >
-      <ul className="grid grid-cols-5">
+      <ul className="grid grid-cols-6">
         {NAV.map((item) => {
           const active = isActive(pathname, item.href);
           return (

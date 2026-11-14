@@ -7,6 +7,7 @@ import { DecisionIndex, FocusedDecision } from "@/components/decisions/DecisionL
 import { MarketOverview } from "@/components/markets/MarketOverview";
 import { OpportunityFeed } from "@/components/opportunities/OpportunityFeed";
 import { Reveal, SectionHeader } from "@/components/shared/primitives";
+import { AgentTerminal } from "@/components/terminal/AgentTerminal";
 
 const SHELL = "mx-auto max-w-[1360px] px-4 sm:px-6 md:px-10 lg:px-12";
 
@@ -18,6 +19,11 @@ export default function CommandCenterPage() {
       <div id="approval" className="scroll-mt-20">
         <ApprovalPanel />
       </div>
+
+      {/* The agent as a team: who does what, and why every step happened. */}
+      <section id="terminal" className={`${SHELL} scroll-mt-20 pb-24`} aria-label="Terminal agen">
+        <AgentTerminal />
+      </section>
 
       {/* What is it deciding, and what has it done? */}
       <Reveal as="section" className={`${SHELL} pb-24`}>

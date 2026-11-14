@@ -6,7 +6,7 @@ import { DecisionIndex, FocusedDecision } from "@/components/decisions/DecisionL
 import { PageIntro, SHELL } from "@/components/shared/PageIntro";
 import { Reveal, SectionHeader } from "@/components/shared/primitives";
 
-export const metadata: Metadata = { title: "Agent" };
+export const metadata: Metadata = { title: "Agen" };
 
 export default function AgentPage() {
   return (

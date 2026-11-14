@@ -6,13 +6,13 @@ import { RiskSurface } from "@/components/capital/RiskSurface";
 import { PageIntro, SHELL } from "@/components/shared/PageIntro";
 import { Reveal, SectionHeader } from "@/components/shared/primitives";
 
-export const metadata: Metadata = { title: "Capital" };
+export const metadata: Metadata = { title: "Modal" };
 
 export default function CapitalPage() {
   return (
     <>
       <PageIntro index="05" area="Modal" title="Bagaimana modal dipakai, dan seberapa besar risikonya.">
-        A simulated book. Positions move with simulated prices; nothing here represents real money.
+        Portofolio simulasi. Posisi bergerak mengikuti harga simulasi; tidak ada yang di sini mewakili uang sungguhan.
       </PageIntro>
 
       <section className={`${SHELL} pb-24`} aria-label="Ringkasan modal">
