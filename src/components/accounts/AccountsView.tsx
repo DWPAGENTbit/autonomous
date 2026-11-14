@@ -1,12 +1,11 @@
 "use client";
 
 import clsx from "clsx";
-import { LogOut, RefreshCw } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ManualAccount } from "@/components/accounts/ManualAccount";
 import { OrderPanel } from "@/components/accounts/OrderPanel";
-import { Button, StatusDot } from "@/components/shared/primitives";
+import { StatusDot } from "@/components/shared/primitives";
 import type { Balance, BrokerStatus, StatusResponse } from "@/lib/server/brokers/types";
 
 export const num = (v: number, max = 8) => v.toLocaleString("id-ID", { maximumFractionDigits: max });
@@ -117,7 +116,6 @@ function ApiAccount({ broker, live }: { broker: BrokerStatus; live: boolean }) {
 }
 
 export function AccountsView() {
-  const router = useRouter();
   const [status, setStatus] = useState<StatusResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -126,11 +124,6 @@ export function AccountsView() {
       .then(async (r) => (r.ok ? setStatus(await r.json()) : setError("Sesi berakhir. Muat ulang halaman untuk masuk lagi.")))
       .catch(() => setError("Server tidak bisa dihubungi."));
   }, []);
-
-  const logout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.refresh();
-  };
 
   return (
     <div className="space-y-16">
@@ -147,9 +140,6 @@ export function AccountsView() {
             {status.live ? "Order sungguhan aktif" : "Mode uji · order tidak dikirim"}
           </span>
         )}
-        <Button variant="ghost" size="sm" className="ml-auto" onClick={logout}>
-          <LogOut className="size-3.5" aria-hidden /> Keluar
-        </Button>
       </div>
 
       {error && (

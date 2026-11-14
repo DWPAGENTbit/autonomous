@@ -1,53 +1,25 @@
-import { createHash, createHmac, timingSafeEqual } from "node:crypto";
+import { createHash, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
+import { accessPassword, accessUsername, SESSION_COOKIE, verifySession } from "./session";
 
-/**
- * Single-owner access gate for the real-account area. The owner sets
- * DWP_ACCESS_PASSWORD in Vercel; sessions are HMAC-signed cookies derived
- * from it, so changing the password signs everyone out.
- */
-export const SESSION_COOKIE = "dwp_session";
-export const SESSION_MAX_AGE = 12 * 60 * 60;
-const MIN_PASSWORD = 10;
-
-function password(): string | null {
-  const pw = process.env.DWP_ACCESS_PASSWORD;
-  return pw && pw.length >= MIN_PASSWORD ? pw : null;
-}
-
-function signingKey(): Buffer | null {
-  const pw = password();
-  if (!pw) return null;
-  return createHash("sha256").update(`dwp-session:${pw}:${process.env.DWP_SESSION_SECRET ?? ""}`).digest();
-}
+export { createSession, SESSION_COOKIE, SESSION_MAX_AGE } from "./session";
 
 export function authConfigured(): boolean {
-  return password() !== null;
+  return accessPassword() !== null;
 }
 
-export function checkPassword(input: string): boolean {
-  const pw = password();
+function same(a: string, b: string): boolean {
+  return timingSafeEqual(createHash("sha256").update(a).digest(), createHash("sha256").update(b).digest());
+}
+
+/** Checks the password, and the username when the owner has set one. */
+export function checkCredentials(username: string, password: string): boolean {
+  const pw = accessPassword();
   if (!pw) return false;
-  const a = createHash("sha256").update(input).digest();
-  const b = createHash("sha256").update(pw).digest();
-  return timingSafeEqual(a, b);
-}
-
-export function createSession(): string {
-  const key = signingKey();
-  if (!key) throw new Error("Access password is not configured");
-  const payload = String(Date.now() + SESSION_MAX_AGE * 1000);
-  return `${payload}.${createHmac("sha256", key).update(payload).digest("hex")}`;
-}
-
-export function verifySession(token: string | undefined): boolean {
-  const key = signingKey();
-  if (!key || !token) return false;
-  const [payload, sig] = token.split(".");
-  if (!payload || !sig) return false;
-  const expected = createHmac("sha256", key).update(payload).digest("hex");
-  if (sig.length !== expected.length || !timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) return false;
-  return Number(payload) > Date.now();
+  const user = accessUsername();
+  const userOk = user ? same(username.trim().toLowerCase(), user.toLowerCase()) : true;
+  const pwOk = same(password, pw);
+  return userOk && pwOk;
 }
 
 export async function isAuthed(): Promise<boolean> {

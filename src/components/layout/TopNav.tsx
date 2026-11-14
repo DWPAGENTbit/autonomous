@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { BrandMark } from "@/components/brand/BrandMark";
 import { usePathname } from "next/navigation";
-import { Pause, Play } from "lucide-react";
+import { LogOut, Pause, Play } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { AGENT_STATE_META, toneText } from "@/components/agent/agent-meta";
@@ -56,6 +56,18 @@ function LiveStatus() {
         title={running ? "Jeda agen" : "Lanjutkan agen"}
       >
         {running ? <Pause className="size-3.5" aria-hidden /> : <Play className="size-3.5" aria-hidden />}
+      </button>
+      <button
+        type="button"
+        onClick={async () => {
+          await fetch("/api/auth/logout", { method: "POST" }).catch(() => null);
+          window.location.assign("/masuk");
+        }}
+        className="inline-flex size-8 items-center justify-center rounded-sm text-ink-2 transition-colors hover:bg-sunken hover:text-ink"
+        aria-label="Keluar"
+        title="Keluar"
+      >
+        <LogOut className="size-3.5" aria-hidden />
       </button>
     </div>
   );

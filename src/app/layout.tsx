@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { AgentAnnouncer } from "@/components/agent/AgentStatus";
-import { ContextPanel } from "@/components/layout/ContextPanel";
+import { AppChrome } from "@/components/layout/AppChrome";
 import { SimulationProvider } from "@/components/layout/SimulationProvider";
-import { Footer, MobileTabBar, TopNav } from "@/components/layout/TopNav";
 import "./globals.css";
 
 const sans = Geist({ subsets: ["latin"], variable: "--font-geist-sans", display: "swap" });
@@ -30,14 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Langsung ke konten
         </a>
         <SimulationProvider>
-          <TopNav />
-          <main id="main" tabIndex={-1} className="outline-none">
-            {children}
-          </main>
-          <Footer />
-          <MobileTabBar />
-          <ContextPanel />
-          <AgentAnnouncer />
+          <AppChrome>{children}</AppChrome>
         </SimulationProvider>
       </body>
     </html>
