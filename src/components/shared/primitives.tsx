@@ -145,10 +145,10 @@ export function SimBadge({ className, compact = false }: { className?: string; c
         "inline-flex items-center gap-1.5 border border-caution/30 bg-caution-soft px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-caution",
         className,
       )}
-      title="All figures are simulated demo data. No real funds or orders."
+      title="Semua angka adalah data demo simulasi. Tidak ada dana atau order sungguhan."
     >
       <span aria-hidden className="size-1 rounded-full bg-caution" />
-      {compact ? "Sim" : "Simulation · Demo data"}
+      {compact ? "Sim" : "Simulasi · Data demo"}
     </span>
   );
 }

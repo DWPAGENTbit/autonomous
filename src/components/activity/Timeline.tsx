@@ -17,10 +17,10 @@ const RAIL_GRID = "grid grid-cols-[4.5rem_1.5rem_1fr_auto] items-center gap-x-4 
 type Filter = "all" | "markets" | "business" | "risk";
 
 const FILTERS: { key: Filter; label: string; kinds?: ActivityKind[] }[] = [
-  { key: "all", label: "Everything" },
-  { key: "markets", label: "Markets", kinds: ["SCANNING", "FILTERING", "ANALYSIS", "SIMULATION", "EXECUTION", "MONITOR", "RESEARCH"] },
-  { key: "business", label: "Business", kinds: ["SEARCH", "BUSINESS", "RESEARCH"] },
-  { key: "risk", label: "Decisions & risk", kinds: ["DECISION", "RISK", "APPROVAL"] },
+  { key: "all", label: "Semua" },
+  { key: "markets", label: "Pasar", kinds: ["SCANNING", "FILTERING", "ANALYSIS", "SIMULATION", "EXECUTION", "MONITOR", "RESEARCH"] },
+  { key: "business", label: "Bisnis", kinds: ["SEARCH", "BUSINESS", "RESEARCH"] },
+  { key: "risk", label: "Keputusan & risiko", kinds: ["DECISION", "RISK", "APPROVAL"] },
 ];
 
 /** Window-scroll virtualisation with fixed row height. */
@@ -71,7 +71,7 @@ export function Timeline() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center gap-1" role="radiogroup" aria-label="Filter timeline">
+      <div className="mb-6 flex flex-wrap items-center gap-1" role="radiogroup" aria-label="Saring linimasa">
         {FILTERS.map((f) => (
           <button
             key={f.key}
@@ -91,7 +91,7 @@ export function Timeline() {
       </div>
 
       <div ref={ref} className="relative" style={{ height: events.length * ROW_HEIGHT }}>
-        <ol aria-label="Agent timeline">
+        <ol aria-label="Linimasa agen">
           {events.slice(range.start, range.end).map((e, k) => {
             const index = range.start + k;
             const prev = events[index - 1];
@@ -109,7 +109,7 @@ export function Timeline() {
       </div>
 
       <div className={`${RAIL_GRID} h-16`}>
-        <span className="label pl-1 text-ink">Now</span>
+        <span className="label pl-1 text-ink">Kini</span>
         <span className="relative flex h-full items-center justify-center" aria-hidden>
           <span className="absolute top-0 h-1/2 w-px bg-line" />
           <span className="relative inline-flex size-2.5">

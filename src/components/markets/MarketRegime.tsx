@@ -6,26 +6,26 @@ import { useRegime } from "@/hooks/use-derived";
 import { transition } from "@/lib/design/tokens";
 
 const SCALE: Record<string, number> = {
-  Low: 1,
-  Moderate: 2,
-  Elevated: 3,
-  High: 4,
-  Thin: 1,
-  Adequate: 2,
-  Healthy: 4,
-  Negative: 1,
-  Neutral: 2,
-  Positive: 4,
+  Rendah: 1,
+  Sedang: 2,
+  Tinggi: 3,
+  "Sangat tinggi": 4,
+  Tipis: 1,
+  Cukup: 2,
+  Sehat: 4,
+  Negatif: 1,
+  Netral: 2,
+  Positif: 4,
 };
 
 /** Four readings that summarise the environment the agent is operating in. */
 export function MarketRegime({ layout = "row" }: { layout?: "row" | "stack" }) {
   const r = useRegime();
   const items = [
-    { label: "Risk appetite", value: r.riskAppetite, hint: "Risk assets vs. havens over 1M" },
-    { label: "Volatility", value: r.volatility, hint: "1M realised vs. 1Y level", warn: r.volatility === "Elevated" || r.volatility === "High" },
-    { label: "Liquidity", value: r.liquidity, hint: "Spread and depth across venues" },
-    { label: "Trend", value: r.trend, hint: "Share of markets above trend" },
+    { label: "Selera risiko", value: r.riskAppetite, hint: "Aset berisiko vs. aset aman selama 1M" },
+    { label: "Volatilitas", value: r.volatility, hint: "Realisasi 1M vs. level 1Y", warn: r.volatility === "Tinggi" || r.volatility === "Sangat tinggi" },
+    { label: "Likuiditas", value: r.liquidity, hint: "Spread dan kedalaman di berbagai bursa" },
+    { label: "Tren", value: r.trend, hint: "Porsi pasar di atas tren" },
   ];
 
   return (

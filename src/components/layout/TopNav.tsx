@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import { motion } from "motion/react";
 import Link from "next/link";
+import { BrandMark } from "@/components/brand/BrandMark";
 import { usePathname } from "next/navigation";
 import { Pause, Play } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -15,11 +16,11 @@ import { formatClock } from "@/lib/formatting/format";
 import { useAppStore } from "@/store/app-store";
 
 export const NAV = [
-  { href: "/", index: "01", label: "Command", long: "Command Center" },
-  { href: "/markets", index: "02", label: "Markets", long: "Markets" },
-  { href: "/opportunities", index: "03", label: "Opportunities", long: "Opportunities" },
-  { href: "/agent", index: "04", label: "Agent", long: "Agent" },
-  { href: "/capital", index: "05", label: "Capital", long: "Capital" },
+  { href: "/", index: "01", label: "Kendali", long: "Pusat Kendali" },
+  { href: "/markets", index: "02", label: "Pasar", long: "Pasar" },
+  { href: "/opportunities", index: "03", label: "Peluang", long: "Peluang" },
+  { href: "/agent", index: "04", label: "Agen", long: "Agen" },
+  { href: "/capital", index: "05", label: "Modal", long: "Modal" },
 ] as const;
 
 const isActive = (pathname: string, href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
@@ -36,22 +37,22 @@ function LiveStatus() {
       {approvals > 0 && (
         <Link href="/#approval" className="hidden items-center gap-2 text-xs text-caution hover:underline md:inline-flex">
           <StatusDot tone="caution" pulse />
-          {approvals} awaiting you
+          {approvals} menunggu Anda
         </Link>
       )}
       <span className="hidden items-center gap-2 sm:inline-flex" aria-hidden>
         <StatusDot tone={running ? meta.tone : "muted"} pulse={running && state !== "IDLE"} />
         <span className={clsx("label min-w-[5.5rem]", running ? toneText[meta.tone] : "text-ink-3")}>{running ? meta.label : "Paused"}</span>
       </span>
-      <span className="num font-mono text-xs text-ink-3" aria-label={`Simulated time ${formatClock(simTime)}`}>
+      <span className="num font-mono text-xs text-ink-3" aria-label={`Waktu simulasi ${formatClock(simTime)}`}>
         {formatClock(simTime)}
       </span>
       <button
         type="button"
         onClick={() => (running ? service.pause() : service.resume())}
         className="inline-flex size-8 items-center justify-center rounded-sm text-ink-2 transition-colors hover:bg-sunken hover:text-ink"
-        aria-label={running ? "Pause the agent" : "Resume the agent"}
-        title={running ? "Pause the agent" : "Resume the agent"}
+        aria-label={running ? "Jeda agen" : "Lanjutkan agen"}
+        title={running ? "Jeda agen" : "Lanjutkan agen"}
       >
         {running ? <Pause className="size-3.5" aria-hidden /> : <Play className="size-3.5" aria-hidden />}
       </button>
@@ -79,8 +80,9 @@ export function TopNav() {
       )}
     >
       <div className="mx-auto flex h-14 max-w-[1360px] items-center justify-between gap-6 px-4 sm:px-6 md:px-10 lg:px-12">
-        <Link href="/" className="flex items-baseline gap-3" aria-label="Autonomous — Command Center">
-          <span className="text-[13px] font-semibold tracking-[0.28em] text-ink">AUTONOMOUS</span>
+        <Link href="/" className="flex items-center gap-2.5" aria-label="DWP Agent — Pusat Kendali">
+          <BrandMark size={24} />
+          <span className="text-[13px] font-semibold tracking-[0.28em] whitespace-nowrap text-ink">DWP AGENT</span>
           <span className="hidden xl:inline">
             <SimBadge />
           </span>
@@ -89,7 +91,7 @@ export function TopNav() {
           </span>
         </Link>
 
-        <nav aria-label="Primary" className="hidden lg:block">
+        <nav aria-label="Utama" className="hidden lg:block">
           <ul className="flex items-center gap-1">
             {NAV.map((item) => {
               const active = isActive(pathname, item.href);
@@ -125,7 +127,7 @@ export function MobileTabBar() {
   const approvals = useAppStore((s) => s.approvals.length);
   return (
     <nav
-      aria-label="Primary"
+      aria-label="Utama"
       className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-canvas/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-[2px] lg:hidden"
     >
       <ul className="grid grid-cols-5">
@@ -143,7 +145,7 @@ export function MobileTabBar() {
                 <span className="relative">
                   {item.label}
                   {item.href === "/" && approvals > 0 && (
-                    <span className="absolute -top-0.5 -right-2.5 size-1.5 rounded-full bg-caution" aria-label="Decision waiting" />
+                    <span className="absolute -top-0.5 -right-2.5 size-1.5 rounded-full bg-caution" aria-label="Ada keputusan menunggu" />
                   )}
                 </span>
               </Link>
@@ -159,10 +161,13 @@ export function Footer() {
   return (
     <footer className="mx-auto max-w-[1360px] px-4 pt-16 pb-28 sm:px-6 md:px-10 lg:px-12 lg:pb-16">
       <div className="grid grid-cols-12 gap-6 border-t border-line pt-6">
-        <p className="col-span-12 text-[13px] font-semibold tracking-[0.28em] text-ink md:col-span-4">AUTONOMOUS</p>
+        <p className="col-span-12 flex items-center gap-2.5 text-[13px] font-semibold tracking-[0.28em] text-ink md:col-span-4">
+          <BrandMark size={20} />
+          DWP AGENT
+        </p>
         <p className="col-span-12 max-w-[72ch] text-xs leading-relaxed text-ink-3 md:col-span-8">
-          This is a simulation prototype. Every price, position, opportunity and result on this page is generated demo data from a
-          deterministic simulation. No real funds, accounts, marketplaces or orders are connected, and nothing here is investment advice.
+          Ini prototipe simulasi. Setiap harga, posisi, peluang, dan hasil di halaman ini adalah data demo dari simulasi
+          deterministik. Tidak ada dana, akun, marketplace, atau order sungguhan yang terhubung, dan tidak ada yang di sini merupakan saran investasi.
         </p>
       </div>
     </footer>

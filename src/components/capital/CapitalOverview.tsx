@@ -12,11 +12,11 @@ import { formatPct, formatSignedUsd, formatUsd } from "@/lib/formatting/format";
 import { useAppStore } from "@/store/app-store";
 
 const LEDGER_HINTS = {
-  available: "Cash not committed to any position.",
-  deployed: "Market value of open positions.",
-  unrealized: "Open gain or loss at current prices.",
-  realized: "Closed gain or loss this month.",
-  drawdown: "Distance below peak equity.",
+  available: "Kas yang belum dipakai untuk posisi apa pun.",
+  deployed: "Nilai pasar posisi terbuka.",
+  unrealized: "Untung atau rugi berjalan pada harga saat ini.",
+  realized: "Untung atau rugi yang sudah ditutup bulan ini.",
+  drawdown: "Jarak di bawah puncak ekuitas.",
 } as const;
 
 /** Capital as a ledger: one headline number, then its parts. */
@@ -25,16 +25,16 @@ export function CapitalLedger() {
   const [hint, setHint] = useState<keyof typeof LEDGER_HINTS | null>(null);
 
   const items: { key: keyof typeof LEDGER_HINTS; label: string; value: number; format: (v: number) => string; tone?: string }[] = [
-    { key: "available", label: "Available", value: c.available, format: (v) => formatUsd(v) },
-    { key: "deployed", label: "Deployed", value: c.deployed, format: (v) => formatUsd(v) },
+    { key: "available", label: "Tersedia", value: c.available, format: (v) => formatUsd(v) },
+    { key: "deployed", label: "Terpakai", value: c.deployed, format: (v) => formatUsd(v) },
     {
       key: "unrealized",
-      label: "Unrealized",
+      label: "Belum terealisasi",
       value: c.unrealized,
       format: (v) => formatSignedUsd(v),
       tone: c.unrealized >= 0 ? "text-positive" : "text-negative",
     },
-    { key: "realized", label: "Realized", value: c.realized, format: (v) => formatSignedUsd(v), tone: c.realized >= 0 ? "text-positive" : "text-negative" },
+    { key: "realized", label: "Terealisasi", value: c.realized, format: (v) => formatSignedUsd(v), tone: c.realized >= 0 ? "text-positive" : "text-negative" },
     { key: "drawdown", label: "Drawdown", value: c.drawdownPct, format: (v) => formatPct(v, 1) },
   ];
 
@@ -68,14 +68,14 @@ export function AllocationBar() {
   const [focus, setFocus] = useState<string | null>(null);
   const segments = [
     ...c.positions.map((p) => ({ id: p.id, label: INSTRUMENTS[p.symbol].pair, value: p.marketValue, held: true })),
-    { id: "cash", label: "Available", value: c.available, held: false },
+    { id: "cash", label: "Tersedia", value: c.available, held: false },
   ];
   const focused = segments.find((s) => s.id === focus);
 
   return (
     <div>
       <div className="mb-2 flex items-baseline justify-between">
-        <p className="label text-[10px]">Allocation</p>
+        <p className="label text-[10px]">Alokasi</p>
         <p className="num text-xs text-ink-3">
           {focused
             ? `${focused.label} · ${formatUsd(focused.value, { whole: true })} · ${formatPct((focused.value / c.total) * 100, 1)}`
@@ -111,15 +111,15 @@ export function EquityCurve({ height = 220 }: { height?: number }) {
   return (
     <div>
       <div className="mb-2 flex items-baseline justify-between">
-        <p className="label text-[10px]">Equity · 30 days</p>
-        <p className="text-xs text-ink-3">Dashed line: month start</p>
+        <p className="label text-[10px]">Ekuitas · 30 hari</p>
+        <p className="text-xs text-ink-3">Garis putus-putus: awal bulan</p>
       </div>
       <PerformanceChart
         values={series}
         spanHours={30 * 24}
         formatValue={(v) => formatUsd(v, { whole: true })}
         height={height}
-        ariaLabel="Simulated equity over 30 days"
+        ariaLabel="Ekuitas simulasi selama 30 hari"
       />
     </div>
   );
@@ -133,7 +133,7 @@ export function CapitalOverview({ chartHeight = 220 }: { chartHeight?: number })
     <div className="grid grid-cols-12 gap-x-6 gap-y-10">
       <div className="col-span-12 lg:col-span-5">
         <div className="mb-2 flex items-center gap-3">
-          <p className="label">Total capital</p>
+          <p className="label">Total modal</p>
           <SimBadge compact />
         </div>
         <AnimatedValue value={c.total} format={(v) => formatUsd(v)} className="block text-5xl font-light tracking-[-0.035em] text-ink md:text-6xl" />

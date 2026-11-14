@@ -6,9 +6,9 @@ import { OpportunityFeed, OpportunityPipeline } from "@/components/opportunities
 import { SHELL } from "@/components/shared/PageIntro";
 
 const FILTERS = [
-  { key: "active", label: "Active" },
-  { key: "all", label: "All" },
-  { key: "passed", label: "Passed" },
+  { key: "active", label: "Aktif" },
+  { key: "all", label: "Semua" },
+  { key: "passed", label: "Dilewati" },
 ] as const;
 
 export function OpportunitiesView() {
@@ -18,8 +18,8 @@ export function OpportunitiesView() {
       <section className={`${SHELL} pb-16`} aria-label="Pipeline">
         <OpportunityPipeline />
       </section>
-      <section className={`${SHELL} pb-8`} aria-label="Opportunity feed">
-        <div className="mb-4 flex items-center gap-1" role="radiogroup" aria-label="Filter opportunities">
+      <section className={`${SHELL} pb-8`} aria-label="Daftar peluang">
+        <div className="mb-4 flex items-center gap-1" role="radiogroup" aria-label="Saring peluang">
           {FILTERS.map((f) => (
             <button
               key={f.key}

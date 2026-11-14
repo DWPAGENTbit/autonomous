@@ -17,7 +17,7 @@ export function PositionsLedger() {
 
   return (
     <>
-    <ul className="md:hidden" aria-label="Open positions (simulated)">
+    <ul className="md:hidden" aria-label="Posisi terbuka (simulasi)">
       {c.positions.map((p) => {
         const inst = INSTRUMENTS[p.symbol];
         return (
@@ -36,21 +36,21 @@ export function PositionsLedger() {
             </div>
             <dl className="mt-3 grid grid-cols-3 gap-x-4 text-xs">
               <div>
-                <dt className="label text-[9px]">Price</dt>
+                <dt className="label text-[9px]">Harga</dt>
                 <dd><LivePrice symbol={p.symbol} className="text-ink" /></dd>
               </div>
               <div>
-                <dt className="label text-[9px]">Value · weight</dt>
+                <dt className="label text-[9px]">Nilai · bobot</dt>
                 <dd className="num text-ink">{formatUsd(p.marketValue)} · {formatPct(p.weightPct, 0)}</dd>
               </div>
               <div className="text-right">
-                <dt className="label text-[9px]">At risk</dt>
+                <dt className="label text-[9px]">Berisiko</dt>
                 <dd className="num text-ink-2">{formatUsd(p.riskToStop)}</dd>
               </div>
             </dl>
             {p.decisionId && (
               <button type="button" onClick={() => openWhy(p.decisionId!)} className="mt-2 text-xs text-accent underline-offset-4 hover:underline">
-                Why this position?
+                Mengapa posisi ini?
               </button>
             )}
           </li>
@@ -59,17 +59,17 @@ export function PositionsLedger() {
     </ul>
     <div className="hidden overflow-x-auto md:block">
       <table className="w-full min-w-[720px] text-left">
-        <caption className="sr-only">Open positions (simulated)</caption>
+        <caption className="sr-only">Posisi terbuka (simulasi)</caption>
         <thead>
           <tr className="label border-b border-line text-[10px]">
-            <th scope="col" className="py-2 font-medium">Position</th>
-            <th scope="col" className="py-2 text-right font-medium">Entry</th>
-            <th scope="col" className="py-2 text-right font-medium">Price</th>
-            <th scope="col" className="py-2 text-right font-medium">Value</th>
-            <th scope="col" className="py-2 text-right font-medium">Unrealized</th>
-            <th scope="col" className="py-2 text-right font-medium">Weight</th>
-            <th scope="col" className="py-2 text-right font-medium">At risk to stop</th>
-            <th scope="col" className="py-2 font-medium"><span className="sr-only">Reasoning</span></th>
+            <th scope="col" className="py-2 font-medium">Posisi</th>
+            <th scope="col" className="py-2 text-right font-medium">Masuk</th>
+            <th scope="col" className="py-2 text-right font-medium">Harga</th>
+            <th scope="col" className="py-2 text-right font-medium">Nilai</th>
+            <th scope="col" className="py-2 text-right font-medium">Belum terealisasi</th>
+            <th scope="col" className="py-2 text-right font-medium">Bobot</th>
+            <th scope="col" className="py-2 text-right font-medium">Berisiko sampai stop</th>
+            <th scope="col" className="py-2 font-medium"><span className="sr-only">Alasan</span></th>
           </tr>
         </thead>
         <tbody>
@@ -109,10 +109,10 @@ export function PositionsLedger() {
                   <td className="py-4 pl-4 text-right">
                     {p.decisionId ? (
                       <button type="button" onClick={() => openWhy(p.decisionId!)} className="text-xs text-accent underline-offset-4 hover:underline">
-                        Why?
+                        Mengapa?
                       </button>
                     ) : (
-                      <span className="text-xs text-ink-4">Prior session</span>
+                      <span className="text-xs text-ink-4">Sesi sebelumnya</span>
                     )}
                   </td>
                 </motion.tr>

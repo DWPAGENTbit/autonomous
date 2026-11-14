@@ -49,7 +49,7 @@ export function correlationBetween(
 }
 
 const levelFromScore = (score: number, cuts: [number, number, number]): RegimeLevel =>
-  score < cuts[0] ? "Low" : score < cuts[1] ? "Moderate" : score < cuts[2] ? "Elevated" : "High";
+  score < cuts[0] ? "Rendah" : score < cuts[1] ? "Sedang" : score < cuts[2] ? "Tinggi" : "Sangat tinggi";
 
 /**
  * Derives the market regime from the instruments themselves, so the
@@ -71,13 +71,13 @@ export function deriveRegime(model: MarketModel): MarketRegime {
   const volatility = levelFromScore(volRatio, [0.85, 1.0, 1.2]);
 
   const breadth = month.filter((m) => m.aboveTrend).length / month.length;
-  const trend = breadth >= 0.6 ? "Positive" : breadth <= 0.35 ? "Negative" : "Neutral";
-  const liquidity = volatility === "High" ? "Adequate" : "Healthy";
+  const trend = breadth >= 0.6 ? "Positif" : breadth <= 0.35 ? "Negatif" : "Netral";
+  const liquidity = volatility === "Sangat tinggi" ? "Cukup" : "Sehat";
 
   const summary =
-    trend === "Positive"
-      ? `${Math.round(breadth * 100)}% of watched markets trade above trend; volatility is ${volatility.toLowerCase()} relative to the past year.`
-      : `Breadth is ${Math.round(breadth * 100)}%; the agent is favouring smaller positions until trend confirms.`;
+    trend === "Positif"
+      ? `${Math.round(breadth * 100)}% pasar yang dipantau berada di atas tren; volatilitas ${volatility.toLowerCase()} dibanding setahun terakhir.`
+      : `Breadth ${Math.round(breadth * 100)}%; agen memilih posisi lebih kecil sampai tren terkonfirmasi.`;
 
   return { riskAppetite, volatility, liquidity, trend, summary };
 }

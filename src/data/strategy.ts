@@ -10,12 +10,12 @@ export interface StrategyProfile {
 }
 
 export const STRATEGY: Record<MarketSymbol, StrategyProfile> = {
-  ETH: { signal: "Momentum", thesis: "Momentum continuation after a higher low.", sizePct: 22, quantityDecimals: 2 },
-  NDX: { signal: "Trend pullback", thesis: "Pullback to the 20-day average inside an uptrend.", sizePct: 12, quantityDecimals: 3 },
-  BTC: { signal: "Volatility contraction", thesis: "Range compression ahead of a directional move.", sizePct: 9, quantityDecimals: 4 },
-  SPX: { signal: "Trend following", thesis: "Holding above the 50-day average with improving breadth.", sizePct: 10, quantityDecimals: 3 },
-  XAU: { signal: "Trend following", thesis: "Higher highs while the dollar weakens.", sizePct: 8, quantityDecimals: 2 },
-  DXY: { signal: "Mean reversion", thesis: "Stretched below its 20-day average.", sizePct: 6, quantityDecimals: 1 },
+  ETH: { signal: "Momentum", thesis: "Momentum berlanjut setelah terbentuk higher low.", sizePct: 22, quantityDecimals: 2 },
+  NDX: { signal: "Pullback tren", thesis: "Pullback ke rata-rata 20 hari di dalam tren naik.", sizePct: 12, quantityDecimals: 3 },
+  BTC: { signal: "Kontraksi volatilitas", thesis: "Rentang harga menyempit menjelang pergerakan searah.", sizePct: 9, quantityDecimals: 4 },
+  SPX: { signal: "Mengikuti tren", thesis: "Bertahan di atas rata-rata 50 hari dengan breadth membaik.", sizePct: 10, quantityDecimals: 3 },
+  XAU: { signal: "Mengikuti tren", thesis: "Higher high terus terbentuk saat dolar melemah.", sizePct: 8, quantityDecimals: 2 },
+  DXY: { signal: "Mean reversion", thesis: "Terlalu jauh di bawah rata-rata 20 harinya.", sizePct: 6, quantityDecimals: 1 },
 };
 
 /** Instruments the agent actively hunts for entries, in rotation. */

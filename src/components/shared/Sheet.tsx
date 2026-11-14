@@ -96,7 +96,7 @@ export function Sheet({
                 type="button"
                 onClick={onClose}
                 className="-mr-2 inline-flex size-9 items-center justify-center rounded-sm text-ink-3 transition-colors hover:bg-sunken hover:text-ink"
-                aria-label="Close panel"
+                aria-label="Tutup panel"
               >
                 <X className="size-4" aria-hidden />
               </button>

@@ -61,39 +61,39 @@ export function marketScan(ctx: StepContext): Step[] {
   return [
     {
       state: "OBSERVING",
-      task: "Observing market conditions",
+      task: "Mengamati kondisi pasar",
       durationMs: 3400,
-      complete: (c) => c.log("SCANNING", `Analyzing ${formatNumber(universe, 0)} market instruments.`),
+      complete: (c) => c.log("SCANNING", `Menganalisis ${formatNumber(universe, 0)} instrumen pasar.`),
     },
     {
       state: "ANALYZING",
-      task: "Filtering instruments by liquidity and spread",
+      task: "Menyaring instrumen berdasarkan likuiditas dan spread",
       durationMs: 3000,
       complete: (c) =>
-        c.log("FILTERING", `${passed} opportunities passed liquidity requirements.`, {
+        c.log("FILTERING", `${passed} peluang lolos syarat likuiditas.`, {
           evidence: [
-            { label: "Minimum 24h volume", value: "$50M" },
-            { label: "Maximum spread", value: "0.05%" },
-            { label: "Passed", value: `${passed} of ${formatNumber(universe, 0)}` },
+            { label: "Volume 24 jam minimum", value: "$50 jt" },
+            { label: "Spread maksimum", value: "0,05%" },
+            { label: "Lolos", value: `${passed} dari ${formatNumber(universe, 0)}` },
           ],
         }),
     },
     {
       state: "RESEARCHING",
-      task: "Comparing historical volatility across candidates",
+      task: "Membandingkan volatilitas historis antar kandidat",
       durationMs: 3800,
       complete: (c) => {
         const r = deriveRegime(c.market);
         c.log(
           "RESEARCH",
-          `Regime: ${r.trend.toLowerCase()} trend, ${r.volatility.toLowerCase()} volatility, ${r.riskAppetite.toLowerCase()} risk appetite.`,
+          `Rezim: tren ${r.trend.toLowerCase()}, volatilitas ${r.volatility.toLowerCase()}, selera risiko ${r.riskAppetite.toLowerCase()}.`,
           {
             detail: r.summary,
             evidence: [
-              { label: "Risk appetite", value: r.riskAppetite },
-              { label: "Volatility", value: r.volatility },
-              { label: "Liquidity", value: r.liquidity },
-              { label: "Trend", value: r.trend },
+              { label: "Selera risiko", value: r.riskAppetite },
+              { label: "Volatilitas", value: r.volatility },
+              { label: "Likuiditas", value: r.liquidity },
+              { label: "Tren", value: r.trend },
             ],
           },
         );
@@ -114,10 +114,10 @@ export function tradeCandidate(ctx: StepContext, symbol: MarketSymbol): Step[] {
     return [
       {
         state: "DECIDING",
-        task: `Checking available capital for ${inst.pair}`,
+        task: `Memeriksa modal tersedia untuk ${inst.pair}`,
         durationMs: 2600,
         complete: (c) =>
-          c.log("RISK", `${inst.pair} deferred: available capital is below the ${MIN_CASH_SHARE * 100}% reserve.`),
+          c.log("RISK", `${inst.pair} ditunda: modal tersedia di bawah cadangan ${MIN_CASH_SHARE * 100}%.`),
       },
     ];
   }
@@ -129,20 +129,20 @@ export function tradeCandidate(ctx: StepContext, symbol: MarketSymbol): Step[] {
   return [
     {
       state: "ANALYZING",
-      task: `Evaluating ${inst.pair} — ${cand.signal.toLowerCase()}`,
+      task: `Mengevaluasi ${inst.pair} — ${cand.signal.toLowerCase()}`,
       durationMs: 3600,
       complete: (c) => {
         const wk = instrumentStats(c.market, cand.symbol, "1W");
         c.log(
           "ANALYSIS",
-          `${inst.pair} ${cand.signal.toLowerCase()} signal confirmed: 1W ${formatSignedPct(wk.returnPct)}, volatility ${formatPct(wk.volatilityPct, 1)}.`,
+          `Sinyal ${cand.signal.toLowerCase()} ${inst.pair} terkonfirmasi: 1W ${formatSignedPct(wk.returnPct)}, volatilitas ${formatPct(wk.volatilityPct, 1)}.`,
           {
             symbol: cand.symbol,
             detail: cand.thesis,
             evidence: [
-              { label: "Price", value: formatUsd(c.market.quote(cand.symbol).price) },
-              { label: "1W return", value: formatSignedPct(wk.returnPct) },
-              { label: "Realised volatility", value: formatPct(wk.volatilityPct, 1) },
+              { label: "Harga", value: formatUsd(c.market.quote(cand.symbol).price) },
+              { label: "Return 1W", value: formatSignedPct(wk.returnPct) },
+              { label: "Volatilitas terealisasi", value: formatPct(wk.volatilityPct, 1) },
             ],
           },
         );
@@ -150,7 +150,7 @@ export function tradeCandidate(ctx: StepContext, symbol: MarketSymbol): Step[] {
     },
     {
       state: "SIMULATING",
-      task: `Simulating 500 outcome paths for ${inst.pair}`,
+      task: `Menyimulasikan 500 jalur hasil untuk ${inst.pair}`,
       durationMs: 4200,
       complete: (c) => {
         const s = c.read();
@@ -159,14 +159,14 @@ export function tradeCandidate(ctx: StepContext, symbol: MarketSymbol): Step[] {
         const sim = simulateTrade(setup);
         c.log(
           "SIMULATION",
-          `Simulation complete for ${inst.pair}: ${Math.round(sim.winRate * 100)}% win rate, expected ${formatR(sim.expectedR)}.`,
+          `Simulasi ${inst.pair} selesai: tingkat menang ${Math.round(sim.winRate * 100)}%, ekspektasi ${formatR(sim.expectedR)}.`,
           {
             symbol: cand.symbol,
             evidence: [
-              { label: "Paths", value: String(sim.paths) },
-              { label: "Win rate", value: `${Math.round(sim.winRate * 100)}%` },
-              { label: "Expected", value: formatR(sim.expectedR) },
-              { label: "Worst path", value: formatR(sim.worstR) },
+              { label: "Jalur", value: String(sim.paths) },
+              { label: "Tingkat menang", value: `${Math.round(sim.winRate * 100)}%` },
+              { label: "Ekspektasi", value: formatR(sim.expectedR) },
+              { label: "Jalur terburuk", value: formatR(sim.worstR) },
             ],
           },
         );
@@ -174,7 +174,7 @@ export function tradeCandidate(ctx: StepContext, symbol: MarketSymbol): Step[] {
     },
     {
       state: "DECIDING",
-      task: `Checking ${inst.pair} against portfolio risk`,
+      task: `Memeriksa ${inst.pair} terhadap risiko portofolio`,
       durationMs: 3200,
       complete: (c) => {
         const s = c.read();
@@ -187,15 +187,15 @@ export function tradeCandidate(ctx: StepContext, symbol: MarketSymbol): Step[] {
         c.log(
           "RISK",
           worst.corr > limit
-            ? `Position rejected because portfolio correlation is too high (${worst.corr.toFixed(2)} with ${name}).`
-            : `Risk acceptable: highest correlation ${worst.corr.toFixed(2)} with ${name}, below the ${limit.toFixed(2)} limit.`,
+            ? `Posisi ditolak karena korelasi portofolio terlalu tinggi (${worst.corr.toFixed(2)} dengan ${name}).`
+            : `Risiko dapat diterima: korelasi tertinggi ${worst.corr.toFixed(2)} dengan ${name}, di bawah batas ${limit.toFixed(2)}.`,
           { symbol: cand.symbol },
         );
       },
     },
     {
       state: "DECIDING",
-      task: `Recording decision for ${inst.pair}`,
+      task: `Mencatat keputusan untuk ${inst.pair}`,
       durationMs: 1800,
       complete: (c) => (setup ? recordTradeDecision(c, cand, setup, worst) : undefined),
     },
@@ -224,70 +224,70 @@ function recordTradeDecision(
   const sizeBreach = impact.positionPctOfEquity > policy.maxPositionPctOfEquity;
   const exposureBreach = impact.exposureAfterPct > policy.maxPortfolioExposurePct;
   const oversized = sizeBreach || exposureBreach;
-  const regimeFail = regime.trend === "Negative";
+  const regimeFail = regime.trend === "Negatif";
   const rejected = corrFail || evFail || regimeFail;
   const outcome = rejected ? "REJECT" : oversized ? "AWAITING_APPROVAL" : "TRADE";
   const worstName = INSTRUMENTS[worst.symbol].name;
 
   const chain: DecisionStep[] = [
     {
-      label: "Opportunity",
+      label: "Peluang",
       value: inst.pair,
       status: "neutral",
       detail: cand.thesis,
-      metrics: [{ label: "Price", value: formatUsd(ctx.market.quote(cand.symbol).price) }],
+      metrics: [{ label: "Harga", value: formatUsd(ctx.market.quote(cand.symbol).price) }],
     },
     {
-      label: "Market regime",
+      label: "Rezim pasar",
       value: setup.trend,
-      status: regime.trend === "Negative" ? "fail" : "pass",
+      status: regime.trend === "Negatif" ? "fail" : "pass",
       detail: regime.summary,
       metrics: [
-        { label: "Risk appetite", value: regime.riskAppetite },
-        { label: "Volatility", value: regime.volatility },
+        { label: "Selera risiko", value: regime.riskAppetite },
+        { label: "Volatilitas", value: regime.volatility },
       ],
     },
     {
-      label: "Signal",
+      label: "Sinyal",
       value: cand.signal,
       status: "pass",
-      detail: `1W return ${formatSignedPct(wk.returnPct)} with ${formatPct(wk.volatilityPct, 1)} realised volatility.`,
-      metrics: [{ label: "1W return", value: formatSignedPct(wk.returnPct) }],
+      detail: `Return 1W ${formatSignedPct(wk.returnPct)} dengan volatilitas terealisasi ${formatPct(wk.volatilityPct, 1)}.`,
+      metrics: [{ label: "Return 1W", value: formatSignedPct(wk.returnPct) }],
     },
     {
-      label: "Expected value",
+      label: "Nilai harapan",
       value: formatR(ev),
       status: evFail ? "fail" : "pass",
-      detail: `${Math.round(setup.winProbability * 100)}% win probability at ${impact.rewardR.toFixed(1)}R reward. Policy minimum is ${formatR(policy.minExpectedValueR)}.`,
+      detail: `Probabilitas menang ${Math.round(setup.winProbability * 100)}% dengan imbal hasil ${impact.rewardR.toFixed(1)}R. Minimum kebijakan ${formatR(policy.minExpectedValueR)}.`,
       metrics: [
-        { label: "Win probability", value: `${Math.round(setup.winProbability * 100)}%` },
-        { label: "Reward", value: `${impact.rewardR.toFixed(1)}R` },
+        { label: "Probabilitas menang", value: `${Math.round(setup.winProbability * 100)}%` },
+        { label: "Imbal hasil", value: `${impact.rewardR.toFixed(1)}R` },
       ],
     },
     {
-      label: "Portfolio risk",
-      value: corrFail ? `Correlation ${worst.corr.toFixed(2)}` : "Acceptable",
+      label: "Risiko portofolio",
+      value: corrFail ? `Korelasi ${worst.corr.toFixed(2)}` : "Dapat diterima",
       status: corrFail ? "fail" : "pass",
       detail: corrFail
-        ? `${inst.name} correlates ${worst.corr.toFixed(2)} with the existing ${worstName} position. Policy limit is ${policy.maxCorrelation.toFixed(2)}.`
-        : `Highest correlation with the book is ${worst.corr.toFixed(2)} (${worstName}). Maximum loss is ${formatPct(impact.maxLossPctOfEquity)} of equity.${
-          exposureBreach ? ` Exposure would reach ${impact.exposureAfterPct.toFixed(0)}% — see position size.` : ""
+        ? `${inst.name} berkorelasi ${worst.corr.toFixed(2)} dengan posisi ${worstName} yang sudah ada. Batas kebijakan ${policy.maxCorrelation.toFixed(2)}.`
+        : `Korelasi tertinggi dengan portofolio ${worst.corr.toFixed(2)} (${worstName}). Kerugian maksimum ${formatPct(impact.maxLossPctOfEquity)} dari ekuitas.${
+          exposureBreach ? ` Eksposur akan mencapai ${impact.exposureAfterPct.toFixed(0)}% — lihat ukuran posisi.` : ""
         }`,
       metrics: [
-        { label: "Correlation", value: worst.corr.toFixed(2) },
-        { label: "Max loss", value: formatUsd(impact.maxLoss) },
+        { label: "Korelasi", value: worst.corr.toFixed(2) },
+        { label: "Rugi maks.", value: formatUsd(impact.maxLoss) },
       ],
     },
   ];
   if (!rejected && oversized) {
     chain.push({
-      label: "Position size",
-      value: `${impact.positionPctOfEquity.toFixed(0)}% of equity`,
+      label: "Ukuran posisi",
+      value: `${impact.positionPctOfEquity.toFixed(0)}% dari ekuitas`,
       status: "neutral",
       detail: [
-        sizeBreach ? `Above the ${policy.maxPositionPctOfEquity}% size the agent may take on its own.` : "",
+        sizeBreach ? `Di atas ukuran ${policy.maxPositionPctOfEquity}% yang boleh diambil agen sendiri.` : "",
         exposureBreach
-          ? `Exposure would rise from ${impact.exposureBeforePct.toFixed(0)}% to ${impact.exposureAfterPct.toFixed(0)}%, above the ${policy.maxPortfolioExposurePct}% policy.`
+          ? `Eksposur akan naik dari ${impact.exposureBeforePct.toFixed(0)}% ke ${impact.exposureAfterPct.toFixed(0)}%, di atas kebijakan ${policy.maxPortfolioExposurePct}%.`
           : "",
       ]
         .filter(Boolean)
@@ -295,34 +295,34 @@ function recordTradeDecision(
     });
   }
   chain.push({
-    label: "Decision",
-    value: rejected ? "Reject" : oversized ? "Ask for approval" : "Trade",
+    label: "Keputusan",
+    value: rejected ? "Tolak" : oversized ? "Minta persetujuan" : "Transaksi",
     status: rejected ? "fail" : "pass",
     detail: rejected
       ? corrFail
-        ? "Adds concentrated exposure rather than a new source of return."
+        ? "Menambah eksposur terkonsentrasi, bukan sumber imbal hasil baru."
         : regimeFail
-          ? "Long setups are not taken while the broad trend is negative."
-          : "Edge is too thin to justify the risk."
+          ? "Posisi beli tidak diambil selama tren umum negatif."
+          : "Keunggulannya terlalu tipis untuk sepadan dengan risikonya."
       : oversized
-        ? "Criteria met, but size exceeds the autonomous limit."
-        : "All gates passed within autonomous limits.",
+        ? "Kriteria terpenuhi, tetapi ukurannya melebihi batas otonom."
+        : "Semua syarat lolos dalam batas otonom.",
   });
 
   const factors = [
-    `${cand.signal} is above its historical threshold (1W ${formatSignedPct(wk.returnPct)}).`,
-    `Volatility (${formatPct(wk.volatilityPct, 1)}) remains within strategy limits.`,
+    `${cand.signal} berada di atas ambang historisnya (1W ${formatSignedPct(wk.returnPct)}).`,
+    `Volatilitas (${formatPct(wk.volatilityPct, 1)}) masih dalam batas strategi.`,
     evFail
-      ? `Expected value ${formatR(ev)} is below the ${formatR(policy.minExpectedValueR)} minimum.`
-      : `Expected value ${formatR(ev)} exceeds the ${formatR(policy.minExpectedValueR)} minimum.`,
+      ? `Nilai harapan ${formatR(ev)} di bawah minimum ${formatR(policy.minExpectedValueR)}.`
+      : `Nilai harapan ${formatR(ev)} melampaui minimum ${formatR(policy.minExpectedValueR)}.`,
     corrFail
-      ? `Correlation with ${worstName} (${worst.corr.toFixed(2)}) exceeds the ${policy.maxCorrelation.toFixed(2)} limit.`
-      : `Portfolio correlation remains acceptable (${worst.corr.toFixed(2)}).`,
-    `Maximum loss ${formatUsd(impact.maxLoss)} (${formatPct(impact.maxLossPctOfEquity)} of equity) is within the ${policy.maxRiskPerTradePct}% risk policy.`,
+      ? `Korelasi dengan ${worstName} (${worst.corr.toFixed(2)}) melampaui batas ${policy.maxCorrelation.toFixed(2)}.`
+      : `Korelasi portofolio masih dapat diterima (${worst.corr.toFixed(2)}).`,
+    `Kerugian maksimum ${formatUsd(impact.maxLoss)} (${formatPct(impact.maxLossPctOfEquity)} dari ekuitas) masih dalam kebijakan risiko ${policy.maxRiskPerTradePct}%.`,
   ];
   if (!rejected && oversized) {
     factors.push(
-      `Size (${impact.positionPctOfEquity.toFixed(0)}% of equity${exposureBreach ? `, exposure to ${impact.exposureAfterPct.toFixed(0)}%` : ""}) is outside autonomous limits, so the agent asks first.`,
+      `Ukuran (${impact.positionPctOfEquity.toFixed(0)}% dari ekuitas${exposureBreach ? `, eksposur menjadi ${impact.exposureAfterPct.toFixed(0)}%` : ""}) di luar batas otonom, jadi agen bertanya dulu.`,
     );
   }
 
@@ -334,20 +334,20 @@ function recordTradeDecision(
     outcome,
     headline: rejected
       ? corrFail
-        ? `Rejected: correlation with ${worstName} is too high.`
+        ? `Ditolak: korelasi dengan ${worstName} terlalu tinggi.`
         : regimeFail
-          ? "Rejected: market regime does not support new longs."
-          : "Rejected: expected value below policy minimum."
+          ? "Ditolak: rezim pasar tidak mendukung posisi beli baru."
+          : "Ditolak: nilai harapan di bawah minimum kebijakan."
       : oversized
-        ? `${inst.pair} meets strategy criteria — size needs your approval.`
-        : `${inst.pair} meets strategy criteria — executing within limits.`,
+        ? `${inst.pair} memenuhi kriteria strategi — ukurannya perlu persetujuan Anda.`
+        : `${inst.pair} memenuhi kriteria strategi — dieksekusi dalam batas.`,
     chain,
     factors,
     confidence: setup.confidence,
-    invalidation: `Invalid if ${inst.pair} trades below ${formatPrice(setup.stop, inst.decimals)} or momentum reverses on the 4-hour close.`,
+    invalidation: `Batal jika ${inst.pair} diperdagangkan di bawah ${formatPrice(setup.stop, inst.decimals)} atau momentum berbalik pada penutupan 4 jam.`,
     assumptions: [
-      "Win probability from 500 simulated paths and two years of comparable setups.",
-      "Fills assume the current spread. No leverage.",
+      "Probabilitas menang dari 500 jalur simulasi dan dua tahun setup sebanding.",
+      "Eksekusi mengasumsikan spread saat ini. Tanpa leverage.",
     ],
     symbol: cand.symbol,
     tradeSetupId: setup.id,
@@ -357,8 +357,8 @@ function recordTradeDecision(
   ctx.log(
     "DECISION",
     rejected
-      ? `${inst.pair} rejected — ${corrFail ? "portfolio correlation too high" : regimeFail ? "regime does not support longs" : "expected value too low"}.`
-      : `${inst.pair} meets current strategy criteria.`,
+      ? `${inst.pair} ditolak — ${corrFail ? "korelasi portofolio terlalu tinggi" : regimeFail ? "rezim tidak mendukung posisi beli" : "nilai harapan terlalu rendah"}.`
+      : `${inst.pair} memenuhi kriteria strategi saat ini.`,
     { decisionId, symbol: cand.symbol },
   );
 
@@ -369,28 +369,28 @@ function recordTradeDecision(
       request: {
         id: ctx.nextId("apr"),
         at: ctx.now(),
-        title: "Potential trade exceeds normal position size.",
+        title: "Calon transaksi melebihi ukuran posisi normal.",
         reason:
-          `The ${inst.pair} position would be ${impact.positionPctOfEquity.toFixed(0)}% of equity; the agent may take up to ${policy.maxPositionPctOfEquity}% on its own.` +
+          `Posisi ${inst.pair} akan menjadi ${impact.positionPctOfEquity.toFixed(0)}% dari ekuitas; agen hanya boleh mengambil hingga ${policy.maxPositionPctOfEquity}% sendiri.` +
           (exposureBreach
-            ? ` It would also lift portfolio exposure to ${impact.exposureAfterPct.toFixed(0)}%, above the ${policy.maxPortfolioExposurePct}% policy.`
+            ? ` Eksposur portofolio juga akan naik ke ${impact.exposureAfterPct.toFixed(0)}%, di atas kebijakan ${policy.maxPortfolioExposurePct}%.`
             : ""),
         setupId: setup.id,
         decisionId,
       },
       setup,
     });
-    ctx.log("APPROVAL", `Approval requested: ${inst.pair} position exceeds normal size.`, { decisionId, symbol: cand.symbol });
+    ctx.log("APPROVAL", `Persetujuan diminta: posisi ${inst.pair} melebihi ukuran normal.`, { decisionId, symbol: cand.symbol });
     return [
       {
         state: "WAITING_FOR_APPROVAL",
-        task: `Waiting for your decision on ${inst.pair}`,
+        task: `Menunggu keputusan Anda untuk ${inst.pair}`,
         durationMs: 3200,
       },
     ];
   }
 
-  return [executionStep(setup, "within policy limits")];
+  return [executionStep(setup, "dalam batas kebijakan")];
 }
 
 /** Fills a setup at the current price and records the position. */
@@ -398,13 +398,13 @@ export function executionStep(setup: TradeSetup, note: string, quantity = setup.
   const inst = INSTRUMENTS[setup.symbol];
   return {
     state: "EXECUTING",
-    task: `Executing ${inst.pair} order ${note}`,
+    task: `Mengeksekusi order ${inst.pair} ${note}`,
     durationMs: 2400,
     complete: (c) => {
       const fill = c.market.quote(setup.symbol).price;
       const cost = quantity * fill;
       if (cost > c.read().portfolio.cash) {
-        c.log("RISK", `${inst.pair} order cancelled: insufficient available capital.`, { symbol: setup.symbol });
+        c.log("RISK", `Order ${inst.pair} dibatalkan: modal tersedia tidak cukup.`, { symbol: setup.symbol });
         return;
       }
       c.emit("TRADE_EXECUTED", {
@@ -422,13 +422,13 @@ export function executionStep(setup: TradeSetup, note: string, quantity = setup.
       });
       c.log(
         "EXECUTION",
-        `Bought ${formatNumber(quantity, quantity < 0.1 ? 4 : 2)} ${setup.symbol} at ${formatUsd(fill)}. Stop ${formatPrice(setup.stop, inst.decimals)}.`,
+        `Membeli ${formatNumber(quantity, quantity < 0.1 ? 4 : 2)} ${setup.symbol} di ${formatUsd(fill)}. Stop ${formatPrice(setup.stop, inst.decimals)}.`,
         {
           decisionId: setup.decisionId,
           symbol: setup.symbol,
           evidence: [
-            { label: "Fill", value: formatUsd(fill) },
-            { label: "Cost", value: formatUsd(cost) },
+            { label: "Harga eksekusi", value: formatUsd(fill) },
+            { label: "Biaya", value: formatUsd(cost) },
             { label: "Target", value: formatUsd(setup.target) },
           ],
         },
@@ -444,7 +444,7 @@ export function monitorPositions(ctx: StepContext): Step[] {
   return [
     {
       state: "MONITORING",
-      task: `Monitoring ${n} open position${n === 1 ? "" : "s"}`,
+      task: `Memantau ${n} posisi terbuka`,
       durationMs: 4400,
       complete: (c) => {
         const s = c.read();
@@ -452,7 +452,7 @@ export function monitorPositions(ctx: StepContext): Step[] {
         const exposure = (cap.deployed / cap.total) * 100;
         c.log(
           "MONITOR",
-          `${cap.positions.length} positions reviewed. Unrealized ${formatSignedUsd(cap.unrealized)}. All stops intact.`,
+          `${cap.positions.length} posisi ditinjau. Belum terealisasi ${formatSignedUsd(cap.unrealized)}. Semua stop aman.`,
           {
             evidence: cap.positions.map((p) => ({
               label: INSTRUMENTS[p.symbol].pair,
@@ -462,7 +462,7 @@ export function monitorPositions(ctx: StepContext): Step[] {
         );
         const warnAt = s.policy.maxPortfolioExposurePct * 0.85;
         if (exposure > warnAt) {
-          const message = `Exposure ${exposure.toFixed(0)}% is approaching the ${s.policy.maxPortfolioExposurePct}% policy limit.`;
+          const message = `Eksposur ${exposure.toFixed(0)}% mendekati batas kebijakan ${s.policy.maxPortfolioExposurePct}%.`;
           c.emit("RISK_WARNING", { message, at: c.now() });
           c.log("RISK", message);
         }
@@ -487,39 +487,39 @@ function businessDecision(ctx: StepContext, opp: Opportunity): void {
     subject: opp.title,
     outcome: pursue ? "PURSUE" : "PASS",
     headline: pursue
-      ? `Pursue: ${formatUsd(ev, { whole: true })} expected for ${opp.effortHours} hours.`
-      : `Pass: expected ${formatUsd(perHour, { whole: true })}/hour is below the floor.`,
+      ? `Kejar: ekspektasi ${formatUsd(ev, { whole: true })} untuk ${opp.effortHours} jam kerja.`
+      : `Lewati: ekspektasi ${formatUsd(perHour, { whole: true })}/jam di bawah batas minimum.`,
     opportunityId: opp.id,
     chain: [
-      { label: "Opportunity", value: opp.category, status: "neutral", detail: opp.whyFound },
-      { label: "Demand", value: "Verified", status: "pass", detail: opp.evidence[0] ? `${opp.evidence[0].label}: ${opp.evidence[0].value}.` : "Demand signal confirmed." },
-      { label: "Competition", value: opp.competition, status: opp.competition === "High" ? "fail" : "pass", detail: opp.competitionNote },
+      { label: "Peluang", value: opp.category, status: "neutral", detail: opp.whyFound },
+      { label: "Permintaan", value: "Terverifikasi", status: "pass", detail: opp.evidence[0] ? `${opp.evidence[0].label}: ${opp.evidence[0].value}.` : "Sinyal permintaan terkonfirmasi." },
+      { label: "Persaingan", value: opp.competition, status: opp.competition === "Tinggi" ? "fail" : "pass", detail: opp.competitionNote },
       {
-        label: "Expected value",
+        label: "Nilai harapan",
         value: formatUsd(ev, { whole: true }),
         status: "neutral",
-        detail: `${formatUsd(opp.potentialValue, { whole: true })} × ${Math.round(opp.probability * 100)}% probability.`,
+        detail: `${formatUsd(opp.potentialValue, { whole: true })} × probabilitas ${Math.round(opp.probability * 100)}%.`,
       },
       {
-        label: "Value per hour",
-        value: `${formatUsd(perHour, { whole: true })}/h`,
+        label: "Nilai per jam",
+        value: `${formatUsd(perHour, { whole: true })}/jam`,
         status: pursue ? "pass" : "fail",
-        detail: `Floor is ${formatUsd(EV_PER_HOUR_FLOOR, { whole: true })}/hour of expected value.`,
+        detail: `Batas minimum ${formatUsd(EV_PER_HOUR_FLOOR, { whole: true })}/jam nilai harapan.`,
       },
-      { label: "Decision", value: pursue ? "Pursue" : "Pass", status: pursue ? "pass" : "fail", detail: opp.nextAction },
+      { label: "Keputusan", value: pursue ? "Kejar" : "Lewati", status: pursue ? "pass" : "fail", detail: opp.nextAction },
     ],
     factors: [
       opp.whyFound,
-      `Expected value ${formatUsd(ev, { whole: true })} over ${opp.effortHours} hours (${formatUsd(perHour, { whole: true })}/hour).`,
-      `Competition is ${opp.competition.toLowerCase()}: ${opp.competitionNote}`,
+      `Nilai harapan ${formatUsd(ev, { whole: true })} dalam ${opp.effortHours} jam kerja (${formatUsd(perHour, { whole: true })}/jam).`,
+      `Persaingan ${opp.competition.toLowerCase()}: ${opp.competitionNote}`,
     ],
     confidence: Math.min(0.9, 0.45 + opp.probability * 0.5),
-    invalidation: opp.risks[0] ? `Re-evaluate if: ${opp.risks[0].toLowerCase()}.` : "Re-evaluate if scope changes.",
-    assumptions: [`Probability estimated from comparable ${opp.category.toLowerCase()} work.`],
+    invalidation: opp.risks[0] ? `Evaluasi ulang jika: ${opp.risks[0].toLowerCase()}.` : "Evaluasi ulang jika cakupan berubah.",
+    assumptions: [`Probabilitas diperkirakan dari pekerjaan ${opp.category.toLowerCase()} yang sebanding.`],
   };
   ctx.emit("DECISION_CREATED", decision);
-  ctx.emit("OPPORTUNITY_UPDATED", { id: opp.id, patch: { status: pursue ? "Qualified" : "Passed" } });
-  ctx.log("DECISION", pursue ? `Pursue ${opp.title.toLowerCase()} — expected value ${formatUsd(ev, { whole: true })}.` : `Passed on ${opp.title.toLowerCase()}.`, {
+  ctx.emit("OPPORTUNITY_UPDATED", { id: opp.id, patch: { status: pursue ? "Lolos kualifikasi" : "Dilewati" } });
+  ctx.log("DECISION", pursue ? `Kejar ${opp.title.toLowerCase()} — nilai harapan ${formatUsd(ev, { whole: true })}.` : `Melewatkan ${opp.title.toLowerCase()}.`, {
     decisionId: id,
     opportunityId: opp.id,
   });
@@ -535,25 +535,25 @@ export function businessDiscovery(ctx: StepContext, poolIndex: number): Step[] {
   return [
     {
       state: "RESEARCHING",
-      task: "Searching freelance marketplaces, B2B listings and bounties",
+      task: "Mencari di marketplace freelance, listing B2B, dan bounty",
       durationMs: 4600,
-      complete: (c) => c.log("SEARCH", `Found ${leads} potential B2B automation opportunities.`),
+      complete: (c) => c.log("SEARCH", `Menemukan ${leads} calon peluang otomasi B2B.`),
     },
     {
       state: "ANALYZING",
-      task: `Scoring ${leads} leads by expected value per hour`,
+      task: `Menilai ${leads} prospek berdasarkan nilai harapan per jam`,
       durationMs: 3600,
       complete: (c) =>
-        c.log("FILTERING", `${cleared} leads cleared the ${formatUsd(EV_PER_HOUR_FLOOR, { whole: true })}/hour expected-value floor.`),
+        c.log("FILTERING", `${cleared} prospek lolos batas nilai harapan ${formatUsd(EV_PER_HOUR_FLOOR, { whole: true })}/jam.`),
     },
     {
       state: "RESEARCHING",
-      task: `Researching ${template.title.toLowerCase()}`,
+      task: `Meneliti ${template.title.toLowerCase()}`,
       durationMs: 4200,
       complete: (c) => {
-        found = { ...template, discoveredAt: c.now(), status: "Researching" };
+        found = { ...template, discoveredAt: c.now(), status: "Diteliti" };
         c.emit("OPPORTUNITY_FOUND", found);
-        c.log("SEARCH", `New opportunity: ${template.title} — expected value ${formatUsd(evOf(template), { whole: true })}.`, {
+        c.log("SEARCH", `Peluang baru: ${template.title} — nilai harapan ${formatUsd(evOf(template), { whole: true })}.`, {
           opportunityId: template.id,
           evidence: template.evidence,
         });
@@ -561,7 +561,7 @@ export function businessDiscovery(ctx: StepContext, poolIndex: number): Step[] {
     },
     {
       state: "DECIDING",
-      task: `Deciding whether to pursue ${template.title.toLowerCase()}`,
+      task: `Memutuskan apakah mengejar ${template.title.toLowerCase()}`,
       durationMs: 2600,
       complete: (c) => {
         if (found) businessDecision(c, found);
@@ -572,32 +572,32 @@ export function businessDiscovery(ctx: StepContext, poolIndex: number): Step[] {
 
 export function businessFollowUp(ctx: StepContext): Step[] {
   const opps = ctx.read().opportunities;
-  const qualified = opps.find((o) => o.status === "Qualified");
+  const qualified = opps.find((o) => o.status === "Lolos kualifikasi");
   if (qualified) {
     return [
       {
         state: "EXECUTING",
-        task: `Drafting proposal for ${qualified.title.toLowerCase()}`,
+        task: `Menyusun proposal untuk ${qualified.title.toLowerCase()}`,
         durationMs: 4400,
         complete: (c) => {
-          c.emit("OPPORTUNITY_UPDATED", { id: qualified.id, patch: { status: "Proposal drafted" } });
-          c.emit("BUSINESS_TASK_COMPLETED", { opportunityId: qualified.id, task: "Proposal drafted" });
-          c.log("BUSINESS", `Proposal drafted for ${qualified.title}.`, { opportunityId: qualified.id });
+          c.emit("OPPORTUNITY_UPDATED", { id: qualified.id, patch: { status: "Proposal disusun" } });
+          c.emit("BUSINESS_TASK_COMPLETED", { opportunityId: qualified.id, task: "Proposal disusun" });
+          c.log("BUSINESS", `Proposal disusun untuk ${qualified.title}.`, { opportunityId: qualified.id });
         },
       },
     ];
   }
-  const researching = opps.find((o) => o.status === "Researching");
+  const researching = opps.find((o) => o.status === "Diteliti");
   if (researching) {
     return [
       {
         state: "RESEARCHING",
-        task: `Customer research: ${researching.title.toLowerCase()}`,
+        task: `Riset pelanggan: ${researching.title.toLowerCase()}`,
         durationMs: 4000,
         complete: (c) => {
           const probability = Math.min(0.9, researching.probability + 0.04);
           c.emit("OPPORTUNITY_UPDATED", { id: researching.id, patch: { probability } });
-          c.log("RESEARCH", `Customer research raised win probability for ${researching.title.toLowerCase()} to ${Math.round(probability * 100)}%.`, {
+          c.log("RESEARCH", `Riset pelanggan menaikkan probabilitas menang ${researching.title.toLowerCase()} menjadi ${Math.round(probability * 100)}%.`, {
             opportunityId: researching.id,
           });
           businessDecision(c, { ...researching, probability });
@@ -609,5 +609,5 @@ export function businessFollowUp(ctx: StepContext): Step[] {
 }
 
 export function idle(): Step[] {
-  return [{ state: "IDLE", task: "Idle — next research cycle scheduled", durationMs: 2600 }];
+  return [{ state: "IDLE", task: "Siaga — siklus riset berikutnya terjadwal", durationMs: 2600 }];
 }

@@ -175,7 +175,7 @@ export const PerformanceChart = memo(function PerformanceChart({
           {relativeTime(spanHours)}
         </text>
         <text x={PAD.left + geom.innerW} y={height - 4} fontSize={chart.axisFontSize} fill={cssColor.ink3} textAnchor="end">
-          Now
+          Kini
         </text>
 
         <rect

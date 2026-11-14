@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import { useShallow } from "zustand/react/shallow";
+import { AgentCore } from "@/components/agent/AgentCore";
 import { AgentPipeline, AgentStatus } from "@/components/agent/AgentStatus";
 import { AnimatedValue, Delta, SimBadge } from "@/components/shared/primitives";
 import { Sparkline } from "@/components/markets/PerformanceChart";
@@ -31,10 +32,10 @@ export function CommandHero() {
   const capital = useCapital();
   const history = useAppStore((s) => s.portfolio.equityHistory);
   const headline = !running
-    ? "Your economic agent is paused."
+    ? "Agen ekonomi Anda sedang dijeda."
     : approvals > 0
-      ? "Your economic agent needs you."
-      : "Your economic agent is active.";
+      ? "Agen ekonomi Anda membutuhkan Anda."
+      : "Agen ekonomi Anda sedang aktif.";
 
   return (
     <motion.section
@@ -45,7 +46,7 @@ export function CommandHero() {
       aria-labelledby="hero-title"
     >
       <motion.p variants={item} className="label num mb-4">
-        {greetingFor(simTime)} <span className="mx-1.5 text-ink-4">·</span> Simulated session
+        {greetingFor(simTime)} <span className="mx-1.5 text-ink-4">·</span> Sesi simulasi
       </motion.p>
       <motion.h1
         variants={item}
@@ -55,35 +56,46 @@ export function CommandHero() {
         {headline}
       </motion.h1>
 
-      <div className="mt-12 grid grid-cols-12 gap-x-6 gap-y-12 md:mt-16">
-        {/* Status first on phones; equity first on wide screens. */}
-        <motion.div variants={item} className="order-2 col-span-12 lg:order-1 lg:col-span-5">
-          <div className="mb-2 flex items-center gap-3">
-            <p className="label">Current equity</p>
-            <SimBadge compact />
-          </div>
-          <AnimatedValue
-            value={capital.total}
-            format={(v) => formatUsd(v)}
-            className="block text-5xl font-light tracking-[-0.04em] text-ink sm:text-6xl"
-          />
-          <p className="mt-3 text-sm text-ink-2">
-            <Delta value={capital.monthReturnPct} /> this month
-            <span className="mx-2 text-ink-4">·</span>
-            <Delta value={capital.monthPnl} format={(v) => formatSignedUsd(v)} />
-          </p>
-          <div className="mt-6 flex items-end gap-6">
-            <Sparkline values={[...history.slice(0, -1), capital.total]} width={180} height={40} tone="neutral" />
-            <p className="text-xs leading-relaxed text-ink-3">
-              30-day equity
-              <br />
-              {decisionsToday} decisions today
-            </p>
+      <div className="mt-10 grid grid-cols-12 items-center gap-x-6 gap-y-10 md:mt-12">
+        {/* The agent itself is the hero: what it is doing, drawn live. */}
+        <motion.div variants={item} className="col-span-12 lg:col-span-6">
+          <div className="relative mx-auto max-w-[540px]">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-[8%] rounded-full opacity-60 blur-3xl"
+              style={{ background: "radial-gradient(circle, rgba(25,211,240,0.18), rgba(11,99,229,0.06) 55%, transparent 70%)" }}
+            />
+            <AgentCore maxSize={540} />
           </div>
         </motion.div>
 
-        <motion.div variants={item} className="order-1 col-span-12 lg:order-2 lg:col-span-7 lg:pl-6">
-          <AgentStatus />
+        <motion.div variants={item} className="col-span-12 lg:col-span-6 lg:pl-4">
+          <AgentStatus showGlyph={false} />
+
+          <div className="mt-10 border-t border-line pt-8">
+            <div className="mb-2 flex items-center gap-3">
+              <p className="label">Ekuitas saat ini</p>
+              <SimBadge compact />
+            </div>
+            <AnimatedValue
+              value={capital.total}
+              format={(v) => formatUsd(v)}
+              className="block text-5xl font-light tracking-[-0.04em] text-ink sm:text-6xl"
+            />
+            <p className="mt-3 text-sm text-ink-2">
+              <Delta value={capital.monthReturnPct} /> bulan ini
+              <span className="mx-2 text-ink-4">·</span>
+              <Delta value={capital.monthPnl} format={(v) => formatSignedUsd(v)} />
+            </p>
+            <div className="mt-6 flex items-end gap-6">
+              <Sparkline values={[...history.slice(0, -1), capital.total]} width={180} height={40} tone="neutral" />
+              <p className="text-xs leading-relaxed text-ink-3">
+                Ekuitas 30 hari
+                <br />
+                {decisionsToday} keputusan hari ini
+              </p>
+            </div>
+          </div>
         </motion.div>
       </div>
 

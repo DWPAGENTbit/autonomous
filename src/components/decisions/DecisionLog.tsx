@@ -26,7 +26,7 @@ export function DecisionIndex({ limit = 5 }: { limit?: number }) {
   const current = focusedId ?? decisions[0]?.id;
 
   return (
-    <ul aria-label="Recent decisions">
+    <ul aria-label="Keputusan terbaru">
       <AnimatePresence initial={false}>
         {decisions.map((d) => {
           const o = OUTCOME_META[d.outcome];

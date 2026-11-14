@@ -55,7 +55,7 @@ export function Meter({
           aria-hidden
           className="absolute -top-1 -bottom-1 w-px bg-ink"
           style={{ left: `calc(${limit * 100}% - 1px)` }}
-          title="Policy limit"
+          title="Batas kebijakan"
         />
       )}
     </div>

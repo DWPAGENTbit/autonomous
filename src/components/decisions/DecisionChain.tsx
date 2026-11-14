@@ -27,7 +27,7 @@ export function DecisionChain({ decision, compact = false }: { decision: Decisio
       <div className="mb-6 flex flex-wrap items-start justify-between gap-x-8 gap-y-4">
         <div className="min-w-0">
           <p className="label num mb-2">
-            {decision.domain === "MARKETS" ? "Market decision" : "Business decision"} · {formatClock(decision.at)}
+            {decision.domain === "MARKETS" ? "Keputusan pasar" : "Keputusan bisnis"} · {formatClock(decision.at)}
           </p>
           <p className="text-2xl font-normal tracking-[-0.015em] text-ink">
             {decision.subject}
@@ -37,11 +37,11 @@ export function DecisionChain({ decision, compact = false }: { decision: Decisio
         </div>
         <div className="flex items-center gap-5">
           <div className="text-right">
-            <p className="label text-[10px]">Confidence</p>
+            <p className="label text-[10px]">Keyakinan</p>
             <p className="num text-lg text-ink">{Math.round(decision.confidence * 100)}%</p>
           </div>
           <Button size="sm" onClick={() => openWhy(decision.id)} aria-label={`Why: reasoning for ${decision.subject}`}>
-            Why?
+            Mengapa?
           </Button>
         </div>
       </div>
@@ -54,7 +54,7 @@ export function DecisionChain({ decision, compact = false }: { decision: Decisio
         initial="hidden"
         animate="show"
         variants={{ hidden: {}, show: { transition: { staggerChildren: stagger.chain } } }}
-        aria-label={`Decision chain for ${decision.subject}`}
+        aria-label={`Rantai keputusan untuk ${decision.subject}`}
       >
         {decision.chain.map((step, i) => (
           <ChainNode

@@ -30,13 +30,13 @@ export function proposeSetup(args: {
   const stopPct = inst.annualVol * SETUP_RULES.stopVolMultiple;
   const intended = (profile.sizePct / 100) * equity;
   const affordable = Math.max(0, Math.min(intended, cash * 0.95));
-  const winProbability = SETUP_RULES.baseWinProbability + (regime.trend === "Positive" ? SETUP_RULES.trendBonus : 0);
+  const winProbability = SETUP_RULES.baseWinProbability + (regime.trend === "Positif" ? SETUP_RULES.trendBonus : 0);
 
   return {
     id,
     symbol,
     side: "LONG",
-    trend: regime.trend === "Positive" ? "Bullish" : regime.trend === "Negative" ? "Bearish" : "Range",
+    trend: regime.trend === "Positif" ? "Bullish" : regime.trend === "Negatif" ? "Bearish" : "Sideways",
     signal: profile.signal,
     entry,
     stop: entry * (1 - stopPct),

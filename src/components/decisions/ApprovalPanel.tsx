@@ -86,7 +86,7 @@ function ApprovalBody({ requestId }: { requestId: string }) {
       <div className="mx-auto grid max-w-[1360px] grid-cols-12 gap-x-6 gap-y-8 px-4 py-8 sm:px-6 md:px-10 lg:px-12">
         <div className="col-span-12 lg:col-span-5">
           <div className="mb-4 flex flex-wrap items-center gap-3">
-            <p className="label text-caution">Agent needs your decision</p>
+            <p className="label text-caution">Agen butuh keputusan Anda</p>
             <span className="num font-mono text-xs text-ink-3">{formatClock(request.at)}</span>
             <SimBadge compact />
           </div>
@@ -99,28 +99,28 @@ function ApprovalBody({ requestId }: { requestId: string }) {
             onClick={() => openWhy(request.decisionId)}
             className="mt-4 text-sm text-accent underline-offset-4 hover:underline"
           >
-            See why the agent wants this trade
+            Lihat alasan agen menginginkan transaksi ini
           </button>
         </div>
 
         <div className="col-span-12 lg:col-span-7">
           <dl className="grid grid-cols-2 gap-x-6 gap-y-6 md:grid-cols-4">
-            <Figure label="Expected return" value={formatSignedUsd(impact.expectedReturn)} sub={formatR(impact.expectedValueR)} tone="positive" />
+            <Figure label="Ekspektasi hasil" value={formatSignedUsd(impact.expectedReturn)} sub={formatR(impact.expectedValueR)} tone="positive" />
             <Figure
-              label="Maximum loss"
+              label="Kerugian maksimum"
               value={formatSignedUsd(-impact.maxLoss)}
-              sub={`${formatPct(impact.maxLossPctOfEquity)} of equity`}
+              sub={`${formatPct(impact.maxLossPctOfEquity)} dari ekuitas`}
               tone="negative"
             />
             <Figure
-              label="Position"
+              label="Posisi"
               value={`${formatNumber(quantity, quantity < 0.1 ? 4 : 2)} ${setup.symbol}`}
-              sub={`${formatUsd(impact.positionValue, { whole: true })} · ${impact.positionPctOfEquity.toFixed(0)}% of equity`}
+              sub={`${formatUsd(impact.positionValue, { whole: true })} · ${impact.positionPctOfEquity.toFixed(0)}% dari ekuitas`}
             />
             <Figure
-              label="Risk impact"
+              label="Dampak risiko"
               value={`${impact.exposureBeforePct.toFixed(0)}% → ${impact.exposureAfterPct.toFixed(0)}%`}
-              sub={exposureBreach ? `Above ${policy.maxPortfolioExposurePct}% exposure policy` : "Portfolio exposure"}
+              sub={exposureBreach ? `Di atas kebijakan eksposur ${policy.maxPortfolioExposurePct}%` : "Eksposur portofolio"}
               tone={exposureBreach ? "caution" : undefined}
             />
           </dl>
@@ -136,9 +136,9 @@ function ApprovalBody({ requestId }: { requestId: string }) {
               >
                 <div className="mt-7 border-t border-caution/20 pt-5">
                   <label htmlFor={sliderId} className="label mb-3 flex items-center justify-between">
-                    <span>Position size</span>
+                    <span>Ukuran posisi</span>
                     <span className={clsx("num", sizeOk ? "text-positive" : "text-ink-2")}>
-                      {Math.round(fraction * 100)}% of proposed{sizeOk ? " · within autonomous limit" : ""}
+                      {Math.round(fraction * 100)}% dari usulan{sizeOk ? " · dalam batas otonom" : ""}
                     </span>
                   </label>
                   <input
@@ -152,7 +152,7 @@ function ApprovalBody({ requestId }: { requestId: string }) {
                       setFraction(SIZE_STEPS[Number(e.target.value)]);
                       setConfirming(false);
                     }}
-                    aria-valuetext={`${Math.round(fraction * 100)} percent of proposed size`}
+                    aria-valuetext={`${Math.round(fraction * 100)} persen dari ukuran usulan`}
                     className="w-full accent-[var(--color-ink)]"
                   />
                   <div className="num mt-1 flex justify-between font-mono text-[10px] text-ink-3">
@@ -172,7 +172,7 @@ function ApprovalBody({ requestId }: { requestId: string }) {
               aria-live="polite"
               className={clsx("min-w-[9.5rem]", confirming && "bg-positive hover:bg-positive/90")}
             >
-              {confirming ? "Confirm approval" : fraction === 1 ? "Approve" : `Approve ${Math.round(fraction * 100)}%`}
+              {confirming ? "Konfirmasi persetujuan" : fraction === 1 ? "Setujui" : `Setujui ${Math.round(fraction * 100)}%`}
             </Button>
             <Button
               onClick={() => {
@@ -181,10 +181,10 @@ function ApprovalBody({ requestId }: { requestId: string }) {
               }}
               aria-expanded={modifying}
             >
-              {modifying ? "Done" : "Modify"}
+              {modifying ? "Selesai" : "Ubah"}
             </Button>
             <Button variant="danger" onClick={() => service.reject(request.id)}>
-              Reject
+              Tolak
             </Button>
             <AnimatePresence>
               {confirming && (
@@ -195,7 +195,7 @@ function ApprovalBody({ requestId }: { requestId: string }) {
                   transition={transition.state}
                   className="text-xs text-ink-3"
                 >
-                  Press again to send the simulated order for {inst.pair}.
+                  Tekan sekali lagi untuk mengirim order simulasi {inst.pair}.
                 </motion.span>
               )}
             </AnimatePresence>

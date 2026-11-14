@@ -46,14 +46,14 @@ export function EvidencePanel({ event }: { event: ActivityEvent }) {
             ))}
           </dl>
         ) : (
-          <p className="text-sm text-ink-3">This step recorded no structured evidence. It is part of the regular cycle.</p>
+          <p className="text-sm text-ink-3">Langkah ini tidak mencatat bukti terstruktur. Ini bagian dari siklus rutin.</p>
         )}
       </section>
 
       {(decision || opportunity || event.symbol) && (
         <section aria-labelledby="related-title">
           <h3 id="related-title" className="label mb-3">
-            Connected to
+            Terhubung ke
           </h3>
           <ul className="space-y-1">
             {decision && (

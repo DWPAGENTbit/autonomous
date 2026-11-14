@@ -11,11 +11,11 @@ export const metadata: Metadata = { title: "Agent" };
 export default function AgentPage() {
   return (
     <>
-      <PageIntro index="04" area="Agent" title="What the agent did, why, and what it will do next.">
-        Its current step, the limits it works within, every decision with its reasons, and a full record of activity.
+      <PageIntro index="04" area="Agen" title="Apa yang dilakukan agen, alasannya, dan langkah berikutnya.">
+        Langkah saat ini, batas kerjanya, setiap keputusan beserta alasannya, dan catatan aktivitas lengkap.
       </PageIntro>
 
-      <section className={`${SHELL} pb-24`} aria-label="Agent state">
+      <section className={`${SHELL} pb-24`} aria-label="Status agen">
         <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-12 border-t border-line pt-8">
           <div className="col-span-12 lg:col-span-7">
             <AgentStatus glyphSize={220} />
@@ -30,20 +30,20 @@ export default function AgentPage() {
       </section>
 
       <Reveal as="section" className={`${SHELL} pb-24`}>
-        <SectionHeader index="04.1" title="Decisions" summary="Each decision as a chain of gates. Open any gate, or ask why." />
+        <SectionHeader index="04.1" title="Keputusan" summary="Setiap keputusan sebagai rantai syarat. Buka syarat mana pun, atau tanyakan alasannya." />
         <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-12">
           <div className="col-span-12 xl:col-span-8">
             <FocusedDecision />
           </div>
           <div className="col-span-12 xl:col-span-4">
-            <p className="label mb-2 text-[10px]">All decisions today</p>
+            <p className="label mb-2 text-[10px]">Semua keputusan hari ini</p>
             <DecisionIndex limit={14} />
           </div>
         </div>
       </Reveal>
 
       <Reveal as="section" className={`${SHELL} pb-8`}>
-        <SectionHeader index="04.2" title="Timeline" summary="Proof of work: every step the agent took this session, in order." />
+        <SectionHeader index="04.2" title="Linimasa" summary="Bukti kerja: setiap langkah agen di sesi ini, berurutan." />
         <Timeline />
       </Reveal>
     </>

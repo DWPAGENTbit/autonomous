@@ -45,7 +45,7 @@ export function MarketsWorkspace() {
 
   return (
     <>
-      <section className={`${SHELL} pb-20`} aria-label="Market regime">
+      <section className={`${SHELL} pb-20`} aria-label="Rezim pasar">
         <MarketRegime />
       </section>
 
@@ -70,11 +70,11 @@ export function MarketsWorkspace() {
                   </dd>
                 </div>
                 <div>
-                  <dt className="label text-[10px]">Volatility</dt>
+                  <dt className="label text-[10px]">Volatilitas</dt>
                   <dd className="num text-lg text-ink">{formatPct(st.volatilityPct, 1)}</dd>
                 </div>
                 <div>
-                  <dt className="label text-[10px]">Range</dt>
+                  <dt className="label text-[10px]">Rentang</dt>
                   <dd className="num text-lg text-ink">
                     {formatPrice(lo, inst.decimals)} – {formatPrice(hi, inst.decimals)}
                   </dd>
@@ -91,10 +91,10 @@ export function MarketsWorkspace() {
               height={340}
               ariaLabel={`${inst.pair} price over ${tf}`}
             />
-            <p className="mt-2 text-xs text-ink-3">Dashed line marks the opening price of the period. Use arrow keys on the chart for exact values.</p>
+            <p className="mt-2 text-xs text-ink-3">Garis putus-putus menandai harga pembukaan periode. Gunakan tombol panah pada grafik untuk nilai pastinya.</p>
           </div>
           <div className="col-span-12 lg:col-span-4">
-            <p className="label mb-3 text-[10px]">Select an instrument</p>
+            <p className="label mb-3 text-[10px]">Pilih instrumen</p>
             <InstrumentTape selected={symbol} onSelect={select} compact />
           </div>
         </div>
@@ -103,8 +103,8 @@ export function MarketsWorkspace() {
       <Reveal as="section" className={`${SHELL} pb-24`}>
         <SectionHeader
           index="02.1"
-          title="Execution"
-          summary={`The setup the strategy would take on ${inst.pair} right now, and what it would do to the book.`}
+          title="Eksekusi"
+          summary={`Setup yang akan diambil strategi pada ${inst.pair} sekarang, dan dampaknya ke portofolio.`}
         />
         <TradingWorkspace symbol={symbol} />
       </Reveal>
@@ -112,9 +112,9 @@ export function MarketsWorkspace() {
       <Reveal as="section" className={`${SHELL} pb-8`}>
         <SectionHeader
           index="02.2"
-          title="Relationships"
-          summary="Which markets pay for their risk, and which move together."
-          aside={<TimeframeSwitch value={tf} onChange={setTf} label="Timeframe for return and volatility" />}
+          title="Hubungan"
+          summary="Pasar mana yang sepadan dengan risikonya, dan mana yang bergerak bersama."
+          aside={<TimeframeSwitch value={tf} onChange={setTf} label="Rentang waktu untuk return dan volatilitas" />}
         />
         <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-12">
           <div className="col-span-12 lg:col-span-7">
@@ -122,7 +122,7 @@ export function MarketsWorkspace() {
             <ReturnVolatilityMap stats={stats} held={held.split(",") as MarketSymbol[]} timeframeLabel={tf} onSelect={select} height={340} />
           </div>
           <div className="col-span-12 lg:col-span-5">
-            <p className="label mb-3 text-[10px]">Correlation · 90 days, hourly returns</p>
+            <p className="label mb-3 text-[10px]">Korelasi · 90 hari, return per jam</p>
             <CorrelationMatrix limit={limit} />
           </div>
         </div>

@@ -22,7 +22,7 @@ export function WhyPanel({ decision }: { decision: Decision }) {
 
       <section aria-labelledby="why-factors">
         <h3 id="why-factors" className="label mb-4">
-          Why this decision
+          Alasan keputusan ini
         </h3>
         <motion.ol
           className="space-y-3"
@@ -45,7 +45,7 @@ export function WhyPanel({ decision }: { decision: Decision }) {
 
       <section className="grid grid-cols-2 gap-6 border-t border-line pt-6">
         <div>
-          <h3 className="label mb-2">Confidence</h3>
+          <h3 className="label mb-2">Keyakinan</h3>
           <p className="num text-4xl font-light tracking-[-0.02em] text-ink">{Math.round(decision.confidence * 100)}%</p>
           <div className="mt-3 h-[3px] w-full bg-line" aria-hidden>
             <motion.div
@@ -57,7 +57,7 @@ export function WhyPanel({ decision }: { decision: Decision }) {
           </div>
         </div>
         <div>
-          <h3 className="label mb-2">Invalidation</h3>
+          <h3 className="label mb-2">Batal jika</h3>
           <p className="text-sm leading-relaxed text-ink-2">“{decision.invalidation}”</p>
         </div>
       </section>
@@ -98,8 +98,8 @@ export function WhyPanel({ decision }: { decision: Decision }) {
       )}
 
       <p className="border-t border-line pt-5 text-xs leading-relaxed text-ink-3">
-        Shown: the factors, evidence and constraints the decision was evaluated against. Figures come from the
-        simulation and are demo data.
+        Ditampilkan: faktor, bukti, dan batasan yang dipakai untuk menilai keputusan ini. Angka berasal dari
+        simulasi dan merupakan data demo.
       </p>
     </div>
   );

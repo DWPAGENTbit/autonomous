@@ -74,8 +74,8 @@ export function createInitialState(): AppState {
     running: true,
     status: {
       state: "OBSERVING",
-      task: "Observing market conditions",
-      next: "Scan instruments for liquidity and spread",
+      task: "Mengamati kondisi pasar",
+      next: "Menyaring instrumen berdasarkan likuiditas dan spread",
       since: start,
       stepDurationMs: 3500,
     },

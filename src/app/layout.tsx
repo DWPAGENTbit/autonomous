@@ -10,8 +10,8 @@ const sans = Geist({ subsets: ["latin"], variable: "--font-geist-sans", display:
 const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  title: { default: "Autonomous", template: "%s · Autonomous" },
-  description: "An intelligent economic operating system. Simulation prototype with demo data.",
+  title: { default: "DWP Agent", template: "%s · DWP Agent" },
+  description: "Sistem operasi ekonomi cerdas. Prototipe simulasi dengan data demo.",
 };
 
 export const viewport: Viewport = {
@@ -21,13 +21,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
+    <html lang="id" className={`${sans.variable} ${mono.variable}`}>
       <body className="min-h-dvh bg-canvas text-ink">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-ink focus:px-3 focus:py-2 focus:text-sm focus:text-canvas"
         >
-          Skip to content
+          Langsung ke konten
         </a>
         <SimulationProvider>
           <TopNav />

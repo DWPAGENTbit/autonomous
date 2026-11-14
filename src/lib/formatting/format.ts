@@ -70,13 +70,14 @@ export function formatClock(at: SimTime, withSeconds = true): string {
 
 export function greetingFor(at: SimTime): string {
   const h = Math.floor(at / 3600);
-  if (h < 12) return "Good morning";
-  if (h < 18) return "Good afternoon";
-  return "Good evening";
+  if (h < 11) return "Selamat pagi";
+  if (h < 15) return "Selamat siang";
+  if (h < 18) return "Selamat sore";
+  return "Selamat malam";
 }
 
 export function formatHours(hours: number): string {
-  return `${hours % 1 === 0 ? hours.toFixed(0) : hours.toFixed(1)} hours`;
+  return `${hours % 1 === 0 ? hours.toFixed(0) : hours.toFixed(1).replace(".", ",")} jam`;
 }
 
 export function titleCase(state: string): string {

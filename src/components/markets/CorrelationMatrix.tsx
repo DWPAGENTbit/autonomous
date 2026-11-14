@@ -16,7 +16,7 @@ export function CorrelationMatrix({ limit }: { limit: number }) {
   return (
     <div>
       <table className="w-full border-separate border-spacing-[3px] text-center">
-        <caption className="sr-only">Correlation of hourly returns over 90 days</caption>
+        <caption className="sr-only">Korelasi return per jam selama 90 hari</caption>
         <thead>
           <tr>
             <th scope="col" className="w-12" />

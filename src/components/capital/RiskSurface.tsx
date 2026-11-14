@@ -26,12 +26,12 @@ export function RiskSurface({ showSectors = true }: { showSectors?: boolean }) {
   const closest = limited.reduce((a, b) => (b.level / (b.limit as number) > a.level / (a.limit as number) ? b : a), limited[0]);
   const summary =
     risk.status === "LOW"
-      ? `All measures within policy. Closest to its limit: ${closest.label.toLowerCase()} at ${closest.display}.`
-      : `${closest.label} at ${closest.display} is near its policy limit. New positions are sized down.`;
+      ? `Semua ukuran dalam kebijakan. Paling dekat ke batasnya: ${closest.label.toLowerCase()} di ${closest.display}.`
+      : `${closest.label} di ${closest.display} mendekati batas kebijakan. Posisi baru diperkecil.`;
 
   return (
     <div>
-      <p className="label mb-1">Risk status</p>
+      <p className="label mb-1">Status risiko</p>
       <AnimatePresence mode="wait" initial={false}>
         <motion.p
           key={risk.status}
@@ -46,7 +46,7 @@ export function RiskSurface({ showSectors = true }: { showSectors?: boolean }) {
       </AnimatePresence>
       <p className="mt-2 max-w-[48ch] text-sm text-ink-2">{summary}</p>
 
-      <ul className="mt-7 space-y-0" aria-label="Risk measures">
+      <ul className="mt-7 space-y-0" aria-label="Ukuran risiko">
         {risk.metrics.map((m) => (
           <li
             key={m.key}
@@ -81,7 +81,7 @@ export function RiskSurface({ showSectors = true }: { showSectors?: boolean }) {
 
       {showSectors && risk.sectorExposure.length > 0 && (
         <div className="mt-8">
-          <p className="label mb-2 text-[10px]">Exposure by asset class</p>
+          <p className="label mb-2 text-[10px]">Eksposur per kelas aset</p>
           <div className="flex h-2 w-full gap-[2px]" aria-hidden>
             {risk.sectorExposure.map((s, i) => (
               <motion.span

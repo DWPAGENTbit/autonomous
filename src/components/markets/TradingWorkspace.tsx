@@ -63,21 +63,21 @@ export function TradingWorkspace({ symbol }: { symbol: MarketSymbol }) {
   };
 
   const fields: { label: string; value: React.ReactNode; tone?: string }[] = [
-    { label: "Trend", value: setup.trend, tone: setup.trend === "Bullish" ? "text-positive" : setup.trend === "Bearish" ? "text-negative" : undefined },
-    { label: "Signal", value: setup.signal },
-    { label: "Entry", value: formatPrice(setup.entry, inst.decimals) },
+    { label: "Tren", value: setup.trend, tone: setup.trend === "Bullish" ? "text-positive" : setup.trend === "Bearish" ? "text-negative" : undefined },
+    { label: "Sinyal", value: setup.signal },
+    { label: "Masuk", value: formatPrice(setup.entry, inst.decimals) },
     { label: "Stop", value: formatPrice(setup.stop, inst.decimals), tone: "text-negative" },
     { label: "Target", value: formatPrice(setup.target, inst.decimals), tone: "text-positive" },
-    { label: "Risk", value: `${formatPct(impact.maxLossPctOfEquity)} of equity` },
-    { label: "Expected value", value: formatR(ev), tone: ev >= policy.minExpectedValueR ? "text-positive" : "text-negative" },
-    { label: "Confidence", value: `${Math.round(setup.confidence * 100)}%` },
+    { label: "Risiko", value: `${formatPct(impact.maxLossPctOfEquity)} dari ekuitas` },
+    { label: "Nilai harapan", value: formatR(ev), tone: ev >= policy.minExpectedValueR ? "text-positive" : "text-negative" },
+    { label: "Keyakinan", value: `${Math.round(setup.confidence * 100)}%` },
   ];
 
   return (
     <div className="grid grid-cols-12 gap-x-6 gap-y-10">
       <div className="col-span-12 lg:col-span-5">
         <div className="mb-1 flex items-center gap-3">
-          <p className="label">Instrument</p>
+          <p className="label">Instrumen</p>
           <SimBadge compact />
         </div>
         <p className="text-3xl font-light tracking-[-0.02em] text-ink">{inst.pair}</p>
@@ -86,11 +86,11 @@ export function TradingWorkspace({ symbol }: { symbol: MarketSymbol }) {
         </p>
         <p className="mt-3 text-sm text-ink-2">
           {pending ? (
-            <span className="text-caution">The agent has asked for your approval on this setup.</span>
+            <span className="text-caution">Agen meminta persetujuan Anda untuk setup ini.</span>
           ) : held ? (
-            "Already held. The agent is monitoring the existing position."
+            "Sudah dipegang. Agen memantau posisi yang ada."
           ) : (
-            "Watching. If this setup triggers within policy limits, the agent executes it on its own."
+            "Memantau. Jika setup ini terpicu dalam batas kebijakan, agen mengeksekusinya sendiri."
           )}
         </p>
 
@@ -109,16 +109,16 @@ export function TradingWorkspace({ symbol }: { symbol: MarketSymbol }) {
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <Button onClick={simulate} disabled={running} aria-describedby="simulate-hint">
-            {running ? "Simulating…" : "Simulate"}
+            {running ? "Menyimulasikan…" : "Simulasikan"}
           </Button>
           <Button variant="primary" disabled={!pending} onClick={() => pending && service.approve(pending.request.id)}>
-            Approve
+            Setujui
           </Button>
           <Button variant="danger" disabled={!pending} onClick={() => pending && service.reject(pending.request.id)}>
-            Reject
+            Tolak
           </Button>
           <span id="simulate-hint" className="text-xs text-ink-3">
-            {pending ? "Approval sends a simulated order." : "Approve and reject unlock when the agent asks."}
+            {pending ? "Persetujuan mengirim order simulasi." : "Setujui dan tolak aktif saat agen bertanya."}
           </span>
         </div>
 
@@ -179,7 +179,7 @@ function TradeLadder({
         <div className="absolute top-6 h-[3px] bg-positive/35" style={{ left: pos(setup.entry), width: `calc(${pos(setup.target)} - ${pos(setup.entry)})` }} />
         {[
           { v: setup.stop, label: "Stop", cls: "bg-negative" },
-          { v: setup.entry, label: "Entry", cls: "bg-ink" },
+          { v: setup.entry, label: "Masuk", cls: "bg-ink" },
           { v: setup.target, label: "Target", cls: "bg-positive" },
         ].map((m) => (
           <div key={m.label} className="absolute top-0 -translate-x-1/2 text-center" style={{ left: pos(m.v) }}>
@@ -209,7 +209,7 @@ function TradeLadder({
         className="mt-3 text-xs text-ink-2"
         aria-hidden={!hover}
       >
-        Stopped out, the book loses {formatUsd(maxLoss)}. Executed, exposure moves to {exposureAfter.toFixed(0)}% of equity.
+        Jika kena stop, portofolio rugi {formatUsd(maxLoss)}. Jika dieksekusi, eksposur menjadi {exposureAfter.toFixed(0)}% dari ekuitas.
       </motion.p>
     </div>
   );
@@ -234,7 +234,7 @@ function OutcomeDistribution({ result }: { result: SimulationResult }) {
       <motion.div
         className="flex h-28 items-end gap-1"
         role="img"
-        aria-label={`Distribution of outcomes: win rate ${Math.round(result.winRate * 100)} percent, expected ${formatR(result.expectedR)}`}
+        aria-label={`Sebaran hasil: tingkat menang ${Math.round(result.winRate * 100)} persen, ekspektasi ${formatR(result.expectedR)}`}
         initial="hidden"
         animate="show"
         variants={{ hidden: {}, show: { transition: { staggerChildren: stagger.tight } } }}

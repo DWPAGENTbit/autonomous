@@ -102,7 +102,7 @@ const ActivityRow = memo(function ActivityRow({ event }: { event: ActivityEvent 
                   onClick={() => openEvent(event.id)}
                   className="text-xs text-accent underline-offset-4 hover:underline"
                 >
-                  Open evidence
+                  Buka bukti
                 </button>
               </div>
             </div>
@@ -121,7 +121,7 @@ export function AgentActivity({ limit = 8 }: { limit?: number }) {
   const events = useAppStore(useShallow((s) => s.activity.slice(0, limit)));
 
   return (
-    <div role="log" aria-label="Agent activity" aria-live="off">
+    <div role="log" aria-label="Aktivitas agen" aria-live="off">
       <InProgressRow />
       <ul>
         <AnimatePresence initial={false}>

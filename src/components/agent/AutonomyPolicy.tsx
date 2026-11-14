@@ -12,21 +12,21 @@ export function AutonomyPolicy() {
   const service = useAgentService();
 
   const rows = [
-    { label: "Risk per trade", value: `≤ ${policy.maxRiskPerTradePct}% of equity` },
-    { label: "Position size", value: `≤ ${policy.maxPositionPctOfEquity}% of equity` },
-    { label: "Portfolio exposure", value: `≤ ${policy.maxPortfolioExposurePct}% deployed` },
-    { label: "Correlation with book", value: `≤ ${policy.maxCorrelation.toFixed(2)}` },
-    { label: "Expected value", value: `≥ ${formatR(policy.minExpectedValueR)}` },
-    { label: "Drawdown stop", value: `${policy.maxDrawdownPct}% from peak` },
-    { label: "Leverage", value: "None" },
+    { label: "Risiko per transaksi", value: `≤ ${policy.maxRiskPerTradePct}% dari ekuitas` },
+    { label: "Ukuran posisi", value: `≤ ${policy.maxPositionPctOfEquity}% dari ekuitas` },
+    { label: "Eksposur portofolio", value: `≤ ${policy.maxPortfolioExposurePct}% terpakai` },
+    { label: "Korelasi dengan portofolio", value: `≤ ${policy.maxCorrelation.toFixed(2)}` },
+    { label: "Nilai harapan", value: `≥ ${formatR(policy.minExpectedValueR)}` },
+    { label: "Batas drawdown", value: `${policy.maxDrawdownPct}% dari puncak` },
+    { label: "Leverage", value: "Tidak ada" },
   ];
 
   return (
     <div>
       <p className="label mb-1">Mode</p>
-      <p className="text-2xl font-light tracking-[-0.015em] text-ink">{running ? "Autonomous within limits" : "Paused"}</p>
+      <p className="text-2xl font-light tracking-[-0.015em] text-ink">{running ? "Otonom dalam batas" : "Dijeda"}</p>
       <p className="mt-2 max-w-[44ch] text-sm text-ink-2">
-        Inside these limits the agent acts on its own and records why. Anything outside them waits for your approval.
+        Di dalam batas ini agen bertindak sendiri dan mencatat alasannya. Apa pun di luar batas menunggu persetujuan Anda.
       </p>
       <dl className="mt-6 border-t border-line">
         {rows.map((r) => (
@@ -37,7 +37,7 @@ export function AutonomyPolicy() {
         ))}
       </dl>
       <Button className="mt-6" onClick={() => (running ? service.pause() : service.resume())}>
-        {running ? "Pause the agent" : "Resume the agent"}
+        {running ? "Jeda agen" : "Lanjutkan agen"}
       </Button>
     </div>
   );

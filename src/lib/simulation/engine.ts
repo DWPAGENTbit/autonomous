@@ -23,7 +23,7 @@ type ScenarioKind = "scan" | "trade" | "business" | "monitor" | "followup" | "id
 const CYCLE: readonly ScenarioKind[] = ["scan", "trade", "business", "monitor", "trade", "followup", "idle"];
 
 const CLOCK_MS = 1000;
-const RESUME_TASK = "Begin next research cycle";
+const RESUME_TASK = "Memulai siklus riset berikutnya";
 
 export interface EngineDeps {
   bus: EventBus;
@@ -110,19 +110,19 @@ export class SimulationEngine {
     this.bus.emit("ENGINE_STATE", { running: false });
     this.bus.emit("AGENT_STATE_CHANGED", {
       state: "IDLE",
-      task: "Paused by you",
-      next: "Resume to continue the research cycle",
+      task: "Dijeda oleh Anda",
+      next: "Lanjutkan untuk meneruskan siklus riset",
       since: this.simTime,
       stepDurationMs: 0,
     });
-    this.ctx.log("APPROVAL", "Agent paused by you. Open positions keep their stops.");
+    this.ctx.log("APPROVAL", "Agen dijeda oleh Anda. Posisi terbuka tetap dijaga stop-nya.");
   }
 
   resume(): void {
     if (!this.agentPaused) return;
     this.agentPaused = false;
     this.bus.emit("ENGINE_STATE", { running: true });
-    this.ctx.log("APPROVAL", "Agent resumed by you.");
+    this.ctx.log("APPROVAL", "Agen dilanjutkan oleh Anda.");
     if (this.live) this.advance();
   }
 
@@ -140,10 +140,10 @@ export class SimulationEngine {
     this.bus.emit("DECISION_RESOLVED", { id: request.decisionId, outcome: "TRADE" });
     this.ctx.log(
       "APPROVAL",
-      modified ? `You approved ${pair} at a modified size.` : `You approved the ${pair} position.`,
+      modified ? `Anda menyetujui ${pair} dengan ukuran yang diubah.` : `Anda menyetujui posisi ${pair}.`,
       { decisionId: request.decisionId, symbol: setup.symbol },
     );
-    this.preempt([executionStep(setup, "after your approval", qty)]);
+    this.preempt([executionStep(setup, "setelah Anda setujui", qty)]);
   }
 
   reject(approvalId: string): void {
@@ -151,10 +151,10 @@ export class SimulationEngine {
     const request = state.approvals.find((a) => a.id === approvalId);
     if (!request) return;
     const setup = state.setups[request.setupId];
-    const pair = setup ? INSTRUMENTS[setup.symbol].pair : "the position";
+    const pair = setup ? INSTRUMENTS[setup.symbol].pair : "posisi ini";
     this.bus.emit("APPROVAL_RESOLVED", { id: approvalId, resolution: "REJECTED" });
     this.bus.emit("DECISION_RESOLVED", { id: request.decisionId, outcome: "REJECT" });
-    this.ctx.log("APPROVAL", `You rejected ${pair}. The agent will not re-enter this setup today.`, {
+    this.ctx.log("APPROVAL", `Anda menolak ${pair}. Agen tidak akan masuk ke setup ini lagi hari ini.`, {
       decisionId: request.decisionId,
       symbol: setup?.symbol,
     });

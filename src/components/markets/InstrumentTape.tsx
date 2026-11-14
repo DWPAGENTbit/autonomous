@@ -60,7 +60,7 @@ const TapeRow = memo(function TapeRow({
       <span className="min-w-0">
         <span className="flex items-center gap-2">
           <span className="truncate text-sm text-ink">{inst.pair}</span>
-          {held && <span className="label text-[9px] text-accent">Held</span>}
+          {held && <span className="label text-[9px] text-accent">Dipegang</span>}
         </span>
         <span className="block truncate text-xs text-ink-3">{inst.assetClass}</span>
       </span>
@@ -73,7 +73,7 @@ const TapeRow = memo(function TapeRow({
       </span>
       <span className={compact ? "hidden" : "hidden text-right md:block"}>
         <span className="num block text-sm text-ink-2">{formatPct(volPct, 0)}</span>
-        <span className="block text-xs text-ink-3">{aboveTrend ? "Above trend" : "Below trend"}</span>
+        <span className="block text-xs text-ink-3">{aboveTrend ? "Di atas tren" : "Di bawah tren"}</span>
       </span>
     </>
   );
@@ -116,9 +116,9 @@ export function InstrumentTape({
           compact ? "grid-cols-[1fr_auto] px-2" : "grid-cols-[1fr_auto] sm:grid-cols-[1fr_auto_6.5rem] md:grid-cols-[1fr_auto_6.5rem_5.5rem]",
         )}
       >
-        <span className={onSelect && !compact ? "px-2" : ""}>Instrument</span>
-        {!compact && <span className="hidden w-[88px] sm:block">24h</span>}
-        <span className="text-right">Price · 24h</span>
+        <span className={onSelect && !compact ? "px-2" : ""}>Instrumen</span>
+        {!compact && <span className="hidden w-[88px] sm:block">24 jam</span>}
+        <span className="text-right">Harga · 24 jam</span>
         {!compact && <span className="hidden text-right md:block">Vol · 1M</span>}
       </div>
       {SYMBOLS.map((s) => {

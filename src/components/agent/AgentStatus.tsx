@@ -14,17 +14,19 @@ import { useAppStore } from "@/store/app-store";
  * Answers "what is the agent doing right now?" — state, task, progress,
  * and what comes next. Motion encodes the state; text states it plainly.
  */
-export function AgentStatus({ glyphSize = 184 }: { glyphSize?: number }) {
+export function AgentStatus({ glyphSize = 184, showGlyph = true }: { glyphSize?: number; showGlyph?: boolean }) {
   const status = useAppStore((s) => s.status);
   const meta = AGENT_STATE_META[status.state];
   const stepKey = `${status.since}-${status.task}`;
 
   return (
     <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
-      <div className="relative shrink-0 self-start border border-line bg-surface/60" style={{ width: glyphSize, height: glyphSize }}>
-        <AgentGlyph state={status.state} size={glyphSize} />
-        <span className="label absolute bottom-2 left-2.5 text-[10px] text-ink-4">{status.state.replace(/_/g, " ")}</span>
-      </div>
+      {showGlyph && (
+        <div className="relative shrink-0 self-start border border-line bg-surface/60" style={{ width: glyphSize, height: glyphSize }}>
+          <AgentGlyph state={status.state} size={glyphSize} />
+          <span className="label absolute bottom-2 left-2.5 text-[10px] text-ink-4">{meta.label}</span>
+        </div>
+      )}
 
       <div className="min-w-0 flex-1">
         <div className="mb-3 flex items-center gap-2.5">
@@ -38,7 +40,7 @@ export function AgentStatus({ glyphSize = 184 }: { glyphSize?: number }) {
               exit={{ opacity: 0, y: -4 }}
               transition={transition.state}
             >
-              Agent · {meta.label}
+              Agen · {meta.label}
             </motion.span>
           </AnimatePresence>
         </div>
@@ -73,7 +75,7 @@ export function AgentStatus({ glyphSize = 184 }: { glyphSize?: number }) {
         <p className="mt-3 flex items-start gap-2 text-sm text-ink-3">
           <CornerDownRight className="mt-0.5 size-3.5 shrink-0" aria-hidden />
           <span>
-            <span className="text-ink-2">Next</span> · {status.next}
+            <span className="text-ink-2">Berikutnya</span> · {status.next}
           </span>
         </p>
       </div>
@@ -88,7 +90,7 @@ export function AgentPipeline() {
   const waiting = state === "WAITING_FOR_APPROVAL";
 
   return (
-    <ol className="grid grid-cols-7 border-t border-line" aria-label="Agent working loop">
+    <ol className="grid grid-cols-7 border-t border-line" aria-label="Siklus kerja agen">
       {PIPELINE.map((stage, i) => {
         const isActive = i === active && running;
         const done = active >= 0 && i < active;
@@ -126,10 +128,10 @@ export function AgentAnnouncer() {
   return (
     <>
       <p className="sr-only" aria-live="polite" aria-atomic="true">
-        {`Agent is now ${AGENT_STATE_META[state].label.toLowerCase()}.`}
+        {`Agen sekarang ${AGENT_STATE_META[state].label.toLowerCase()}.`}
       </p>
       <p className="sr-only" aria-live="assertive" aria-atomic="true">
-        {approvals > 0 ? `${approvals} decision${approvals > 1 ? "s" : ""} need your approval.` : ""}
+        {approvals > 0 ? `${approvals} keputusan butuh persetujuan Anda.` : ""}
       </p>
     </>
   );

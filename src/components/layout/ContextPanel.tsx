@@ -17,8 +17,8 @@ export function ContextPanel() {
   const event = useAppStore((s) => (sheet?.kind === "event" ? s.activity.find((e) => e.id === sheet.eventId) : undefined));
 
   const open = Boolean(decision || event);
-  const eyebrow = decision ? `Reasoning · ${formatClock(decision.at)}` : "Evidence";
-  const title = decision ? `Why: ${decision.subject}` : event ? "What happened" : "";
+  const eyebrow = decision ? `Alasan · ${formatClock(decision.at)}` : "Bukti";
+  const title = decision ? `Mengapa: ${decision.subject}` : event ? "Apa yang terjadi" : "";
 
   return (
     <Sheet open={open} onClose={close} eyebrow={eyebrow} title={title}>

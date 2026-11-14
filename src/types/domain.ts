@@ -80,7 +80,7 @@ export interface ActivityEvent {
 
 export type MarketSymbol = "BTC" | "ETH" | "SPX" | "NDX" | "XAU" | "DXY";
 
-export type AssetClass = "Crypto" | "Equity index" | "Commodity" | "Currency";
+export type AssetClass = "Kripto" | "Indeks saham" | "Komoditas" | "Mata uang";
 
 export interface Instrument {
   symbol: MarketSymbol;
@@ -103,9 +103,9 @@ export interface Quote {
 
 export type Timeframe = "1D" | "1W" | "1M" | "3M" | "1Y";
 
-export type RegimeLevel = "Low" | "Moderate" | "Elevated" | "High";
-export type TrendLevel = "Negative" | "Neutral" | "Positive";
-export type LiquidityLevel = "Thin" | "Adequate" | "Healthy";
+export type RegimeLevel = "Rendah" | "Sedang" | "Tinggi" | "Sangat tinggi";
+export type TrendLevel = "Negatif" | "Netral" | "Positif";
+export type LiquidityLevel = "Tipis" | "Cukup" | "Sehat";
 
 export interface MarketRegime {
   riskAppetite: RegimeLevel;
@@ -202,7 +202,7 @@ export interface Decision {
 
 // ── Trading ──────────────────────────────────────────────────
 
-export type Trend = "Bullish" | "Bearish" | "Range";
+export type Trend = "Bullish" | "Bearish" | "Sideways";
 
 export interface TradeSetup {
   id: string;
@@ -243,21 +243,21 @@ export interface ApprovalRequest {
 // ── Opportunities ────────────────────────────────────────────
 
 export type OpportunityStatus =
-  | "Discovered"
-  | "Researching"
-  | "Qualified"
-  | "Proposal drafted"
-  | "Passed";
+  | "Ditemukan"
+  | "Diteliti"
+  | "Lolos kualifikasi"
+  | "Proposal disusun"
+  | "Dilewati";
 
-export type CompetitionLevel = "Low" | "Moderate" | "High";
+export type CompetitionLevel = "Rendah" | "Sedang" | "Tinggi";
 
 export type OpportunityCategory =
-  | "B2B automation"
+  | "Otomasi B2B"
   | "Freelance"
-  | "Software"
-  | "Digital product"
+  | "Perangkat lunak"
+  | "Produk digital"
   | "Bounty"
-  | "Market inefficiency";
+  | "Inefisiensi pasar";
 
 export interface Opportunity {
   id: string;

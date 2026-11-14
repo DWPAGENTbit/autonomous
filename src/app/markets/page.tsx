@@ -8,8 +8,8 @@ export const metadata: Metadata = { title: "Markets" };
 export default function MarketsPage() {
   return (
     <>
-      <PageIntro index="02" area="Markets" title="Where the agent sees opportunity, and where it sees risk.">
-        Six watched markets, the regime they add up to, and the exact setup the strategy would take. Prices are simulated.
+      <PageIntro index="02" area="Pasar" title="Di mana agen melihat peluang, dan di mana ia melihat risiko.">
+        Enam pasar yang dipantau, rezim yang terbentuk dari semuanya, dan setup persis yang akan diambil strategi. Harga adalah simulasi.
       </PageIntro>
       <Suspense fallback={null}>
         <MarketsWorkspace />

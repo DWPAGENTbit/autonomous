@@ -63,7 +63,7 @@ export function ReturnVolatilityMap({
 
   return (
     <div ref={ref} className="relative w-full" style={{ height }}>
-      <svg width={width} height={height} className="block overflow-visible" role="img" aria-label={`Return versus volatility over ${timeframeLabel}`}>
+      <svg width={width} height={height} className="block overflow-visible" role="img" aria-label={`Return terhadap volatilitas selama ${timeframeLabel}`}>
         {/* zero return */}
         <line x1={PAD.left} x2={PAD.left + g.innerW} y1={g.y(0)} y2={g.y(0)} stroke={cssColor.lineStrong} />
         <text x={PAD.left - 10} y={g.y(0)} dy="0.32em" textAnchor="end" fontSize={chart.axisFontSize} fill={cssColor.ink3} className="font-mono">
@@ -87,7 +87,7 @@ export function ReturnVolatilityMap({
           VOLATILITY →
         </text>
         <text x={PAD.left + 6} y={PAD.top + 4} fontSize={10} fill={cssColor.ink4} letterSpacing="0.08em">
-          PAID FOR RISK
+          SEPADAN DENGAN RISIKO
         </text>
         <text x={PAD.left + g.innerW - 4} y={PAD.top + g.innerH - 6} textAnchor="end" fontSize={10} fill={cssColor.ink4} letterSpacing="0.08em">
           RISK WITHOUT RETURN
@@ -151,7 +151,7 @@ export function ReturnVolatilityMap({
             Vol {formatPct(focused.volatilityPct, 0)}
           </p>
           <p className="text-[10px] text-ink-3">
-            {focused.returnPct / Math.max(focused.volatilityPct, 1) > 0.15 ? "Return is compensating for risk" : "Little return per unit of risk"}
+            {focused.returnPct / Math.max(focused.volatilityPct, 1) > 0.15 ? "Return sepadan dengan risikonya" : "Return kecil untuk tiap unit risiko"}
           </p>
         </div>
       )}

@@ -23,23 +23,23 @@ export default function CommandCenterPage() {
       <Reveal as="section" className={`${SHELL} pb-24`}>
         <SectionHeader
           index="04"
-          title="Decisions & activity"
-          summary="How the agent reached its latest decision, and everything it did on the way."
+          title="Keputusan & aktivitas"
+          summary="Bagaimana agen sampai pada keputusan terakhirnya, dan semua yang dilakukannya di sepanjang jalan."
           href="/agent"
-          hrefLabel="Full timeline"
+          hrefLabel="Linimasa lengkap"
         />
         <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-14">
           <div className="col-span-12 xl:col-span-7">
             <FocusedDecision compact />
             <div className="mt-10">
-              <p className="label mb-2 text-[10px]">Recent decisions</p>
+              <p className="label mb-2 text-[10px]">Keputusan terbaru</p>
               <DecisionIndex limit={6} />
             </div>
           </div>
           <div className="col-span-12 xl:col-span-5">
             <div className="mb-2 flex items-baseline justify-between">
-              <p className="label text-[10px]">Live activity</p>
-              <p className="text-xs text-ink-3">Select an event for evidence</p>
+              <p className="label text-[10px]">Aktivitas langsung</p>
+              <p className="text-xs text-ink-3">Pilih kejadian untuk melihat bukti</p>
             </div>
             <AgentActivity limit={8} />
           </div>
@@ -49,10 +49,10 @@ export default function CommandCenterPage() {
       <Reveal as="section" className={`${SHELL} pb-24`}>
         <SectionHeader
           index="05"
-          title="Capital"
-          summary="Where the money is, and how much risk it is carrying."
+          title="Modal"
+          summary="Di mana uangnya berada, dan seberapa besar risiko yang dibawanya."
           href="/capital"
-          hrefLabel="Capital detail"
+          hrefLabel="Detail modal"
         />
         <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-12">
           <div className="col-span-12 space-y-10 lg:col-span-7">
@@ -69,10 +69,10 @@ export default function CommandCenterPage() {
       <Reveal as="section" className={`${SHELL} pb-24`}>
         <SectionHeader
           index="02"
-          title="Market intelligence"
-          summary="The environment the agent is trading in, and which markets are paying for their risk."
+          title="Intelijen pasar"
+          summary="Kondisi pasar tempat agen bertransaksi, dan pasar mana yang sepadan dengan risikonya."
           href="/markets"
-          hrefLabel="Markets"
+          hrefLabel="Pasar"
         />
         <MarketOverview />
       </Reveal>
@@ -80,10 +80,10 @@ export default function CommandCenterPage() {
       <Reveal as="section" className={`${SHELL} pb-8`}>
         <SectionHeader
           index="03"
-          title="Opportunity discovery"
-          summary="Work the agent found beyond markets — scored by expected value per hour."
+          title="Penemuan peluang"
+          summary="Pekerjaan yang ditemukan agen di luar pasar — dinilai dari nilai harapan per jam."
           href="/opportunities"
-          hrefLabel="All opportunities"
+          hrefLabel="Semua peluang"
         />
         <OpportunityFeed limit={4} />
       </Reveal>
