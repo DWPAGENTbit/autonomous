@@ -1,0 +1,207 @@
+import type { Opportunity } from "@/types/domain";
+
+const t = (h: number, m: number, s = 0) => h * 3600 + m * 60 + s;
+
+/** Opportunities already in the pipeline when the session opens. */
+export const SEED_OPPORTUNITIES: readonly Opportunity[] = [
+  {
+    id: "opp-doc-automation",
+    title: "AI document automation for a logistics broker",
+    category: "B2B automation",
+    source: "Upwork · Enterprise listing",
+    discoveredAt: t(8, 47),
+    potentialValue: 420,
+    effortHours: 5.5,
+    probability: 0.68,
+    competition: "Moderate",
+    status: "Proposal drafted",
+    whyFound:
+      "Listing asks for invoice and bill-of-lading extraction into an existing TMS. The agent has a working extraction pipeline that matches 4 of the 5 requirements.",
+    evidence: [
+      { label: "Listing age", value: "3 hours", source: "Upwork" },
+      { label: "Client spend history", value: "$48k across 31 hires", source: "Upwork" },
+      { label: "Proposals so far", value: "9", source: "Upwork" },
+      { label: "Comparable jobs (90d)", value: "14, median $380", source: "Marketplace index" },
+    ],
+    competitionNote:
+      "9 proposals, most generic. Two bidders show logistics experience; none reference TMS integration.",
+    pricing: "Fixed price. Suggested $420, positioned slightly above the $380 median on demonstrated fit.",
+    customer:
+      "Mid-sized freight broker, 40–60 staff, repeat buyer of automation work. Pays on time per reviews.",
+    risks: [
+      "Scope creep into TMS API work not listed in the brief",
+      "Scanned documents may be lower quality than the samples",
+    ],
+    nextAction: "Send proposal with a 2-minute extraction demo on the client's sample file.",
+  },
+  {
+    id: "opp-shopify-reporting",
+    title: "Weekly Shopify margin report for 3 stores",
+    category: "Freelance",
+    source: "Contra · Direct invite",
+    discoveredAt: t(9, 12),
+    potentialValue: 260,
+    effortHours: 3,
+    probability: 0.74,
+    competition: "Low",
+    status: "Qualified",
+    whyFound:
+      "Direct invite matching a previously delivered reporting template. Reuses an existing data model, so effort is low.",
+    evidence: [
+      { label: "Invite type", value: "Direct", source: "Contra" },
+      { label: "Template reuse", value: "~70% of the work", source: "Agent workspace" },
+      { label: "Client rating", value: "4.9 · 12 reviews", source: "Contra" },
+    ],
+    competitionNote: "Direct invite; at most 2 other freelancers invited.",
+    pricing: "$260 setup plus an optional $40/month maintenance retainer.",
+    customer: "Owner-operator running three apparel stores; values clear weekly numbers.",
+    risks: ["Store data access may be delayed by the client"],
+    nextAction: "Confirm read-only API access, then schedule a 15-minute kickoff.",
+  },
+  {
+    id: "opp-api-bounty",
+    title: "Open-source bounty: CSV streaming parser fix",
+    category: "Bounty",
+    source: "GitHub · Public bounty",
+    discoveredAt: t(9, 19),
+    potentialValue: 150,
+    effortHours: 2.5,
+    probability: 0.55,
+    competition: "Moderate",
+    status: "Researching",
+    whyFound:
+      "Bounty posted on a widely used parsing library. The failing case is reproducible from the issue description.",
+    evidence: [
+      { label: "Bounty", value: "$150", source: "GitHub" },
+      { label: "Open attempts", value: "2 draft PRs, both stale", source: "GitHub" },
+      { label: "Reproduction", value: "Confirmed locally", source: "Agent sandbox" },
+    ],
+    competitionNote: "Two stale drafts; neither handles quoted newlines.",
+    pricing: "Fixed bounty.",
+    customer: "Library maintainers; merge depends on review latency.",
+    risks: ["Maintainer review may take weeks", "Another contributor may submit first"],
+    nextAction: "Write the failing test, then a minimal patch.",
+  },
+  {
+    id: "opp-notion-templates",
+    title: "Client onboarding template pack",
+    category: "Digital product",
+    source: "Search trend · Gumroad category",
+    discoveredAt: t(8, 55),
+    potentialValue: 340,
+    effortHours: 8,
+    probability: 0.41,
+    competition: "High",
+    status: "Researching",
+    whyFound:
+      "Search interest for onboarding templates rose 34% over 90 days, while top listings have not been updated in a year.",
+    evidence: [
+      { label: "Search interest (90d)", value: "+34%", source: "Trend index" },
+      { label: "Top listing last updated", value: "13 months ago", source: "Gumroad" },
+      { label: "Price band", value: "$19–$49", source: "Gumroad" },
+    ],
+    competitionNote: "Crowded category; differentiation would rely on agency-specific workflows.",
+    pricing: "$29 per pack. Value assumes ~12 sales in the first 60 days.",
+    customer: "Small agencies and solo consultants.",
+    risks: ["Sales are uncertain and slow to start", "Low barrier to entry"],
+    nextAction: "Validate demand with 3 agency owners before building.",
+  },
+  {
+    id: "opp-funding-spread",
+    title: "Perpetual funding-rate spread, ETH",
+    category: "Market inefficiency",
+    source: "Exchange data · Funding monitor",
+    discoveredAt: t(9, 26),
+    potentialValue: 95,
+    effortHours: 1,
+    probability: 0.62,
+    competition: "High",
+    status: "Passed",
+    whyFound:
+      "Funding on one venue diverged 0.018% per 8h from the cross-venue median.",
+    evidence: [
+      { label: "Funding divergence", value: "0.018% / 8h", source: "Venue APIs" },
+      { label: "Historical half-life", value: "~6 hours", source: "Agent backtest" },
+    ],
+    competitionNote: "Spread is visible to every desk; typically closes within hours.",
+    pricing: "Expected carry after fees: ~$95 on current available capital.",
+    customer: "None — market-neutral position.",
+    risks: ["Requires margin on two venues", "Counterparty and withdrawal risk"],
+    nextAction: "Passed: two-venue counterparty risk is outside current policy.",
+  },
+];
+
+/**
+ * Opportunities the agent can surface during the live session,
+ * released one at a time by the business research scenario.
+ */
+export const DISCOVERABLE_OPPORTUNITIES: readonly Omit<Opportunity, "discoveredAt">[] = [
+  {
+    id: "opp-crm-cleanup",
+    title: "CRM deduplication for a B2B SaaS team",
+    category: "B2B automation",
+    source: "LinkedIn · Hiring signal",
+    potentialValue: 600,
+    effortHours: 7,
+    probability: 0.52,
+    competition: "Low",
+    status: "Discovered",
+    whyFound:
+      "Company posted a RevOps contractor role mentioning 40k duplicate HubSpot records. A scripted dedupe service could fill the gap faster than a hire.",
+    evidence: [
+      { label: "Hiring post", value: "Posted 2 days ago", source: "LinkedIn" },
+      { label: "Records affected", value: "~40,000", source: "Job description" },
+      { label: "Team size", value: "11–50", source: "Company profile" },
+    ],
+    competitionNote: "No marketplace listing yet; competition is the in-house hire.",
+    pricing: "$600 fixed for a one-time cleanup with a merge audit log.",
+    customer: "Series A SaaS company, RevOps lead is the likely buyer.",
+    risks: ["Cold outreach has a lower response rate", "Access to the CRM requires trust"],
+    nextAction: "Draft a short outreach note to the RevOps lead with a sample audit log.",
+  },
+  {
+    id: "opp-translation-qa",
+    title: "Localization QA for a mobile app release",
+    category: "Freelance",
+    source: "Upwork · Recent listing",
+    potentialValue: 310,
+    effortHours: 4.5,
+    probability: 0.62,
+    competition: "Moderate",
+    status: "Discovered",
+    whyFound:
+      "Listing needs string-length and placeholder checks across 6 locales — automatable with a lint pass plus spot review.",
+    evidence: [
+      { label: "Locales", value: "6", source: "Upwork" },
+      { label: "Strings", value: "~2,300", source: "Listing attachment" },
+      { label: "Proposals", value: "5", source: "Upwork" },
+    ],
+    competitionNote: "Most proposals offer manual review; automation is a clear edge.",
+    pricing: "$310 fixed, delivered within 48 hours.",
+    customer: "Indie studio preparing a store launch.",
+    risks: ["Native-speaker review may be expected for some locales"],
+    nextAction: "Run the lint pass on the sample file to quote with evidence.",
+  },
+  {
+    id: "opp-dashboard-saas",
+    title: "Micro-SaaS: invoice aging dashboard for agencies",
+    category: "Software",
+    source: "Forum demand · Recurring requests",
+    potentialValue: 900,
+    effortHours: 24,
+    probability: 0.22,
+    competition: "Moderate",
+    status: "Discovered",
+    whyFound:
+      "17 forum threads in 60 days ask for a simple invoice-aging view on top of common accounting tools.",
+    evidence: [
+      { label: "Requests (60d)", value: "17 threads", source: "Community forums" },
+      { label: "Existing tools", value: "3, all enterprise-priced", source: "Market scan" },
+    ],
+    competitionNote: "Incumbents target larger firms; the small-agency segment is underserved.",
+    pricing: "$15/month. Value assumes 5 paying users within 90 days.",
+    customer: "Agencies with 2–15 staff.",
+    risks: ["Long build time relative to certain value", "Integration maintenance"],
+    nextAction: "Hold: revisit if two more agencies confirm willingness to pay.",
+  },
+];
