@@ -5,6 +5,7 @@ import { RiskSurface } from "@/components/capital/RiskSurface";
 import { ApprovalPanel } from "@/components/decisions/ApprovalPanel";
 import { DecisionIndex, FocusedDecision } from "@/components/decisions/DecisionLog";
 import { MarketOverview } from "@/components/markets/MarketOverview";
+import { DemoBanner, OnlyMode } from "@/components/mode/ModeSwitch";
 import { OpportunityFeed } from "@/components/opportunities/OpportunityFeed";
 import { PANEL, SHELL } from "@/components/shared/PageIntro";
 import { Reveal, SectionHeader } from "@/components/shared/primitives";
@@ -16,100 +17,94 @@ export default function CommandCenterPage() {
     <>
       <h1 className="sr-only">DWP EARN MONEY — dashboard cuan</h1>
 
-      {/* Real money first: what the owner actually holds, at live prices. */}
-      <RealDashboard />
+      {/* Live: what the owner actually holds, at live prices. */}
+      <OnlyMode mode="live">
+        <RealDashboard />
+      </OnlyMode>
 
-      {/* Everything below is the agent simulation, clearly separated. */}
-      <div className={`${SHELL} pt-6 pb-1`}>
-        <div className="flex flex-wrap items-center gap-3 rounded-[18px] border border-caution/25 bg-caution-soft px-4 py-3">
-          <span className="font-mono text-[10px] font-semibold tracking-[0.12em] text-caution uppercase">Simulasi agen · data demo</span>
-          <p className="text-xs text-ink-2">
-            Bagian di bawah adalah latihan strategi tim agen dengan modal fiktif $10.000. Tidak memakai dan tidak mengubah uang Anda —
-            order nyata hanya lewat halaman Akun, dengan persetujuan Anda.
-          </p>
+      {/* Demo: the agent simulation with fictional capital. */}
+      <OnlyMode mode="demo">
+        <DemoBanner />
+        <CommandHero />
+
+        <div id="approval" className="scroll-mt-20">
+          <ApprovalPanel />
         </div>
-      </div>
 
-      <CommandHero />
+        {/* The agent as a team: who does what, and why every step happened. */}
+        <section id="terminal" className={`${SHELL} scroll-mt-24 pb-5`} aria-label="Terminal agen">
+          <AgentTerminal />
+        </section>
 
-      <div id="approval" className="scroll-mt-20">
-        <ApprovalPanel />
-      </div>
-
-      {/* The agent as a team: who does what, and why every step happened. */}
-      <section id="terminal" className={`${SHELL} scroll-mt-24 pb-5`} aria-label="Terminal agen">
-        <AgentTerminal />
-      </section>
-
-      {/* Where the money comes from, then where it sits. */}
-      <Reveal as="section" className={PANEL}>
-        <SectionHeader
-          index="03"
-          title="Penemuan peluang"
-          summary="Sumber cuan di luar pasar yang ditemukan agen — diurutkan dari nilai harapan per jam."
-          href="/opportunities"
-          hrefLabel="Semua peluang"
-        />
-        <OpportunityFeed limit={4} />
-      </Reveal>
-      <Reveal as="section" className={PANEL}>
-        <SectionHeader
-          index="05"
-          title="Modal"
-          summary="Di mana uang Anda berada, berapa hasilnya, dan seberapa besar risiko yang dibawanya."
-          href="/capital"
-          hrefLabel="Detail modal"
-        />
-        <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-12">
-          <div className="col-span-12 space-y-10 lg:col-span-7">
-            <CapitalLedger />
-            <AllocationBar />
-            <EquityCurve height={180} />
-          </div>
-          <div className="col-span-12 lg:col-span-5">
-            <RiskSurface showSectors={false} />
-          </div>
-        </div>
-      </Reveal>
-
-      {/* What is it deciding, and what has it done? */}
-      <Reveal as="section" className={PANEL}>
-        <SectionHeader
-          index="04"
-          title="Keputusan & aktivitas"
-          summary="Bagaimana agen sampai pada keputusan terakhirnya, dan semua yang dilakukannya di sepanjang jalan."
-          href="/agent"
-          hrefLabel="Linimasa lengkap"
-        />
-        <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-14">
-          <div className="col-span-12 xl:col-span-7">
-            <FocusedDecision compact />
-            <div className="mt-10">
-              <p className="label mb-2 text-[10px]">Keputusan terbaru</p>
-              <DecisionIndex limit={6} />
+        {/* Where the money comes from, then where it sits. */}
+        <Reveal as="section" className={PANEL}>
+          <SectionHeader
+            index="03"
+            title="Penemuan peluang"
+            summary="Sumber cuan di luar pasar yang ditemukan agen — diurutkan dari nilai harapan per jam."
+            href="/opportunities"
+            hrefLabel="Semua peluang"
+          />
+          <OpportunityFeed limit={4} />
+        </Reveal>
+        <Reveal as="section" className={PANEL}>
+          <SectionHeader
+            index="05"
+            title="Modal"
+            summary="Di mana uang Anda berada, berapa hasilnya, dan seberapa besar risiko yang dibawanya."
+            href="/capital"
+            hrefLabel="Detail modal"
+          />
+          <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-12">
+            <div className="col-span-12 space-y-10 lg:col-span-7">
+              <CapitalLedger />
+              <AllocationBar />
+              <EquityCurve height={180} />
+            </div>
+            <div className="col-span-12 lg:col-span-5">
+              <RiskSurface showSectors={false} />
             </div>
           </div>
-          <div className="col-span-12 xl:col-span-5">
-            <div className="mb-2 flex items-baseline justify-between">
-              <p className="label text-[10px]">Aktivitas langsung</p>
-              <p className="text-xs text-ink-3">Pilih kejadian untuk melihat bukti</p>
+        </Reveal>
+
+        {/* What is it deciding, and what has it done? */}
+        <Reveal as="section" className={PANEL}>
+          <SectionHeader
+            index="04"
+            title="Keputusan & aktivitas"
+            summary="Bagaimana agen sampai pada keputusan terakhirnya, dan semua yang dilakukannya di sepanjang jalan."
+            href="/agent"
+            hrefLabel="Linimasa lengkap"
+          />
+          <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-14">
+            <div className="col-span-12 xl:col-span-7">
+              <FocusedDecision compact />
+              <div className="mt-10">
+                <p className="label mb-2 text-[10px]">Keputusan terbaru</p>
+                <DecisionIndex limit={6} />
+              </div>
             </div>
-            <AgentActivity limit={8} />
+            <div className="col-span-12 xl:col-span-5">
+              <div className="mb-2 flex items-baseline justify-between">
+                <p className="label text-[10px]">Aktivitas langsung</p>
+                <p className="text-xs text-ink-3">Pilih kejadian untuk melihat bukti</p>
+              </div>
+              <AgentActivity limit={8} />
+            </div>
           </div>
-        </div>
-      </Reveal>
+        </Reveal>
 
-      <Reveal as="section" className={PANEL}>
-        <SectionHeader
-          index="02"
-          title="Intelijen pasar"
-          summary="Kondisi pasar tempat agen bertransaksi, dan pasar mana yang sepadan dengan risikonya."
-          href="/markets"
-          hrefLabel="Pasar"
-        />
-        <MarketOverview />
-      </Reveal>
-
+        <Reveal as="section" className={PANEL}>
+          <SectionHeader
+            index="02"
+            title="Intelijen pasar"
+            summary="Kondisi pasar tempat agen bertransaksi, dan pasar mana yang sepadan dengan risikonya."
+            href="/markets"
+            hrefLabel="Pasar"
+          />
+          <MarketOverview />
+        </Reveal>
+      </OnlyMode>
     </>
   );
 }

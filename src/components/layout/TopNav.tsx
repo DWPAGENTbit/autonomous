@@ -9,11 +9,13 @@ import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { AGENT_STATE_META, toneText } from "@/components/agent/agent-meta";
 import { BrandMark, BrandWordmark } from "@/components/brand/BrandMark";
+import { ModeSwitch } from "@/components/mode/ModeSwitch";
 import { useAgentService } from "@/components/layout/SimulationProvider";
-import { SimBadge, StatusDot } from "@/components/shared/primitives";
+import { StatusDot } from "@/components/shared/primitives";
 import { transition } from "@/lib/design/tokens";
 import { formatClock } from "@/lib/formatting/format";
 import { useAppStore } from "@/store/app-store";
+import { useMode } from "@/store/mode-store";
 
 export const NAV: { href: string; label: string; long: string; icon: LucideIcon; note: string }[] = [
   { href: "/", label: "Kendali", long: "Dashboard cuan", icon: LayoutDashboard, note: "Ringkasan hasil & agen" },
@@ -32,7 +34,7 @@ async function logout() {
 }
 
 const iconButton =
-  "inline-flex size-9 items-center justify-center rounded-full border border-glass-edge bg-glass-strong text-ink-2 transition-colors hover:bg-white hover:text-ink";
+  "inline-flex size-8 sm:size-9 items-center justify-center rounded-full border border-glass-edge bg-glass-strong text-ink-2 transition-colors hover:bg-white hover:text-ink";
 
 /** Agent state, clock and the pause switch — always one glance away. */
 function LiveControls({ compact = false }: { compact?: boolean }) {
@@ -41,33 +43,39 @@ function LiveControls({ compact = false }: { compact?: boolean }) {
   );
   const service = useAgentService();
   const meta = AGENT_STATE_META[state];
+  const demo = useMode() === "demo";
 
   return (
-    <div className="flex items-center gap-2">
-      {approvals > 0 && !compact && (
+    <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+      <ModeSwitch />
+      {demo && approvals > 0 && !compact && (
         <Link href="/#approval" className="pill hidden text-caution md:inline-flex">
           <StatusDot tone="caution" pulse />
           {approvals} menunggu Anda
         </Link>
       )}
-      <span className="pill hidden sm:inline-flex" aria-hidden>
-        <StatusDot tone={running ? meta.tone : "muted"} pulse={running && state !== "IDLE"} />
-        <span className={clsx("font-mono text-[10px] tracking-[0.08em] uppercase", running ? toneText[meta.tone] : "text-ink-3")}>
-          {running ? meta.label : "Dijeda"}
-        </span>
-        <span className="num hidden font-mono text-[11px] text-ink-3 md:inline" aria-label={`Waktu simulasi ${formatClock(simTime)}`}>
-          {formatClock(simTime)}
-        </span>
-      </span>
-      <button
-        type="button"
-        onClick={() => (running ? service.pause() : service.resume())}
-        className={iconButton}
-        aria-label={running ? "Jeda agen" : "Lanjutkan agen"}
-        title={running ? "Jeda agen" : "Lanjutkan agen"}
-      >
-        {running ? <Pause className="size-3.5" aria-hidden /> : <Play className="size-3.5" aria-hidden />}
-      </button>
+      {demo && (
+        <>
+          <span className="pill hidden xl:inline-flex" aria-hidden>
+            <StatusDot tone={running ? meta.tone : "muted"} pulse={running && state !== "IDLE"} />
+            <span className={clsx("font-mono text-[10px] tracking-[0.08em] uppercase", running ? toneText[meta.tone] : "text-ink-3")}>
+              {running ? meta.label : "Dijeda"}
+            </span>
+            <span className="num hidden font-mono text-[11px] text-ink-3 md:inline" aria-label={`Waktu simulasi ${formatClock(simTime)}`}>
+              {formatClock(simTime)}
+            </span>
+          </span>
+          <button
+            type="button"
+            onClick={() => (running ? service.pause() : service.resume())}
+            className={clsx(iconButton, "!hidden sm:!inline-flex")}
+            aria-label={running ? "Jeda agen" : "Lanjutkan agen"}
+            title={running ? "Jeda agen" : "Lanjutkan agen"}
+          >
+            {running ? <Pause className="size-3.5" aria-hidden /> : <Play className="size-3.5" aria-hidden />}
+          </button>
+        </>
+      )}
       <button type="button" onClick={logout} className={iconButton} aria-label="Keluar" title="Keluar">
         <LogOut className="size-3.5" aria-hidden />
       </button>
@@ -78,7 +86,8 @@ function LiveControls({ compact = false }: { compact?: boolean }) {
 /** Desktop: a floating glass sidebar, as in a control dashboard. */
 export function Sidebar() {
   const pathname = usePathname();
-  const approvals = useAppStore((s) => s.approvals.length);
+  const demo = useMode() === "demo";
+  const approvals = useAppStore((s) => (demo ? s.approvals.length : 0));
   return (
     <aside className="glass-strong fixed top-3 bottom-3 left-3 z-40 hidden w-[4.75rem] flex-col rounded-[var(--radius-xl)] p-3 lg:flex xl:w-[15.5rem] xl:p-4">
       <Link href="/" className="flex items-center justify-center gap-2.5 pt-1 pb-5 xl:justify-start xl:px-2" aria-label="DWP EARN MONEY — Dashboard">
@@ -137,15 +146,20 @@ export function Sidebar() {
         </ul>
       </nav>
 
-      <div className="mt-auto hidden rounded-[18px] border border-glass-edge bg-gradient-to-br from-[#12c9f0]/15 via-white/60 to-accent-soft p-4 xl:block">
-        <p className="text-sm font-medium text-ink">Nyata vs simulasi</p>
-        <p className="mt-1 text-[11px] leading-relaxed text-ink-3">
-          <span className="font-medium text-positive">Nyata:</span> total aset, saldo, harga live, dan order di Akun.{" "}
-          <span className="font-medium text-caution">Simulasi:</span> keputusan agen, peluang, dan modal $10.000.
+      <div
+        className={clsx(
+          "mt-auto hidden rounded-[18px] border p-4 xl:block",
+          demo ? "border-caution/25 bg-caution-soft" : "border-positive/25 bg-gradient-to-br from-positive-soft via-white/60 to-[#12c9f0]/10",
+        )}
+      >
+        <p className={clsx("font-mono text-[10px] font-semibold tracking-[0.12em] uppercase", demo ? "text-caution" : "text-positive")}>
+          {demo ? "Mode demo" : "Mode live"}
         </p>
-        <div className="mt-3">
-          <SimBadge />
-        </div>
+        <p className="mt-1.5 text-[11px] leading-relaxed text-ink-2">
+          {demo
+            ? "Simulasi agen dengan modal fiktif $10.000: peluang, keputusan, dan posisi bukan uang sungguhan."
+            : "Saldo bursa, total aset, dan harga live Indodax — uang Anda yang sebenarnya."}
+        </p>
       </div>
     </aside>
   );
@@ -168,18 +182,18 @@ export function TopNav() {
     <header className="sticky top-0 z-30 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-4 lg:px-6">
       <div
         className={clsx(
-          "mx-auto flex h-14 max-w-[1360px] items-center justify-between gap-3 rounded-full px-3 pl-3 transition-[background-color,box-shadow,border-color] duration-200 lg:pl-4",
+          "mx-auto flex h-14 max-w-[1360px] items-center justify-between gap-2 rounded-full px-2 sm:gap-3 sm:px-3 transition-[background-color,box-shadow,border-color] duration-200 lg:pl-4",
           scrolled ? "glass-strong" : "glass-strong lg:border-transparent lg:bg-transparent lg:shadow-none lg:backdrop-blur-none",
         )}
       >
         {/* Phones: app-style header — logo, brand and the page you are on */}
-        <Link href="/" className="flex min-w-0 items-center gap-2.5 lg:hidden" aria-label="DWP EARN MONEY — Dashboard">
-          <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-white shadow-[var(--shadow-raise)]">
+        <Link href="/" className="flex min-w-0 items-center gap-2 lg:hidden" aria-label="DWP EARN MONEY — Dashboard">
+          <span className="inline-flex size-8 shrink-0 sm:size-9 items-center justify-center rounded-full bg-white shadow-[var(--shadow-raise)]">
             <BrandMark size={24} />
           </span>
-          <span className="min-w-0 leading-tight">
-            <BrandWordmark className="!text-[9.5px] !tracking-[0.14em]" />
-            <span className="block truncate text-[15px] font-medium text-ink">{current?.long ?? "Dashboard cuan"}</span>
+          <span className="min-w-0 overflow-hidden leading-tight whitespace-nowrap">
+            <BrandWordmark className="!text-[9.5px] !tracking-[0.06em] sm:!tracking-[0.14em]" />
+            <span className="block truncate text-[14px] sm:text-[15px] font-medium text-ink">{current?.long ?? "Dashboard cuan"}</span>
           </span>
         </Link>
         <div className="hidden min-w-0 items-baseline gap-3 lg:flex">
@@ -195,7 +209,8 @@ export function TopNav() {
 /** On phones the areas move to the thumb, in a floating glass bar. */
 export function MobileTabBar() {
   const pathname = usePathname();
-  const approvals = useAppStore((s) => s.approvals.length);
+  const demo = useMode() === "demo";
+  const approvals = useAppStore((s) => (demo ? s.approvals.length : 0));
   return (
     <nav aria-label="Utama" className="fixed inset-x-2 bottom-2 z-40 pb-[env(safe-area-inset-bottom)] lg:hidden">
       <ul className="glass-strong grid grid-cols-6 rounded-[22px] p-1">
@@ -229,6 +244,7 @@ export function MobileTabBar() {
 }
 
 export function Footer() {
+  const demo = useMode() === "demo";
   return (
     <footer className="mx-auto max-w-[1360px] px-3 pt-10 pb-28 sm:px-4 lg:px-6 lg:pb-8">
       <div className="glass flex flex-col gap-4 p-5 md:flex-row md:items-center md:gap-8">
@@ -237,9 +253,11 @@ export function Footer() {
           <BrandWordmark />
         </p>
         <p className="max-w-[80ch] text-xs leading-relaxed text-ink-3">
-          Kecuali halaman Akun, setiap harga, posisi, peluang, dan hasil di platform ini adalah data demo dari simulasi
-          deterministik — bukan uang sungguhan. Halaman Akun membaca akun nyata Anda, dan setiap order di sana hanya dikirim setelah
-          Anda setujui. Tidak ada yang di sini merupakan saran investasi; keputusan dan risiko tetap milik Anda.
+          {demo
+            ? "Mode Demo: harga, posisi, peluang, dan hasil adalah data simulasi dengan modal fiktif — bukan uang sungguhan."
+            : "Mode Live: saldo dibaca dari akun bursa Anda dan dinilai dengan harga Indodax saat ini."}{" "}
+          Order nyata hanya dikirim dari halaman Akun, setelah Anda setujui. Tidak ada yang di sini merupakan saran investasi; keputusan
+          dan risiko tetap milik Anda.
         </p>
       </div>
     </footer>

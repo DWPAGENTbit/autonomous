@@ -167,7 +167,7 @@ export function MarketBoard({ markets }: { markets: Ticker[] | null }) {
  * The real side of the platform: what the owner actually holds on connected
  * exchanges (plus Bibit/Stockbit as recorded), valued at live Indodax prices.
  */
-export function RealDashboard() {
+export function RealDashboard({ showMarkets = true }: { showMarkets?: boolean }) {
   const { portfolio: p, markets, manual, error, loading, reload } = useRealData();
   const connected = (p?.connected.length ?? 0) > 0;
   const total = (p?.totalIdr ?? 0) + manual;
@@ -289,7 +289,7 @@ export function RealDashboard() {
         </div>
 
         {/* Holdings */}
-        <div className="glass col-span-12 p-6 md:col-span-6 xl:col-span-5">
+        <div className={clsx("glass col-span-12 p-6 md:col-span-6", showMarkets ? "xl:col-span-5" : "xl:col-span-12")}>
           <div className="mb-4 flex items-center justify-between">
             <p className="text-sm font-medium text-ink">Aset yang Anda pegang</p>
             <Link href="/akun" className="pill">
@@ -324,13 +324,15 @@ export function RealDashboard() {
         </div>
 
         {/* Live prices */}
-        <div className="glass col-span-12 p-6 xl:col-span-7">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-            <p className="text-sm font-medium text-ink">Harga live Indodax</p>
-            <span className="text-[11px] text-ink-3">Diperbarui tiap 30 detik · 24 jam & 7 hari</span>
+        {showMarkets && (
+          <div className="glass col-span-12 p-6 xl:col-span-7">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+              <p className="text-sm font-medium text-ink">Harga live Indodax</p>
+              <span className="text-[11px] text-ink-3">Diperbarui tiap 30 detik · 24 jam & 7 hari</span>
+            </div>
+            <MarketBoard markets={markets} />
           </div>
-          <MarketBoard markets={markets} />
-        </div>
+        )}
       </div>
     </section>
   );

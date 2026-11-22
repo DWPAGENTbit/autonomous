@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AccountsView } from "@/components/accounts/AccountsView";
+import { OnlyMode } from "@/components/mode/ModeSwitch";
 import { PageIntro, PANEL, SHELL } from "@/components/shared/PageIntro";
 import { isAuthed } from "@/lib/server/auth";
 
@@ -17,6 +18,14 @@ export default async function AccountsPage() {
         Berbeda dari halaman lain, bagian ini memakai akun sungguhan. Indodax dan Tokocrypto terhubung lewat API resmi, dan setiap order
         hanya dikirim setelah Anda setujui. Bibit dan Stockbit tidak menyediakan API untuk pihak ketiga, jadi dicatat manual.
       </PageIntro>
+      <OnlyMode mode="demo">
+        <div className={`${SHELL} pb-4`}>
+          <p className="rounded-[18px] border border-positive/25 bg-positive-soft px-4 py-3 text-xs text-ink-2">
+            <span className="font-mono text-[10px] font-semibold tracking-[0.12em] text-positive uppercase">Selalu nyata · </span>
+            Halaman ini tetap memakai akun sungguhan, juga saat mode Demo aktif.
+          </p>
+        </div>
+      </OnlyMode>
       <section className={PANEL}>
         <AccountsView />
       </section>

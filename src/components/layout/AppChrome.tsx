@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { AgentAnnouncer } from "@/components/agent/AgentStatus";
 import { ContextPanel } from "@/components/layout/ContextPanel";
+import { ModeHydrator, OnlyMode } from "@/components/mode/ModeSwitch";
 import { Footer, MobileTabBar, Sidebar, TopNav } from "@/components/layout/TopNav";
 
 /** Navigation and panels for the platform; the login page stands alone. */
@@ -16,6 +17,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
   if (pathname === "/masuk") return main;
   return (
     <>
+      <ModeHydrator />
       <Sidebar />
       <div className="lg:pl-[5.75rem] xl:pl-[16.5rem]">
         <TopNav />
@@ -24,7 +26,9 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
       </div>
       <MobileTabBar />
       <ContextPanel />
-      <AgentAnnouncer />
+      <OnlyMode mode="demo">
+        <AgentAnnouncer />
+      </OnlyMode>
     </>
   );
 }
