@@ -71,6 +71,7 @@ export function defaultSettings(): BotSettings {
       indodax: { enabled: true, pairs: pairsFor("indodax").filter((p) => p !== "usdt_idr").slice(0, 1) },
       tokocrypto: { enabled: false, pairs: pairsFor("tokocrypto").slice(0, 1) },
     },
+    watchlist: { indodax: [], tokocrypto: [] },
     monthlyTargetPct: 3,
     updatedAt: 0,
   };
@@ -79,6 +80,13 @@ export function defaultSettings(): BotSettings {
 export function emptyState(): BotState {
   return { version: 1, settings: defaultSettings(), positions: {}, journal: [], months: {}, decisions: {}, lastTick: null, lock: null };
 }
+
+/** Pair formats each exchange uses: Indodax "pepe_idr", Tokocrypto "SOL_USDT". */
+const PAIR_FORMAT: Record<BrokerId, RegExp> = { indodax: /^[a-z0-9]{1,15}_(idr|usdt)$/, tokocrypto: /^[A-Z0-9]{1,15}_(USDT|BIDR|BUSD)$/ };
+export const validPair = (id: BrokerId, pair: string) => PAIR_FORMAT[id].test(pair);
+
+/** Pairs the owner may trade: the server's defaults plus their own watchlist. */
+export const allowedPairs = (id: BrokerId, s: Pick<BotSettings, "watchlist">) => [...new Set([...pairsFor(id), ...(s.watchlist?.[id] ?? [])])];
 
 const clamp = (v: unknown, [lo, hi]: [number, number], fallback: number) => {
   const n = Number(v);
@@ -96,11 +104,18 @@ export function cleanSettings(input: unknown, base: BotSettings = defaultSetting
   params.maxBuysPerDay = Math.round(params.maxBuysPerDay);
   params.cooldownMin = Math.round(params.cooldownMin);
 
+  const rawWatch = (raw as { watchlist?: Partial<Record<BrokerId, unknown>> }).watchlist;
+  const watchlist = { ...(base.watchlist ?? { indodax: [], tokocrypto: [] }) };
+  for (const id of Object.keys(BROKERS) as BrokerId[]) {
+    const w = rawWatch?.[id];
+    if (Array.isArray(w)) watchlist[id] = [...new Set(w.filter((p): p is string => typeof p === "string" && validPair(id, p)))].slice(0, 60);
+  }
+
   const brokers = { ...base.brokers };
   for (const id of Object.keys(BROKERS) as BrokerId[]) {
     const b = raw.brokers?.[id];
     if (!b) continue;
-    const allowed = pairsFor(id);
+    const allowed = allowedPairs(id, { watchlist });
     const pairs = Array.isArray(b.pairs) ? b.pairs.filter((p): p is string => typeof p === "string" && allowed.includes(p)) : base.brokers[id].pairs;
     brokers[id] = { enabled: typeof b.enabled === "boolean" ? b.enabled : base.brokers[id].enabled, pairs: [...new Set(pairs)] };
   }
@@ -111,6 +126,7 @@ export function cleanSettings(input: unknown, base: BotSettings = defaultSetting
     profile,
     params,
     brokers,
+    watchlist,
     monthlyTargetPct: clamp(raw.monthlyTargetPct, [0.1, 100], base.monthlyTargetPct),
     updatedAt: typeof raw.updatedAt === "number" ? raw.updatedAt : base.updatedAt,
   };

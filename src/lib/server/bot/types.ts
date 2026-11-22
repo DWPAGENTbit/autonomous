@@ -41,6 +41,8 @@ export interface BotSettings {
   profile: Profile;
   params: StrategyParams;
   brokers: Record<BrokerId, BrokerSettings>;
+  /** Extra pairs the owner added by search, on top of the server's default list. */
+  watchlist: Record<BrokerId, string[]>;
   /** Shown as a goal, never promised. */
   monthlyTargetPct: number;
   updatedAt: number;

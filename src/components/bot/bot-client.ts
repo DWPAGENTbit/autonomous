@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import type { BotView } from "@/lib/server/bot/view";
 import type { BotSettings } from "@/lib/server/bot/types";
+import { useVisibleInterval } from "@/lib/use-visible-interval";
 
 export type { BotView };
 
@@ -23,15 +24,23 @@ interface TickReply {
   decisions?: BotView["decisions"];
 }
 
-/** How often an open app nudges the bot, so it keeps working even before the schedule is set up. */
-const NUDGE_MS = 120_000;
+/**
+ * How often an open app re-reads the bot. The schedule runs the bot every 15 minutes,
+ * so reading more often shows nothing new and only spends Vercel Blob reads.
+ */
+const REFRESH_MS = 5 * 60_000;
 
-/** The bot's state for the owner, refreshed every minute; while it is on, the open app also runs a check every 2 minutes. */
+/** Newest settings this app has seen; a read older than this asks the server for a fresh copy. */
+let newestSettingsAt = 0;
+const remember = (v: BotView) => {
+  newestSettingsAt = Math.max(newestSettingsAt, v.settings.updatedAt ?? 0);
+};
+
+/** The bot's state for the owner. The bot itself runs on the server schedule, not from this app. */
 export function useBot() {
   const [view, setView] = useState<BotView | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const lastNudge = useRef(0);
 
   // Idle checks are stored only hourly; show the agents' newest thinking from the reply itself.
   const showFresh = useCallback((data: TickReply) => {
@@ -41,9 +50,15 @@ export function useBot() {
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch("/api/bot/state", { cache: "no-store" });
-      const data = (await res.json()) as BotView & { error?: string };
-      if (!res.ok) throw new Error(data.error ?? "Data bot tidak bisa dibaca.");
+      const read = async (fresh: boolean) => {
+        const res = await fetch(fresh ? "/api/bot/state?fresh=1" : "/api/bot/state", { cache: "no-store" });
+        const data = (await res.json()) as BotView & { error?: string };
+        if (!res.ok) throw new Error(data.error ?? "Data bot tidak bisa dibaca.");
+        return data;
+      };
+      let data = await read(false);
+      if ((data.settings.updatedAt ?? 0) < newestSettingsAt) data = await read(true);
+      remember(data);
       setView(data);
       setError(null);
     } catch (e) {
@@ -61,6 +76,7 @@ export function useBot() {
       });
       const data = (await res.json()) as BotView & { error?: string };
       if (!res.ok) throw new Error(data.error ?? "Pengaturan gagal disimpan.");
+      remember(data);
       setView(data);
       setError(null);
       return true;
@@ -72,9 +88,31 @@ export function useBot() {
     }
   }, []);
 
+  /** Add or remove a market found by search; `bot` also puts it on (or takes it off) the bot's list. */
+  const watch = useCallback(async (broker: string, pair: string, action: "add" | "remove", bot?: boolean) => {
+    setBusy(true);
+    try {
+      const res = await fetch("/api/bot/watchlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ broker, pair, action, bot }),
+      });
+      const data = (await res.json()) as BotView & { error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Gagal menyimpan.");
+      remember(data);
+      setView(data);
+      setError(null);
+      return true;
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Gagal menyimpan.");
+      return false;
+    } finally {
+      setBusy(false);
+    }
+  }, []);
+
   const runNow = useCallback(async () => {
     setBusy(true);
-    lastNudge.current = Date.now();
     try {
       const res = await fetch("/api/bot/tick", { method: "POST" });
       const data = (await res.json()) as TickReply;
@@ -90,33 +128,9 @@ export function useBot() {
     }
   }, [load, showFresh]);
 
-  useEffect(() => {
-    void load();
-    const id = window.setInterval(() => {
-      if (document.visibilityState === "visible") void load();
-    }, 60_000);
-    return () => window.clearInterval(id);
-  }, [load]);
+  useVisibleInterval(load, REFRESH_MS);
 
-  // While the app is open and the bot is on, nudge it now and then.
-  const auto = view?.settings.auto ?? false;
-  useEffect(() => {
-    if (!auto) return;
-    const id = window.setInterval(() => {
-      if (document.visibilityState !== "visible" || Date.now() - lastNudge.current < NUDGE_MS) return;
-      lastNudge.current = Date.now();
-      void fetch("/api/bot/tick", { method: "POST" })
-        .then(async (res) => {
-          const data = (await res.json()) as TickReply;
-          await load();
-          if (res.ok) showFresh(data);
-        })
-        .catch(() => null);
-    }, 15_000);
-    return () => window.clearInterval(id);
-  }, [auto, load, showFresh]);
-
-  return { view, error, busy, load, save, runNow };
+  return { view, error, busy, load, save, runNow, watch };
 }
 
 /** Realized result this month, and the target in the same currency. */

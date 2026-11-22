@@ -13,6 +13,8 @@ export async function POST(req: Request) {
   if (denied) return denied;
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body || typeof body !== "object") return json({ error: "Isi pengaturan tidak terbaca." }, 400);
+  // The watchlist changes only through /api/bot/watchlist, which checks each market exists.
+  delete body.watchlist;
 
   // On Vercel the bot must remember its positions between runs, so it needs real storage.
   if (body.auto === true && process.env.VERCEL === "1" && storageKind() === "memory") {

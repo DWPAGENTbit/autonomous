@@ -9,7 +9,7 @@ export async function GET(req: Request) {
   const denied = await guard(req);
   if (denied) return denied;
   try {
-    return json(await botView());
+    return json(await botView(new URL(req.url).searchParams.has("fresh")));
   } catch (e) {
     console.error("[bot] state failed", e);
     return json({ error: "Data bot tidak bisa dibaca saat ini." }, 500);

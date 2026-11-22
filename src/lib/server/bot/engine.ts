@@ -1,14 +1,15 @@
 import { randomUUID } from "node:crypto";
-import { BROKERS, executeOrder, limitFor, pairsFor } from "@/lib/server/brokers";
+import { BROKERS, executeOrder, limitFor } from "@/lib/server/brokers";
 import { BrokerError, type BrokerId, type Fill } from "@/lib/server/brokers/types";
 import { idrTickers, type Ticker } from "@/lib/server/market";
-import { activeBrokers, FEE_PCT, MIN_ORDER, monthKey, positionKey, startOfDay, tradeMode } from "./settings";
+import { activeBrokers, allowedPairs, FEE_PCT, MIN_ORDER, monthKey, positionKey, startOfDay, tradeMode } from "./settings";
 import { decide, type Decision, type MarketView } from "./strategy";
 import { loadState, saveState, updateState } from "./store";
 import type { AgentStep, BotState, JournalEntry, LastDecision, Position, TradeMode } from "./types";
 
 /** Idle checks are written at most this often, to keep storage writes low. */
-const HEARTBEAT_MS = 55 * 60_000;
+/** Idle checks are saved only this often (Vercel Hobby: 2,000 Blob writes a month). */
+const HEARTBEAT_MS = 3 * 60 * 60_000;
 /** A run holding the lock longer than this is considered dead. */
 const LOCK_MS = 90_000;
 
@@ -90,7 +91,7 @@ export async function runTick(by: string): Promise<TickResult> {
 
   for (const id of brokers) {
     const broker = BROKERS[id];
-    const pairs = s.brokers[id].pairs.filter((p) => pairsFor(id).includes(p));
+    const pairs = s.brokers[id].pairs.filter((p) => allowedPairs(id, s).includes(p));
     let balances: { asset: string; free: number; locked: number }[];
     try {
       balances = await broker.balances();
@@ -189,7 +190,7 @@ export async function runTick(by: string): Promise<TickResult> {
 
   const effects: Effect[] = [...fixes];
   try {
-    for (const plan of plans) effects.push(await execute(plan, mode, now));
+    for (const plan of plans) effects.push(await execute(plan, mode, now, allowedPairs(plan.broker, s)));
   } finally {
     // Always record what was sent and release the lock, even if a later order failed.
     await updateState((st) => {
@@ -202,7 +203,7 @@ export async function runTick(by: string): Promise<TickResult> {
 }
 
 /** Sends (or, in paper mode, simulates) one order and returns how to record it. */
-async function execute(plan: Plan, mode: TradeMode, now: number): Promise<Effect> {
+async function execute(plan: Plan, mode: TradeMode, now: number, allowed: string[]): Promise<Effect> {
   const { broker, pair, base, quote, price, feePct, decision } = plan;
   const key = positionKey(mode, broker, pair);
   const id = randomUUID();
@@ -213,7 +214,7 @@ async function execute(plan: Plan, mode: TradeMode, now: number): Promise<Effect
   let message: string;
   if (decision.action === "buy") {
     if (mode === "live") {
-      const res = await executeOrder(BROKERS[broker], { pair, side: "buy", amount: decision.quote });
+      const res = await executeOrder(BROKERS[broker], { pair, side: "buy", amount: decision.quote }, allowed);
       if (!res.ok) return failed(res.message);
       fill = res.fill ?? { base: (decision.quote * (1 - fee)) / price, quote: decision.quote };
       message = res.message;
@@ -241,7 +242,7 @@ async function execute(plan: Plan, mode: TradeMode, now: number): Promise<Effect
 
   const qty = round8(decision.qty);
   if (mode === "live") {
-    const res = await executeOrder(BROKERS[broker], { pair, side: "sell", amount: qty });
+    const res = await executeOrder(BROKERS[broker], { pair, side: "sell", amount: qty }, allowed);
     if (!res.ok) return failed(res.message);
     fill = res.fill ?? { base: qty, quote: qty * price * (1 - fee) };
     message = res.message;

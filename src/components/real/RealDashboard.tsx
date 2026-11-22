@@ -6,6 +6,7 @@ import { ArrowUpRight, Coins, Landmark, PiggyBank, RefreshCw, ShieldAlert, Shiel
 import { useCallback, useEffect, useState } from "react";
 import { BotSummaryCard } from "@/components/bot/BotPanel";
 import { StatusDot } from "@/components/shared/primitives";
+import { useVisibleInterval } from "@/lib/use-visible-interval";
 import type { RealPortfolio } from "@/lib/server/portfolio";
 import type { Ticker } from "@/lib/server/market";
 
@@ -66,11 +67,8 @@ export function useRealData() {
     }
   }, []);
 
-  useEffect(() => {
-    load();
-    const id = window.setInterval(load, 30_000);
-    return () => window.clearInterval(id);
-  }, [load]);
+  // Once a minute while on screen: Indodax prices move, but this keeps Vercel usage small.
+  useVisibleInterval(load, 60_000);
 
   return { portfolio, markets, manual, error, loading, reload: load };
 }
@@ -348,8 +346,8 @@ export function LiveMarketsPanel() {
   const [at, setAt] = useState<number | undefined>();
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const load = async () => {
+  useVisibleInterval(async () => {
+    {
       try {
         const r = await fetch("/api/market", { cache: "no-store" });
         const data = (await r.json()) as { markets?: Ticker[]; at?: number; error?: string };
@@ -361,11 +359,8 @@ export function LiveMarketsPanel() {
       } catch {
         setError("Server tidak bisa dihubungi.");
       }
-    };
-    load();
-    const id = window.setInterval(load, 30_000);
-    return () => window.clearInterval(id);
-  }, []);
+    }
+  }, 60_000);
 
   return (
     <section className="glass mx-3 mb-5 max-w-[1312px] p-5 sm:mx-4 md:p-8 lg:mx-6 min-[1640px]:mx-auto" aria-labelledby="live-markets">

@@ -1,9 +1,9 @@
 import { timingSafeEqual, createHash } from "node:crypto";
-import { BROKERS, liveTrading, pairsFor } from "@/lib/server/brokers";
+import { BROKERS, liveTrading } from "@/lib/server/brokers";
 import type { BrokerId } from "@/lib/server/brokers/types";
 import { idrTickers } from "@/lib/server/market";
-import { activeBrokers, FEE_PCT, MIN_ORDER, monthKey, PROFILES, tradeMode } from "./settings";
-import { loadState, storageKind, type StorageKind } from "./store";
+import { activeBrokers, allowedPairs, FEE_PCT, MIN_ORDER, monthKey, PROFILES, tradeMode } from "./settings";
+import { VIEW_MAX_AGE, loadState, storageKind, type StorageKind } from "./store";
 import type { BotSettings, BotState, JournalEntry, LastDecision, MonthStats, Position, Profile, StrategyParams, TradeMode } from "./types";
 
 export interface PositionView extends Position {
@@ -45,8 +45,9 @@ export function cronAuthorized(req: Request): boolean {
   return timingSafeEqual(a, b);
 }
 
-export async function botView(): Promise<BotView> {
-  const { state } = await loadState(20_000);
+/** `fresh` skips the short server cache, e.g. right after the owner changed something. */
+export async function botView(fresh = false): Promise<BotView> {
+  const { state } = await loadState(fresh ? 0 : VIEW_MAX_AGE);
   const s = state.settings;
   const mode = tradeMode(s);
   const active = activeBrokers(s);
@@ -98,7 +99,7 @@ export async function botView(): Promise<BotView> {
       name: BROKERS[id].name,
       configured: BROKERS[id].configured(),
       enabled: s.brokers[id].enabled,
-      pairs: pairsFor(id),
+      pairs: allowedPairs(id, s),
       selected: s.brokers[id].pairs,
       feePct: FEE_PCT[id],
     })),

@@ -41,11 +41,11 @@ export function brokerFrom(id: string): BrokerAdapter | null {
   return id === "indodax" || id === "tokocrypto" ? BROKERS[id] : null;
 }
 
-export function status(enabled: Record<BrokerId, boolean>): StatusResponse {
+export function status(enabled: Record<BrokerId, boolean>, allowed: Record<BrokerId, string[]>): StatusResponse {
   return {
     live: liveTrading(),
     brokers: Object.values(BROKERS).map((b) => {
-      const pairs = pairsFor(b.id);
+      const pairs = allowed[b.id];
       const quotes = [...new Set(pairs.map((p) => b.split(p)[1]))];
       return {
         id: b.id,
@@ -67,10 +67,11 @@ export function parseOrder(body: unknown): OrderInput | null {
   return { pair: b.pair, side: b.side, amount };
 }
 
-export async function previewOrder(broker: BrokerAdapter, input: OrderInput): Promise<OrderPreview> {
+/** `allowed`: the pairs the owner permits (server defaults plus their own watchlist). */
+export async function previewOrder(broker: BrokerAdapter, input: OrderInput, allowed = pairsFor(broker.id)): Promise<OrderPreview> {
   const problems: string[] = [];
   if (!broker.configured()) problems.push(`Kunci API ${broker.name} belum diatur.`);
-  if (!pairsFor(broker.id).includes(input.pair)) problems.push(`Pasangan ${input.pair} tidak ada di daftar yang diizinkan.`);
+  if (!allowed.includes(input.pair)) problems.push(`Pasangan ${input.pair} tidak ada di daftar yang diizinkan.`);
   const [base, quote] = broker.split(input.pair);
   const price = await broker.price(input.pair);
   const estQuoteValue = input.side === "buy" ? input.amount : price ? input.amount * price : null;
@@ -80,8 +81,8 @@ export async function previewOrder(broker: BrokerAdapter, input: OrderInput): Pr
   return { ...input, broker: broker.id, base, quote, amountUnit: input.side === "buy" ? quote : base, price, estQuoteValue, limit, live: liveTrading(), problems };
 }
 
-export async function executeOrder(broker: BrokerAdapter, input: OrderInput): Promise<OrderResult> {
-  const preview = await previewOrder(broker, input);
+export async function executeOrder(broker: BrokerAdapter, input: OrderInput, allowed = pairsFor(broker.id)): Promise<OrderResult> {
+  const preview = await previewOrder(broker, input, allowed);
   if (preview.problems.length) return { ok: false, live: preview.live, message: preview.problems.join(" ") };
   const params = broker.orderParams(input, `dwp-${randomUUID().slice(0, 18)}`);
 

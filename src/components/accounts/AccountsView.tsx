@@ -1,6 +1,7 @@
 "use client";
 
 import clsx from "clsx";
+import Link from "next/link";
 import { RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ManualAccount } from "@/components/accounts/ManualAccount";
@@ -148,8 +149,11 @@ export function AccountsView() {
           Saldo &amp; order manual
         </h2>
         <p className="mb-8 max-w-[64ch] text-sm text-ink-2">
-          Saldo dibaca langsung dari bursa yang aktif. Bot di atas trading sendiri; di sini Anda tetap bisa order manual kapan saja. Server
-          menolak setiap order di atas batas per order, baik dari bot maupun manual.
+          Saldo dibaca langsung dari bursa yang aktif. Bot di atas trading sendiri; di sini Anda tetap bisa order manual kapan saja — atau{" "}
+          <Link href="/markets#cari" className="font-medium text-accent hover:underline">
+            cari koin apa pun
+          </Link>{" "}
+          untuk dibeli, dijual, atau dimasukkan ke bot. Server menolak setiap order di atas batas per order, baik dari bot maupun manual.
         </p>
         <div className="space-y-5">
           {status ? active.map((b) => <ApiAccount key={b.id} broker={b} live={status.live} />) : !error && <p className="text-sm text-ink-3">Memuat…</p>}

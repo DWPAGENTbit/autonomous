@@ -170,8 +170,8 @@ export function LoginScreen({ configured, askUsername, next }: { configured: boo
           </div>
 
           <p className="mt-10 border-t border-line pt-4 text-xs leading-relaxed text-ink-3">
-            Data agen di dalam platform adalah simulasi. Hanya halaman Akun yang terhubung ke akun nyata, dan setiap order di sana
-            butuh persetujuan Anda.
+            Mode Live memakai akun dan saldo nyata Anda. Bot hanya trading otomatis setelah Anda menyalakannya, dalam batas yang Anda
+            atur. Mode Demo adalah simulasi. Hasil trading tidak dijamin.
           </p>
         </div>
       </section>

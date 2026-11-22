@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { num } from "@/components/accounts/AccountsView";
 import { Button } from "@/components/shared/primitives";
 import type { BrokerStatus, OrderPreview, OrderResult, Side } from "@/lib/server/brokers/types";
@@ -9,24 +9,27 @@ import type { BrokerStatus, OrderPreview, OrderResult, Side } from "@/lib/server
 const split = (pair: string) => pair.split("_").map((s) => s.toUpperCase()) as [string, string];
 
 /**
- * Review, then approve. Nothing is sent until the owner has seen the
- * server-checked preview and ticked the approval box.
+ * A manual order: check it (the server previews price, value and limits),
+ * then send it with one tap.
  */
-export function OrderPanel({ broker, live }: { broker: BrokerStatus; live: boolean }) {
-  const [pair, setPair] = useState(broker.pairs[0] ?? "");
-  const [side, setSide] = useState<Side>("buy");
+export function OrderPanel({ broker, live, initialPair, initialSide = "buy" }: { broker: BrokerStatus; live: boolean; initialPair?: string; initialSide?: Side }) {
+  const [pair, setPair] = useState(initialPair ?? broker.pairs[0] ?? "");
+  const [side, setSide] = useState<Side>(initialSide);
   const [amount, setAmount] = useState("");
   const [preview, setPreview] = useState<OrderPreview | null>(null);
-  const [approved, setApproved] = useState(false);
   const [result, setResult] = useState<OrderResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (initialPair) setPair(initialPair);
+  }, [initialPair]);
+  useEffect(() => setSide(initialSide), [initialSide]);
 
   const [base, quote] = split(pair);
   const unit = side === "buy" ? quote : base;
   const reset = () => {
     setPreview(null);
-    setApproved(false);
     setResult(null);
     setError(null);
   };
@@ -64,12 +67,11 @@ export function OrderPanel({ broker, live }: { broker: BrokerStatus; live: boole
     const r = await post<OrderResult>("order", { approve: true });
     if (r) {
       setResult(r);
-      setApproved(false);
-    }
+      }
   };
 
   const amountValid = Number(amount.replace(",", ".")) > 0;
-  const canSend = preview && preview.problems.length === 0 && approved && !busy && !result;
+  const canSend = preview && preview.problems.length === 0 && !busy && !result;
 
   return (
     <div>
@@ -177,18 +179,11 @@ export function OrderPanel({ broker, live }: { broker: BrokerStatus; live: boole
             </ul>
           ) : (
             !result && (
-              <div className="mt-4 space-y-3 border-t border-line pt-4">
-                <label className="flex items-start gap-2.5 text-sm text-ink">
-                  <input type="checkbox" checked={approved} onChange={(e) => setApproved(e.target.checked)} className="mt-0.5 size-4 accent-ink" />
-                  <span>
-                    {live
-                      ? `Saya menyetujui order ini dan paham bahwa ini memakai uang sungguhan di ${broker.name}.`
-                      : "Saya menyetujui order uji ini."}
-                  </span>
-                </label>
+              <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-line pt-4">
                 <Button variant={live ? "danger" : "primary"} disabled={!canSend} onClick={send}>
-                  {busy ? "Mengirim…" : live ? "Setujui & kirim order" : "Setujui & jalankan uji"}
+                  {busy ? "Mengirim…" : live ? `${side === "buy" ? "Beli" : "Jual"} sekarang` : "Jalankan uji"}
                 </Button>
+                <span className="text-xs text-ink-3">{live ? `Uang sungguhan di ${broker.name}.` : "Mode uji: tidak dikirim ke bursa."}</span>
               </div>
             )
           )}

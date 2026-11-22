@@ -12,6 +12,14 @@ const PATH = "dwp-bot/state.json";
 const JOURNAL_MAX = 150;
 
 export type StorageKind = "blob" | "memory";
+
+/**
+ * Vercel Hobby allows 10,000 Blob reads and 2,000 writes a month. Callers that only
+ * need settings (exchanges on/off, watchlist) take a copy up to 5 minutes old; the
+ * bot panel takes one up to 2 minutes old. The bot's own runs always read fresh.
+ */
+export const SETTINGS_MAX_AGE = 5 * 60_000;
+export const VIEW_MAX_AGE = 2 * 60_000;
 export const storageKind = (): StorageKind => (process.env.BLOB_READ_WRITE_TOKEN ? "blob" : "memory");
 
 export interface Snapshot {
@@ -20,7 +28,8 @@ export interface Snapshot {
   etag: string | null;
 }
 
-let memory: BotState | null = null;
+// One copy per server process, shared by every route (dev bundles each route separately).
+const shared = globalThis as typeof globalThis & { __dwpBotMemory?: BotState | null };
 let cache: (Snapshot & { at: number }) | null = null;
 
 function normalize(raw: unknown): BotState {
@@ -42,7 +51,7 @@ const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v)) as T;
 
 /** Reads the state. Read-only callers may take a copy up to `maxAgeMs` old. */
 export async function loadState(maxAgeMs = 0): Promise<Snapshot> {
-  if (storageKind() === "memory") return { state: clone(memory ?? emptyState()), etag: null };
+  if (storageKind() === "memory") return { state: clone(shared.__dwpBotMemory ?? emptyState()), etag: null };
   if (maxAgeMs > 0 && cache && Date.now() - cache.at < maxAgeMs) return { state: clone(cache.state), etag: cache.etag };
 
   const res = await get(PATH, { access: "private", useCache: false });
@@ -59,7 +68,7 @@ export async function loadState(maxAgeMs = 0): Promise<Snapshot> {
 export async function saveState(state: BotState, etag: string | null): Promise<Snapshot | null> {
   state.journal = state.journal.slice(0, JOURNAL_MAX);
   if (storageKind() === "memory") {
-    memory = clone(state);
+    shared.__dwpBotMemory = clone(state);
     return { state, etag: null };
   }
   try {

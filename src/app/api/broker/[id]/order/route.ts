@@ -1,5 +1,7 @@
 import { brokerFrom, executeOrder, parseOrder } from "@/lib/server/brokers";
+import { SETTINGS_MAX_AGE, loadState } from "@/lib/server/bot/store";
 import { guard, json } from "@/lib/server/http";
+import { manualPairs } from "@/lib/server/pairs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,6 +17,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (body?.approve !== true) return json({ error: "Order butuh persetujuan Anda." }, 400);
   const input = parseOrder(body);
   if (!input) return json({ error: "Isi order tidak lengkap." }, 400);
-  const result = await executeOrder(broker, input);
+  const { state } = await loadState(SETTINGS_MAX_AGE);
+  const result = await executeOrder(broker, input, await manualPairs(broker, input.pair, state.settings));
   return json(result, result.ok ? 200 : 422);
 }
