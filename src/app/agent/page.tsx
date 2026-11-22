@@ -3,9 +3,9 @@ import { Timeline } from "@/components/activity/Timeline";
 import { AgentPipeline, AgentStatus } from "@/components/agent/AgentStatus";
 import { AutonomyPolicy } from "@/components/agent/AutonomyPolicy";
 import { DecisionIndex, FocusedDecision } from "@/components/decisions/DecisionLog";
-import { BotAgentsLive } from "@/components/bot/BotPanel";
+import { LiveAgents } from "@/components/bot/LiveAgents";
 import { DemoBanner, OnlyMode } from "@/components/mode/ModeSwitch";
-import { PageIntro, PANEL, SHELL } from "@/components/shared/PageIntro";
+import { PageIntro, PANEL } from "@/components/shared/PageIntro";
 import { Reveal, SectionHeader } from "@/components/shared/primitives";
 
 export const metadata: Metadata = { title: "Agen" };
@@ -18,9 +18,7 @@ export default function AgentPage() {
           Pemindai membaca harga, Analis mencari titik masuk dan ambil untung, Risiko menjaga batas, Eksekutor mengirim order — semuanya
           sendiri saat mode otomatis menyala. Setiap langkah dan alasannya tercatat di sini.
         </PageIntro>
-        <section className={PANEL} aria-label="Tim agen nyata">
-          <BotAgentsLive />
-        </section>
+        <LiveAgents />
       </OnlyMode>
 
       <OnlyMode mode="demo">

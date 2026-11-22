@@ -135,20 +135,20 @@ export function AccountsView() {
   const off = status?.brokers.filter((b) => !b.enabled) ?? [];
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-5">
       <BotPanel onBrokersChange={load} />
 
       {error && (
-        <p role="alert" className="text-sm text-negative">
+        <p role="alert" className="rounded-[16px] bg-negative-soft px-4 py-3 text-sm text-negative">
           {error}
         </p>
       )}
 
-      <section aria-labelledby="api-accounts">
-        <h2 id="api-accounts" className="label mb-2">
+      <section aria-labelledby="api-accounts" className="glass p-5 md:p-8">
+        <h2 id="api-accounts" className="text-xl font-normal tracking-[-0.015em] text-ink md:text-2xl">
           Saldo &amp; order manual
         </h2>
-        <p className="mb-8 max-w-[64ch] text-sm text-ink-2">
+        <p className="mt-2 mb-6 max-w-[64ch] text-sm text-ink-2">
           Saldo dibaca langsung dari bursa yang aktif. Bot di atas trading sendiri; di sini Anda tetap bisa order manual kapan saja — atau{" "}
           <Link href="/markets#cari" className="font-medium text-accent hover:underline">
             cari koin apa pun
@@ -165,11 +165,11 @@ export function AccountsView() {
         </div>
       </section>
 
-      <section aria-labelledby="manual-accounts">
-        <h2 id="manual-accounts" className="label mb-2">
+      <section aria-labelledby="manual-accounts" className="glass p-5 md:p-8">
+        <h2 id="manual-accounts" className="text-xl font-normal tracking-[-0.015em] text-ink md:text-2xl">
           Dicatat manual
         </h2>
-        <p className="mb-8 max-w-[64ch] text-sm text-ink-2">
+        <p className="mt-2 mb-6 max-w-[64ch] text-sm text-ink-2">
           Bibit dan Stockbit tidak menyediakan API untuk aplikasi pihak ketiga, jadi DWP EARN MONEY tidak bisa membaca saldo atau mengirim
           order ke sana. Lakukan transaksi di aplikasinya, lalu catat nilainya di sini agar semua aset terlihat di satu tempat.
           Catatan disimpan di browser ini saja.

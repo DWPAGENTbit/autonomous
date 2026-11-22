@@ -6,7 +6,7 @@ import { AlertTriangle, ArrowUpRight, Bot, ChevronDown, Play, Radar, ShieldCheck
 import { useEffect, useState } from "react";
 import { StatusDot } from "@/components/shared/primitives";
 import type { AgentStep, BotSettings, JournalEntry, LastDecision, Profile, StrategyParams } from "@/lib/server/bot/types";
-import { baseOf, type BotView, dateTimeOf, money, monthProgress, quoteOf, signedMoney, timeOf, useBot } from "./bot-client";
+import { AGENT_TONE, baseOf, type BotView, capitalShort, dateTimeOf, money, monthProgress, quoteOf, signedMoney, timeOf, useBot } from "./bot-client";
 
 // ── Small pieces ─────────────────────────────────────────────
 
@@ -50,13 +50,6 @@ export function Switch({
     </button>
   );
 }
-
-const AGENT_TONE: Record<AgentStep["agent"], string> = {
-  Pemindai: "text-accent",
-  Analis: "text-[#7c3aed]",
-  Risiko: "text-caution",
-  Eksekutor: "text-positive",
-};
 
 function Steps({ steps }: { steps: AgentStep[] }) {
   return (
@@ -140,15 +133,17 @@ function warnings(v: BotView) {
   if (v.hosted && v.storage === "memory")
     out.push({ tone: "negative", text: "Penyimpanan bot (Supabase) belum tersambung, jadi bot belum bisa dinyalakan. Jalankan supabase/dwp-bot.sql di Supabase dan isi kuncinya di Vercel." });
   if (!v.brokers.some((b) => b.enabled && b.configured)) out.push({ tone: "negative", text: "Belum ada bursa aktif yang punya kunci API." });
-  if (!v.scheduled)
-    out.push({ tone: "caution", text: "Jadwal 15 menit belum tersambung: bot baru berjalan sekali sehari atau saat Anda menekan Cek sekarang. Jadwalnya dibuat oleh skrip supabase/dwp-bot.sql; setelah itu bot jalan tiap 15 menit walau HP mati." });
-  if (!v.liveSwitch) out.push({ tone: "caution", text: "DWP_LIVE_TRADING belum on di Vercel, jadi bot berjalan di mode uji (tanpa uang sungguhan)." });
-  const p = monthProgress(v);
-  const min = v.minOrder[p.quote] ?? 0;
-  if (v.settings.auto && p.capital > 0 && (p.capital * v.settings.params.maxAllocPct) / 100 < min)
+  if (v.settings.auto && !v.scheduled)
     out.push({
       tone: "caution",
-      text: `Modal kerja ${money(p.capital, p.quote)} terlalu kecil: ${v.settings.params.maxAllocPct}%-nya di bawah minimum order ${money(min, p.quote)}. Bot menunggu sampai saldo cukup.`,
+      text: "Jadwal 15 menit belum tercatat berjalan dalam 2,5 jam terakhir, jadi bot mungkin hanya jalan sekali sehari atau saat Anda menekan Cek sekarang. Jadwalnya ada di Supabase (skrip supabase/dwp-bot.sql); peringatan ini hilang sendiri begitu jadwal berjalan.",
+    });
+  if (!v.liveSwitch) out.push({ tone: "caution", text: "DWP_LIVE_TRADING belum on di Vercel, jadi bot berjalan di mode uji (tanpa uang sungguhan)." });
+  const short = capitalShort(v);
+  if (short)
+    out.push({
+      tone: "caution",
+      text: `Saldo belum cukup untuk order pertama. Modal kerja ${money(short.capital, short.quote)}; bot hanya boleh memakai ${v.settings.params.maxAllocPct}%-nya untuk koin (${money((short.capital * v.settings.params.maxAllocPct) / 100, short.quote)}), padahal minimum order bursa ${money(short.min, short.quote)}. Bot baru bisa membeli setelah modal kerja minimal ${money(short.need, short.quote)}; sampai itu bot hanya memantau.`,
     });
   return out;
 }
@@ -187,7 +182,7 @@ export function BotPanel({ onBrokersChange }: { onBrokersChange?: () => void }) 
 
   if (!v)
     return (
-      <section id="bot" className="glass scroll-mt-24 p-6">
+      <section id="bot" className="glass scroll-mt-24 p-5 md:p-8">
         <p className="text-sm text-ink-3">{error ?? "Memuat bot…"}</p>
       </section>
     );
@@ -215,8 +210,8 @@ export function BotPanel({ onBrokersChange }: { onBrokersChange?: () => void }) 
       id="bot"
       aria-labelledby="bot-title"
       className={clsx(
-        "-mx-2 scroll-mt-24 overflow-hidden rounded-[22px] border p-4 sm:mx-0 sm:p-5 md:p-7",
-        s.auto ? (live ? "border-positive/30 bg-gradient-to-br from-positive-soft via-white/70 to-[#12c9f0]/10" : "border-caution/25 bg-caution-soft") : "border-glass-edge bg-white/55",
+        "glass scroll-mt-24 overflow-hidden p-5 md:p-8",
+        s.auto && (live ? "border-positive/30 bg-gradient-to-br from-positive-soft via-white/70 to-[#12c9f0]/10" : "border-caution/25 bg-caution-soft"),
       )}
     >
       {/* Header: the master switch */}
@@ -525,11 +520,9 @@ export function BotSummaryCard() {
   );
 }
 
-// ── Live view of the agent team, for the Agen page ───────────
+// ── Every pair's reasoning and every trade, for the Agen page ─
 
-export function BotAgentsLive() {
-  const { view: v, error } = useBot();
-  if (!v) return <p className="text-sm text-ink-3">{error ?? "Memuat…"}</p>;
+export function BotAgentsLive({ view: v }: { view: BotView }) {
   return (
     <div className="grid grid-cols-12 gap-4 lg:gap-8">
       <div className="col-span-12 lg:col-span-6">

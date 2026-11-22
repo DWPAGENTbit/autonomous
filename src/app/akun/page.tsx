@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AccountsView } from "@/components/accounts/AccountsView";
 import { OnlyMode } from "@/components/mode/ModeSwitch";
-import { PageIntro, PANEL, SHELL } from "@/components/shared/PageIntro";
+import { PageIntro, SHELL } from "@/components/shared/PageIntro";
 import { isAuthed } from "@/lib/server/auth";
 
 export const metadata: Metadata = { title: "Akun" };
@@ -26,9 +26,9 @@ export default async function AccountsPage() {
           </p>
         </div>
       </OnlyMode>
-      <section className={PANEL}>
+      <div className={`${SHELL} pb-5`}>
         <AccountsView />
-      </section>
+      </div>
     </>
   );
 }

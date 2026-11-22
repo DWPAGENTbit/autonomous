@@ -9,7 +9,7 @@ import { DemoBanner, OnlyMode } from "@/components/mode/ModeSwitch";
 import { OpportunityFeed } from "@/components/opportunities/OpportunityFeed";
 import { PANEL, SHELL } from "@/components/shared/PageIntro";
 import { Reveal, SectionHeader } from "@/components/shared/primitives";
-import { RealDashboard } from "@/components/real/RealDashboard";
+import { LiveHome } from "@/components/real/RealDashboard";
 import { AgentTerminal } from "@/components/terminal/AgentTerminal";
 
 export default function CommandCenterPage() {
@@ -17,9 +17,9 @@ export default function CommandCenterPage() {
     <>
       <h1 className="sr-only">DWP EARN MONEY — dashboard cuan</h1>
 
-      {/* Live: what the owner actually holds, at live prices. */}
+      {/* Live: the same dashboard and agent terminal as Demo, from the real bot and real balances. */}
       <OnlyMode mode="live">
-        <RealDashboard />
+        <LiveHome />
       </OnlyMode>
 
       {/* Demo: the agent simulation with fictional capital. */}

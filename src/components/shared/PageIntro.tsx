@@ -24,5 +24,10 @@ export function PageIntro({ index, area, title, children }: { index: string; are
 
 export const SHELL = "mx-auto max-w-[1360px] px-3 sm:px-4 lg:px-6";
 
-/** A section as a frosted glass card, with the same side margins as the shell. */
-export const PANEL = "glass mx-3 mb-5 max-w-[1312px] p-5 sm:mx-4 md:p-8 lg:mx-6 min-[1640px]:mx-auto";
+/**
+ * A section as a frosted glass card, lined up with the shell's content: side margins
+ * are the shell's gutter, or half the space left beside 1312px, whichever is larger.
+ * Margins (not breakpoints) do the centring, so it lines up at every width, sidebar or not.
+ */
+export const PANEL =
+  "glass mb-5 max-w-[1312px] p-5 md:p-8 mx-[max(0.75rem,calc((100%_-_1312px)/2))] sm:mx-[max(1rem,calc((100%_-_1312px)/2))] lg:mx-[max(1.5rem,calc((100%_-_1312px)/2))]";

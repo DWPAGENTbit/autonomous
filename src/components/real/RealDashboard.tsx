@@ -5,6 +5,10 @@ import Link from "next/link";
 import { ArrowUpRight, Coins, Landmark, PiggyBank, RefreshCw, ShieldAlert, ShieldCheck, Wallet } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { BotSummaryCard } from "@/components/bot/BotPanel";
+import { useBot } from "@/components/bot/bot-client";
+import { LiveHero } from "@/components/bot/LiveHero";
+import { LiveTerminal } from "@/components/bot/LiveTerminal";
+import { PANEL } from "@/components/shared/PageIntro";
 import { StatusDot } from "@/components/shared/primitives";
 import { useVisibleInterval } from "@/lib/use-visible-interval";
 import type { RealPortfolio } from "@/lib/server/portfolio";
@@ -162,12 +166,11 @@ export function MarketBoard({ markets }: { markets: Ticker[] | null }) {
 
 // ── Dashboard ────────────────────────────────────────────────
 
-/**
- * The real side of the platform: what the owner actually holds on connected
- * exchanges (plus Bibit/Stockbit as recorded), valued at live Indodax prices.
- */
-export function RealDashboard({ showMarkets = true }: { showMarkets?: boolean }) {
-  const { portfolio: p, markets, manual, error, loading, reload } = useRealData();
+type RealData = ReturnType<typeof useRealData>;
+
+/** The owner's real assets, valued at live prices: total, mix, holdings, and (optionally) live prices. */
+function RealAssets({ data, showMarkets, title }: { data: RealData; showMarkets: boolean; title: string }) {
+  const { portfolio: p, markets, manual, error, loading, reload } = data;
   const connected = (p?.connected.length ?? 0) > 0;
   const total = (p?.totalIdr ?? 0) + manual;
   const crypto = p ? p.totalIdr - p.cashIdr : 0;
@@ -183,160 +186,195 @@ export function RealDashboard({ showMarkets = true }: { showMarkets?: boolean })
   })();
 
   return (
-    <section className="mx-auto max-w-[1360px] px-3 pt-4 pb-5 sm:px-4 md:pt-6 lg:px-6" aria-labelledby="real-title">
-      <div className="grid grid-cols-12 gap-4 md:gap-5">
-        {/* The autonomous bot: on/off and this month's result */}
-        <BotSummaryCard />
-
-        {/* Total real assets */}
-        <div className="glass relative col-span-12 overflow-hidden p-6 md:p-8 xl:col-span-8">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -top-28 -right-20 size-80 rounded-full opacity-80 blur-3xl"
-            style={{ background: "radial-gradient(circle, rgba(13,155,99,0.25), rgba(25,211,240,0.2) 55%, transparent 72%)" }}
-          />
-          <div className="relative flex flex-wrap items-center gap-2">
-            <RealBadgeLive at={p?.at} />
-            {p && (
-              <span className={clsx("pill !py-1 text-[11px]", p.live ? "text-negative" : "text-caution")}>
-                {p.live ? <ShieldAlert className="size-3" aria-hidden /> : <ShieldCheck className="size-3" aria-hidden />}
-                Live trading {p.live ? "aktif" : "mode uji"}
-              </span>
-            )}
-            <button type="button" onClick={reload} className="pill !py-1 text-[11px]" aria-label="Muat ulang data nyata">
-              <RefreshCw className={clsx("size-3", loading && "animate-spin")} aria-hidden /> Muat ulang
-            </button>
-          </div>
-
-          <p id="real-title" className="relative mt-5 text-sm text-ink-2">
-            Total aset nyata Anda
-          </p>
-          <p className="num relative mt-1 text-4xl font-light tracking-[-0.04em] text-ink sm:text-5xl lg:text-6xl">
-            {p || manual > 0 ? rupiah(total) : "…"}
-          </p>
+    <>
+      {/* Total real assets */}
+      <div className="glass relative col-span-12 overflow-hidden p-6 md:p-8 xl:col-span-8">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-28 -right-20 size-80 rounded-full opacity-80 blur-3xl"
+          style={{ background: "radial-gradient(circle, rgba(13,155,99,0.25), rgba(25,211,240,0.2) 55%, transparent 72%)" }}
+        />
+        <div className="relative flex flex-wrap items-center gap-2">
+          <RealBadgeLive at={p?.at} />
           {p && (
-            <p className="relative mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
-              <span className="text-ink-3">
-                24 jam{" "}
-                <span className={clsx("num font-medium", tone(p.change24hIdr))}>
-                  {signedRupiah(p.change24hIdr)} ({signedPct(p.change24hPct)})
-                </span>
-              </span>
-              <span className="text-ink-3">
-                7 hari{" "}
-                <span className={clsx("num font-medium", tone(p.change7dIdr))}>
-                  {signedRupiah(p.change7dIdr)} ({signedPct(p.change7dPct)})
-                </span>
-              </span>
-            </p>
+            <span className={clsx("pill !py-1 text-[11px]", p.live ? "text-negative" : "text-caution")}>
+              {p.live ? <ShieldAlert className="size-3" aria-hidden /> : <ShieldCheck className="size-3" aria-hidden />}
+              Live trading {p.live ? "aktif" : "mode uji"}
+            </span>
           )}
-          <p className="relative mt-2 max-w-[62ch] text-xs text-ink-3">
-            Saldo dibaca langsung dari {p?.connected.length ? p.connected.map((c) => (c === "indodax" ? "Indodax" : "Tokocrypto")).join(" & ") : "bursa"} dan
-            dinilai dengan harga Indodax saat ini. Perubahan 24 jam/7 hari dihitung dari aset yang Anda pegang sekarang.
-            {manual > 0 && " Bibit dan Stockbit dari catatan manual di browser ini."}
+          <button type="button" onClick={reload} className="pill !py-1 text-[11px]" aria-label="Muat ulang data nyata">
+            <RefreshCw className={clsx("size-3", loading && "animate-spin")} aria-hidden /> Muat ulang
+          </button>
+        </div>
+
+        <p className="relative mt-5 text-sm text-ink-2">{title}</p>
+        <p className="num relative mt-1 text-4xl font-light tracking-[-0.04em] text-ink sm:text-5xl lg:text-6xl">
+          {p || manual > 0 ? rupiah(total) : "…"}
+        </p>
+        {p && (
+          <p className="relative mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            <span className="text-ink-3">
+              24 jam{" "}
+              <span className={clsx("num font-medium", tone(p.change24hIdr))}>
+                {signedRupiah(p.change24hIdr)} ({signedPct(p.change24hPct)})
+              </span>
+            </span>
+            <span className="text-ink-3">
+              7 hari{" "}
+              <span className={clsx("num font-medium", tone(p.change7dIdr))}>
+                {signedRupiah(p.change7dIdr)} ({signedPct(p.change7dPct)})
+              </span>
+            </span>
           </p>
+        )}
+        <p className="relative mt-2 max-w-[62ch] text-xs text-ink-3">
+          Saldo dibaca langsung dari {p?.connected.length ? p.connected.map((c) => (c === "indodax" ? "Indodax" : "Tokocrypto")).join(" & ") : "bursa"} dan
+          dinilai dengan harga Indodax saat ini. Perubahan 24 jam/7 hari dihitung dari aset yang Anda pegang sekarang.
+          {manual > 0 && " Bibit dan Stockbit dari catatan manual di browser ini."}
+        </p>
 
-          {(error || (p && p.errors.length > 0)) && (
-            <p role="alert" className="relative mt-3 text-xs text-negative">
-              {error ?? p?.errors.join(" ")}
-            </p>
-          )}
+        {(error || (p && p.errors.length > 0)) && (
+          <p role="alert" className="relative mt-3 text-xs text-negative">
+            {error ?? p?.errors.join(" ")}
+          </p>
+        )}
 
-          {p && !connected && (
-            <div className="relative mt-5 rounded-[16px] border border-caution/25 bg-caution-soft p-4 text-sm text-ink-2">
-              Belum ada bursa yang terhubung. Hubungkan Indodax atau Tokocrypto di halaman{" "}
-              <Link href="/akun" className="font-medium text-accent underline">
-                Akun nyata
-              </Link>
-              .
-            </div>
-          )}
-
-          <div className="relative mt-6 flex flex-wrap gap-2">
-            <Link href="/akun" className="pill pill-accent !px-4 !py-2 text-sm">
-              <Landmark className="size-3.5" aria-hidden /> Trading di akun nyata
+        {p && !connected && (
+          <div className="relative mt-5 rounded-[16px] border border-caution/25 bg-caution-soft p-4 text-sm text-ink-2">
+            Belum ada bursa yang terhubung. Hubungkan Indodax atau Tokocrypto di halaman{" "}
+            <Link href="/akun" className="font-medium text-accent underline">
+              Akun nyata
             </Link>
-            <Link href="/markets" className="pill !px-4 !py-2 text-sm">
-              Harga pasar <ArrowUpRight className="size-3.5" aria-hidden />
-            </Link>
-          </div>
-
-          <div className="relative mt-7 grid grid-cols-2 gap-2.5 md:grid-cols-4">
-            {[
-              { k: "Kas (Rp + stablecoin)", v: p ? rupiah(p.cashIdr) : "…", icon: Wallet },
-              { k: "Aset kripto", v: p ? rupiah(crypto) : "…", icon: Coins },
-              { k: "Bibit + Stockbit", v: rupiah(manual), icon: PiggyBank },
-              { k: "Jumlah aset", v: p ? String(p.holdings.length + (manual > 0 ? 1 : 0)) : "…", icon: Landmark },
-            ].map((t) => (
-              <div key={t.k} className="flex items-center gap-3 rounded-[16px] border border-glass-edge bg-white/55 p-3">
-                <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-[10px] bg-positive-soft text-positive">
-                  <t.icon className="size-4" aria-hidden />
-                </span>
-                <span className="min-w-0">
-                  <span className="num block truncate text-sm font-medium text-ink">{t.v}</span>
-                  <span className="block text-[11px] leading-tight text-ink-3">{t.k}</span>
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Allocation */}
-        <div className="glass col-span-12 p-6 md:col-span-6 xl:col-span-4">
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-sm font-medium text-ink">Komposisi aset</p>
-            <RealBadgeLive />
-          </div>
-          {slices.length > 0 ? <AllocationDonut slices={slices} /> : <p className="text-sm text-ink-3">{p ? "Belum ada aset." : "Memuat…"}</p>}
-        </div>
-
-        {/* Holdings */}
-        <div className={clsx("glass col-span-12 p-6 md:col-span-6", showMarkets ? "xl:col-span-5" : "xl:col-span-12")}>
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-sm font-medium text-ink">Aset yang Anda pegang</p>
-            <Link href="/akun" className="pill">
-              Akun <ArrowUpRight className="size-3" aria-hidden />
-            </Link>
-          </div>
-          {p && p.holdings.length > 0 ? (
-            <ul className="divide-y divide-line">
-              {p.holdings.map((h) => (
-                <li key={`${h.broker}-${h.asset}`} className="flex items-center gap-3 py-2.5">
-                  <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-accent-soft font-mono text-[10px] font-semibold text-accent">
-                    {h.asset.slice(0, 4)}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm text-ink">
-                      {h.asset} <span className="text-xs text-ink-3">· {h.broker === "indodax" ? "Indodax" : "Tokocrypto"}</span>
-                    </p>
-                    <p className="num truncate text-xs text-ink-3">
-                      {amountFmt(h.amount)} {h.priceIdr !== null && h.asset !== "IDR" ? `× ${rupiah(h.priceIdr)}` : ""}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="num text-sm font-medium text-ink">{h.priceIdr === null ? "—" : rupiah(h.valueIdr)}</p>
-                    {h.asset !== "IDR" && <p className={clsx("num text-[11px]", tone(h.change24hPct))}>{signedPct(h.change24hPct)}</p>}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-ink-3">{p ? "Belum ada saldo di bursa yang terhubung." : "Memuat…"}</p>
-          )}
-        </div>
-
-        {/* Live prices */}
-        {showMarkets && (
-          <div className="glass col-span-12 p-6 xl:col-span-7">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-              <p className="text-sm font-medium text-ink">Harga live Indodax</p>
-              <span className="text-[11px] text-ink-3">Diperbarui tiap 30 detik · 24 jam & 7 hari</span>
-            </div>
-            <MarketBoard markets={markets} />
+            .
           </div>
         )}
+
+        <div className="relative mt-6 flex flex-wrap gap-2">
+          <Link href="/akun" className="pill pill-accent !px-4 !py-2 text-sm">
+            <Landmark className="size-3.5" aria-hidden /> Trading di akun nyata
+          </Link>
+          <Link href="/markets" className="pill !px-4 !py-2 text-sm">
+            Harga pasar <ArrowUpRight className="size-3.5" aria-hidden />
+          </Link>
+        </div>
+
+        <div className="relative mt-7 grid grid-cols-2 gap-2.5 md:grid-cols-4">
+          {[
+            { k: "Kas (Rp + stablecoin)", v: p ? rupiah(p.cashIdr) : "…", icon: Wallet },
+            { k: "Aset kripto", v: p ? rupiah(crypto) : "…", icon: Coins },
+            { k: "Bibit + Stockbit", v: rupiah(manual), icon: PiggyBank },
+            { k: "Jumlah aset", v: p ? String(p.holdings.length + (manual > 0 ? 1 : 0)) : "…", icon: Landmark },
+          ].map((t) => (
+            <div key={t.k} className="flex items-center gap-3 rounded-[16px] border border-glass-edge bg-white/55 p-3">
+              <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-[10px] bg-positive-soft text-positive">
+                <t.icon className="size-4" aria-hidden />
+              </span>
+              <span className="min-w-0">
+                <span className="num block truncate text-sm font-medium text-ink">{t.v}</span>
+                <span className="block text-[11px] leading-tight text-ink-3">{t.k}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Allocation */}
+      <div className="glass col-span-12 p-6 md:col-span-6 xl:col-span-4">
+        <div className="mb-4 flex items-center justify-between">
+          <p className="text-sm font-medium text-ink">Komposisi aset</p>
+          <RealBadgeLive />
+        </div>
+        {slices.length > 0 ? <AllocationDonut slices={slices} /> : <p className="text-sm text-ink-3">{p ? "Belum ada aset." : "Memuat…"}</p>}
+      </div>
+
+      {/* Holdings */}
+      <div className={clsx("glass col-span-12 p-6 md:col-span-6", showMarkets ? "xl:col-span-5" : "xl:col-span-12")}>
+        <div className="mb-4 flex items-center justify-between">
+          <p className="text-sm font-medium text-ink">Aset yang Anda pegang</p>
+          <Link href="/akun" className="pill">
+            Akun <ArrowUpRight className="size-3" aria-hidden />
+          </Link>
+        </div>
+        {p && p.holdings.length > 0 ? (
+          <ul className="divide-y divide-line">
+            {p.holdings.map((h) => (
+              <li key={`${h.broker}-${h.asset}`} className="flex items-center gap-3 py-2.5">
+                <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-accent-soft font-mono text-[10px] font-semibold text-accent">
+                  {h.asset.slice(0, 4)}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm text-ink">
+                    {h.asset} <span className="text-xs text-ink-3">· {h.broker === "indodax" ? "Indodax" : "Tokocrypto"}</span>
+                  </p>
+                  <p className="num truncate text-xs text-ink-3">
+                    {amountFmt(h.amount)} {h.priceIdr !== null && h.asset !== "IDR" ? `× ${rupiah(h.priceIdr)}` : ""}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="num text-sm font-medium text-ink">{h.priceIdr === null ? "—" : rupiah(h.valueIdr)}</p>
+                  {h.asset !== "IDR" && <p className={clsx("num text-[11px]", tone(h.change24hPct))}>{signedPct(h.change24hPct)}</p>}
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-ink-3">{p ? "Belum ada saldo di bursa yang terhubung." : "Memuat…"}</p>
+        )}
+      </div>
+
+      {/* Live prices */}
+      {showMarkets && (
+        <div className="glass col-span-12 p-6 xl:col-span-7">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <p className="text-sm font-medium text-ink">Harga live Indodax</p>
+            <span className="text-[11px] text-ink-3">Diperbarui tiap 30 detik · 24 jam & 7 hari</span>
+          </div>
+          <MarketBoard markets={markets} />
+        </div>
+      )}
+    </>
+  );
+}
+
+const DASHBOARD = "mx-auto max-w-[1360px] px-3 pt-4 pb-5 sm:px-4 md:pt-6 lg:px-6";
+
+/** Real assets on their own (Modal page), with the bot's one-line summary on top. */
+export function RealDashboard({ showMarkets = true }: { showMarkets?: boolean }) {
+  const data = useRealData();
+  return (
+    <section className={DASHBOARD} aria-label="Aset nyata">
+      <div className="grid grid-cols-12 gap-4 md:gap-5">
+        <BotSummaryCard />
+        <RealAssets data={data} showMarkets={showMarkets} title="Total aset nyata Anda" />
       </div>
     </section>
+  );
+}
+
+/**
+ * The Live home: the Demo dashboard and agent terminal, fed by the real bot and real
+ * balances. One read of each for the whole page, to keep Vercel usage small.
+ */
+export function LiveHome() {
+  const data = useRealData();
+  const bot = useBot();
+  const total = data.portfolio ? data.portfolio.totalIdr + data.manual : null;
+  return (
+    <>
+      <section className={DASHBOARD} aria-labelledby="real-title">
+        <div className="grid grid-cols-12 gap-4 md:gap-5">
+          <LiveHero view={bot.view} botError={bot.error} portfolio={data.portfolio} manual={data.manual} error={data.error} loading={data.loading} reload={data.reload} />
+        </div>
+      </section>
+      <section id="terminal" className="mx-auto max-w-[1360px] scroll-mt-24 px-3 pb-5 sm:px-4 lg:px-6" aria-label="Terminal agen">
+        {bot.view ? <LiveTerminal view={bot.view} equity={total} /> : <div className="glass p-6 text-sm text-ink-3">{bot.error ?? "Memuat tim agen…"}</div>}
+      </section>
+      <section className="mx-auto max-w-[1360px] px-3 pb-5 sm:px-4 lg:px-6" aria-label="Rincian aset nyata">
+        <div className="grid grid-cols-12 gap-4 md:gap-5">
+          <RealAssets data={data} showMarkets title="Rincian aset nyata" />
+        </div>
+      </section>
+    </>
   );
 }
 
@@ -363,7 +401,7 @@ export function LiveMarketsPanel() {
   }, 60_000);
 
   return (
-    <section className="glass mx-3 mb-5 max-w-[1312px] p-5 sm:mx-4 md:p-8 lg:mx-6 min-[1640px]:mx-auto" aria-labelledby="live-markets">
+    <section className={PANEL} aria-labelledby="live-markets">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 id="live-markets" className="text-xl font-normal tracking-[-0.015em] text-ink md:text-2xl">

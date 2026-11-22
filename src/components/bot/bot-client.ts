@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import type { BotView } from "@/lib/server/bot/view";
-import type { BotSettings } from "@/lib/server/bot/types";
+import type { AgentName, BotSettings } from "@/lib/server/bot/types";
 import { useVisibleInterval } from "@/lib/use-visible-interval";
 
 export type { BotView };
@@ -141,4 +141,42 @@ export function monthProgress(view: BotView) {
   const capital = view.capital[main] ?? 0;
   const target = (capital * view.settings.monthlyTargetPct) / 100;
   return { quote: main, realized, capital, target, ratio: target > 0 ? Math.max(0, Math.min(1, realized / target)) : 0 };
+}
+
+/** Text colour per agent, the same in every list of agent steps. */
+export const AGENT_TONE: Record<AgentName, string> = {
+  Pemindai: "text-accent",
+  Analis: "text-[#7c3aed]",
+  Risiko: "text-caution",
+  Eksekutor: "text-positive",
+};
+
+/**
+ * When the working capital is too small for even one order: the bot may put only
+ * maxAllocPct% of it into coins, and that part must reach the exchange's minimum order.
+ */
+export function capitalShort(view: BotView) {
+  const p = monthProgress(view);
+  const min = view.minOrder[p.quote] ?? 0;
+  const alloc = view.settings.params.maxAllocPct / 100;
+  if (!view.settings.auto || p.capital <= 0 || alloc <= 0 || p.capital * alloc >= min) return null;
+  return { quote: p.quote, capital: p.capital, min, need: Math.ceil(min / alloc) };
+}
+
+/** What the bot holds in one quote currency: market value, cost, and result if sold now after fees. */
+export function botHoldings(view: BotView, quote: string) {
+  const mine = view.positions.filter((p) => quoteOf(p.pair) === quote);
+  return {
+    count: mine.length,
+    value: mine.reduce((s, p) => s + (p.value ?? p.cost), 0),
+    cost: mine.reduce((s, p) => s + p.cost, 0),
+    unrealized: mine.reduce((s, p) => s + (p.netPct !== null ? (p.cost * p.netPct) / 100 : 0), 0),
+  };
+}
+
+/** Orders the bot actually placed this calendar month. */
+export function ordersThisMonth(view: BotView) {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  return view.journal.filter((j) => j.ok && j.action !== "error" && j.at >= start).length;
 }

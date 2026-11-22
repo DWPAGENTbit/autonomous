@@ -13,6 +13,15 @@ export interface PositionView extends Position {
   netPct: number | null;
 }
 
+/** A market the bot watches, at the price it last read. */
+export interface WatchQuote {
+  broker: BrokerId;
+  pair: string;
+  price: number | null;
+  /** Indodax IDR markets only; null elsewhere. */
+  change24hPct: number | null;
+}
+
 export interface BotView {
   settings: BotSettings;
   profiles: Record<Profile, StrategyParams>;
@@ -31,6 +40,8 @@ export interface BotView {
   capital: Record<string, number>;
   month: MonthStats & { key: string };
   positions: PositionView[];
+  /** The pairs the bot checks, with 24-hour change where the exchange gives it. */
+  watch: WatchQuote[];
   decisions: LastDecision[];
   journal: JournalEntry[];
 }
@@ -107,6 +118,14 @@ export async function botView(fresh = false): Promise<BotView> {
     capital,
     month: { key, ...(state.months[key] ?? { realized: {}, trades: 0, wins: 0 }) },
     positions,
+    watch: active.flatMap((id) =>
+      s.brokers[id].pairs.map((pair) => {
+        const [base, quote] = BROKERS[id].split(pair);
+        const t = id === "indodax" && quote === "IDR" ? tickers?.get(base) : undefined;
+        const held = positions.find((p) => p.broker === id && p.pair === pair);
+        return { broker: id, pair, price: t?.last ?? held?.price ?? null, change24hPct: t?.change24hPct ?? null };
+      }),
+    ),
     decisions: Object.values(state.decisions)
       .filter((d) => d.mode === mode && active.includes(d.broker) && s.brokers[d.broker].pairs.includes(d.pair))
       .sort((a, b) => b.at - a.at),
