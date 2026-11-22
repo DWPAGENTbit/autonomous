@@ -19,9 +19,9 @@ export function TargetDial({ progress, size = 220 }: { progress: number; size?: 
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="max-w-full" aria-hidden>
       <defs>
         <linearGradient id={gradient} x1="0" y1="1" x2="1" y2="0">
-          <stop offset="0" stopColor="#12c9f0" />
-          <stop offset="0.6" stopColor="#19d3f0" />
-          <stop offset="1" stopColor="#19d3f0" />
+          <stop offset="0" stopColor="#3fa58c" />
+          <stop offset="0.6" stopColor="#6cc9b1" />
+          <stop offset="1" stopColor="#6cc9b1" />
         </linearGradient>
       </defs>
       <g transform={`rotate(135 ${size / 2} ${size / 2})`}>
@@ -37,7 +37,7 @@ export function TargetDial({ progress, size = 220 }: { progress: number; size?: 
               y1={round(size / 2 + r1 * Math.sin(a))}
               x2={round(size / 2 + r2 * Math.cos(a))}
               y2={round(size / 2 + r2 * Math.sin(a))}
-              stroke={lit ? "#12c9f0" : "rgba(15,40,32,0.15)"}
+              stroke={lit ? "#3fa58c" : "rgba(15,40,32,0.15)"}
               strokeWidth={1.5}
               strokeLinecap="round"
             />

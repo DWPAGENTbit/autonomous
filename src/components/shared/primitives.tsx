@@ -32,7 +32,7 @@ export function SectionHeader({
     <header className="mb-7 grid grid-cols-12 items-end gap-x-6 gap-y-3">
       <div className="col-span-12 md:col-span-8">
         <p className="mb-3 flex items-center gap-2">
-          <span className="num inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-gradient-to-br from-[#12c9f0] to-accent px-2 font-mono text-[10px] font-semibold text-white">
+          <span className="num inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-gradient-to-br from-[#3fa58c] to-accent px-2 font-mono text-[10px] font-semibold text-white">
             {index}
           </span>
           <span className="text-sm font-medium text-ink">{title}</span>
@@ -168,7 +168,7 @@ export const Button = forwardRef<
       className={clsx(
         "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium tracking-[0.01em] transition-[background-color,border-color,color,transform] duration-150 ease-out active:translate-y-px disabled:opacity-40",
         size === "sm" ? "h-8 px-3 text-xs" : "h-10 px-4 text-sm",
-        variant === "primary" && "bg-gradient-to-br from-[#12c9f0] to-accent text-white shadow-[0_6px_18px_rgb(10_99_242/0.3)] hover:brightness-105",
+        variant === "primary" && "bg-[#16130f] text-white shadow-[0_8px_20px_rgb(22_19_15/0.28)] hover:bg-[#2a241e]",
         variant === "secondary" && "border border-glass-edge bg-glass-strong text-ink hover:bg-white",
         variant === "ghost" && "text-ink-2 hover:bg-sunken hover:text-ink",
         variant === "danger" && "bg-negative text-white shadow-[0_6px_18px_rgb(217_67_75/0.3)] hover:brightness-105",

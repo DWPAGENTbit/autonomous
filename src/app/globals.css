@@ -6,42 +6,42 @@
    ────────────────────────────────────────────────────────────── */
 
 @theme {
-  /* Surfaces — frosted glass over a soft cyan/blue backdrop */
-  --color-canvas: #eef3f8;
-  --color-surface: rgb(255 255 255 / 0.66);
-  --color-sunken: rgb(15 40 32 / 0.05);
-  --color-glass: rgb(255 255 255 / 0.55);
-  --color-glass-strong: rgb(255 255 255 / 0.78);
-  --color-glass-edge: rgb(255 255 255 / 0.75);
+  /* Surfaces — smoky, warm frosted glass over a softly lit room */
+  --color-canvas: #e9e3dc;
+  --color-surface: rgb(250 247 243 / 0.6);
+  --color-sunken: rgb(40 30 20 / 0.06);
+  --color-glass: rgb(236 230 223 / 0.46);
+  --color-glass-strong: rgb(248 245 241 / 0.72);
+  --color-glass-edge: rgb(255 255 255 / 0.5);
 
   /* Ink */
-  --color-ink: #0d1626;
-  --color-ink-2: #3a4658;
-  --color-ink-3: #5d6a7c;
-  --color-ink-4: #929eae;
+  --color-ink: #171410;
+  --color-ink-2: #3f3832;
+  --color-ink-3: #655c54;
+  --color-ink-4: #978d84;
 
   /* Borders */
-  --color-line: rgb(15 40 32 / 0.08);
-  --color-line-strong: rgb(15 40 32 / 0.16);
+  --color-line: rgb(40 30 20 / 0.09);
+  --color-line-strong: rgb(40 30 20 / 0.17);
 
-  /* Meaning — blue/cyan is the brand (from the logo), green is money in, red is money out */
+  /* Meaning — deep teal is the highlight, green is money in, red is money out */
   --color-positive: #0d9b63;
   --color-positive-soft: rgb(16 185 129 / 0.14);
   --color-negative: #d9434b;
   --color-negative-soft: rgb(217 67 75 / 0.12);
-  --color-accent: #0a63f2;
-  --color-accent-soft: rgb(10 99 242 / 0.12);
-  --color-cyan: #19d3f0;
+  --color-accent: #127562;
+  --color-accent-soft: rgb(18 117 98 / 0.13);
+  --color-cyan: #6cc9b1;
   --color-gold: #c9971c;
   --color-gold-soft: rgb(234 179 8 / 0.16);
   --color-caution: #b7770b;
   --color-caution-soft: rgb(245 158 11 / 0.15);
 
   /* Charts */
-  --color-chart-line: #0a63f2;
+  --color-chart-line: #127562;
   --color-chart-muted: #a9b8b2;
   --color-chart-grid: rgb(15 40 32 / 0.07);
-  --color-chart-area: rgb(10 99 242 / 0.1);
+  --color-chart-area: rgb(18 117 98 / 0.1);
 
   /* Typography */
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
@@ -74,13 +74,13 @@
   --radius-xs: 6px;
   --radius-sm: 10px;
   --radius-md: 16px;
-  --radius-lg: 22px;
-  --radius-xl: 28px;
+  --radius-lg: 26px;
+  --radius-xl: 32px;
 
   /* Elevation — only for things that float */
   --shadow-raise: 0 1px 2px rgb(15 40 32 / 0.04), 0 8px 28px rgb(15 40 32 / 0.07);
   --shadow-panel: 0 1px 2px rgb(15 40 32 / 0.05), 0 24px 64px rgb(15 40 32 / 0.16);
-  --shadow-glass: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 1px 2px rgb(15 40 32 / 0.04), 0 12px 40px rgb(15 40 32 / 0.08);
+  --shadow-glass: inset 0 1px 0 rgb(255 255 255 / 0.55), inset 0 0 0 1px rgb(255 255 255 / 0.08), 0 1px 2px rgb(40 30 20 / 0.05), 0 18px 50px rgb(40 30 20 / 0.12);
 
   /* Motion */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -92,10 +92,21 @@
 
   --animate-breathe: breathe 3.2s var(--ease-in-out) infinite;
   --animate-progress: progress-sweep 1.6s var(--ease-in-out) infinite;
+  --animate-page-in: page-in 0.5s var(--ease-out) both;
+  --animate-page-in-late: page-in 0.6s var(--ease-out) 0.12s both;
+  --animate-float: float 6s var(--ease-in-out) infinite;
 
   @keyframes breathe {
     0%, 100% { opacity: 0.35; transform: scale(0.85); }
     50% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes page-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
   }
   @keyframes progress-sweep {
     0% { transform: translateX(-100%); }
@@ -125,7 +136,7 @@
     font-feature-settings: "ss01", "cv11";
   }
   ::selection {
-    background: rgb(25 211 240 / 0.28);
+    background: rgb(108 201 177 / 0.28);
     color: var(--color-ink);
   }
   :focus-visible {
@@ -145,8 +156,8 @@
   /* Frosted glass panel — the platform's main surface */
   .glass {
     background: var(--color-glass);
-    -webkit-backdrop-filter: blur(22px) saturate(160%);
-    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(30px) saturate(140%);
+    backdrop-filter: blur(30px) saturate(140%);
     border: 1px solid var(--color-glass-edge);
     box-shadow: var(--shadow-glass);
     border-radius: var(--radius-lg);
@@ -158,26 +169,41 @@
     border: 1px solid var(--color-glass-edge);
     box-shadow: var(--shadow-glass);
   }
-  /* Soft colour field behind the glass: cyan and blue light, a hint of mint */
+  /* A softly lit room seen through frosted glass: warm wall, wood, window light, shadow */
   .app-backdrop {
     position: fixed;
     inset: 0;
     z-index: -1;
     pointer-events: none;
     background:
-      radial-gradient(42% 38% at 8% 6%, rgb(25 211 240 / 0.34), transparent 70%),
-      radial-gradient(36% 34% at 92% 12%, rgb(10 99 242 / 0.2), transparent 70%),
-      radial-gradient(44% 40% at 78% 88%, rgb(56 189 248 / 0.24), transparent 70%),
-      radial-gradient(38% 36% at 18% 92%, rgb(52 211 153 / 0.16), transparent 70%),
-      linear-gradient(160deg, #f3f7fb 0%, #eaf1f8 48%, #eef3f6 100%);
+      radial-gradient(30% 45% at 6% 55%, rgb(120 86 58 / 0.55), transparent 72%),
+      radial-gradient(26% 40% at 96% 40%, rgb(96 70 50 / 0.5), transparent 72%),
+      radial-gradient(40% 30% at 30% 0%, rgb(140 104 72 / 0.45), transparent 75%),
+      radial-gradient(34% 28% at 72% 2%, rgb(255 248 236 / 0.9), transparent 70%),
+      radial-gradient(50% 40% at 55% 100%, rgb(176 160 146 / 0.55), transparent 75%),
+      radial-gradient(30% 30% at 82% 78%, rgb(108 201 177 / 0.16), transparent 70%),
+      linear-gradient(170deg, #ddd3c7 0%, #cfc4b8 45%, #c4b9ae 100%);
+    background-size: 120% 120%;
+    animation: backdrop-drift 28s var(--ease-in-out) infinite alternate;
   }
   .app-backdrop::after {
     content: "";
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(rgb(15 40 32 / 0.05) 1px, transparent 1px);
-    background-size: 22px 22px;
-    mask-image: linear-gradient(to bottom, black, transparent 70%);
+    opacity: 0.35;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.24 0 0 0 0 0.18 0 0 0 0.25 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  @keyframes backdrop-drift {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+  }
+  /* Cards that answer a tap lift a little */
+  .lift {
+    transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out), background-color 220ms var(--ease-out);
+  }
+  .lift:hover {
+    transform: translateY(-2px);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6), 0 22px 50px rgb(40 30 20 / 0.16);
   }
   /* Pill buttons and chips, as in the reference dashboard */
   .pill {
@@ -193,14 +219,22 @@
     color: var(--color-ink-2);
     transition: background-color 150ms, color 150ms, border-color 150ms;
   }
-  .pill:hover { color: var(--color-ink); background: #fff; }
+  .pill:hover { color: var(--color-ink); background: rgb(255 255 255 / 0.92); }
   .pill-accent {
-    background: linear-gradient(135deg, #12c9f0, #0a63f2);
+    background: #16130f;
     border-color: transparent;
     color: #fff;
-    box-shadow: 0 6px 18px rgb(10 99 242 / 0.32);
+    box-shadow: 0 8px 20px rgb(22 19 15 / 0.28);
   }
-  .pill-accent:hover { color: #fff; background: linear-gradient(135deg, #22d3ee, #0a63f2); }
+  .pill-accent:hover { color: #fff; background: #2a241e; }
+  /* The featured tile: deep teal glass, as for earnings in the reference */
+  .glass-teal {
+    background: linear-gradient(150deg, rgb(63 165 140 / 0.92), rgb(18 117 98 / 0.88));
+    color: #fff;
+    border: 1px solid rgb(255 255 255 / 0.28);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 18px 40px rgb(18 117 98 / 0.3);
+    border-radius: var(--radius-lg);
+  }
 
   /* Small uppercase label — the system's primary wayfinding voice */
   .label {

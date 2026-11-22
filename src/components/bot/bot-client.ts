@@ -139,8 +139,12 @@ export function monthProgress(view: BotView) {
   const main = quotes.includes("IDR") ? "IDR" : (quotes[0] ?? "IDR");
   const realized = view.month.realized[main] ?? 0;
   const capital = view.capital[main] ?? 0;
-  const target = (capital * view.settings.monthlyTargetPct) / 100;
-  return { quote: main, realized, capital, target, ratio: target > 0 ? Math.max(0, Math.min(1, realized / target)) : 0 };
+  // An amount the owner typed wins over the percentage of working capital.
+  const fixed = main === "IDR" ? (view.settings.monthlyTargetAmount ?? 0) : 0;
+  const target = fixed > 0 ? fixed : (capital * view.settings.monthlyTargetPct) / 100;
+  /** What the target means as a monthly return on the working capital, in %. */
+  const targetPct = capital > 0 ? (target / capital) * 100 : null;
+  return { quote: main, realized, capital, target, targetPct, fixed: fixed > 0, ratio: target > 0 ? Math.max(0, Math.min(1, realized / target)) : 0 };
 }
 
 /** Text colour per agent, the same in every list of agent steps. */

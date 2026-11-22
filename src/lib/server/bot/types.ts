@@ -45,6 +45,8 @@ export interface BotSettings {
   watchlist: Record<BrokerId, string[]>;
   /** Shown as a goal, never promised. */
   monthlyTargetPct: number;
+  /** Monthly target as an amount in the main quote currency (Rupiah); 0 = use monthlyTargetPct. */
+  monthlyTargetAmount: number;
   updatedAt: number;
 }
 

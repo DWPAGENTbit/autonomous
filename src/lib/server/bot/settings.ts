@@ -76,6 +76,7 @@ export function defaultSettings(): BotSettings {
     },
     watchlist: { indodax: [], tokocrypto: [] },
     monthlyTargetPct: 3,
+    monthlyTargetAmount: 0,
     updatedAt: 0,
   };
 }
@@ -131,6 +132,7 @@ export function cleanSettings(input: unknown, base: BotSettings = defaultSetting
     brokers,
     watchlist,
     monthlyTargetPct: clamp(raw.monthlyTargetPct, [0.1, 100], base.monthlyTargetPct),
+    monthlyTargetAmount: Math.round(clamp(raw.monthlyTargetAmount, [0, 1e12], base.monthlyTargetAmount ?? 0)),
     updatedAt: typeof raw.updatedAt === "number" ? raw.updatedAt : base.updatedAt,
   };
 }

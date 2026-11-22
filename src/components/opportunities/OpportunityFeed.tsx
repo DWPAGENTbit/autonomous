@@ -117,7 +117,7 @@ const OpportunityItem = memo(function OpportunityItem({
               <AnimatedValue value={opp.probability * 100} format={(v) => `${Math.round(v)}%`} className="text-base text-ink" />
               <span className="mt-1.5 block h-[4px] w-full overflow-hidden rounded-full bg-line" aria-hidden>
                 <motion.span
-                  className="block h-full origin-left rounded-full bg-gradient-to-r from-[#12c9f0] to-accent"
+                  className="block h-full origin-left rounded-full bg-gradient-to-r from-[#3fa58c] to-accent"
                   initial={false}
                   animate={{ scaleX: opp.probability }}
                   transition={transition.scene}

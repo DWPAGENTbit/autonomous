@@ -1,7 +1,7 @@
 import { useId } from "react";
 
 /**
- * The DWP mark (owner-supplied logo, redrawn as SVG): a folded blue-to-cyan
+ * The DWP mark (owner-supplied logo, redrawn as SVG): a folded deep-to-mint green
  * ribbon forming a forward "play" shape, with the agent's dot at the top right.
  * Colors are fixed brand colors and do not follow the UI theme.
  */
@@ -11,27 +11,27 @@ export function BrandMark({ size = 24, className }: { size?: number; className?:
     <svg width={size} height={size} viewBox="0 0 100 100" fill="none" aria-hidden className={className}>
       <defs>
         <linearGradient id={`bm-back-${id}`} x1="20" y1="18" x2="70" y2="50" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#0a6cff" />
-          <stop offset="0.6" stopColor="#0646d8" />
-          <stop offset="1" stopColor="#0a8fd8" />
+          <stop offset="0" stopColor="#12a874" />
+          <stop offset="0.6" stopColor="#0b7a55" />
+          <stop offset="1" stopColor="#1fae7d" />
         </linearGradient>
         <linearGradient id={`bm-loop-${id}`} x1="17" y1="84" x2="86" y2="50" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#0a9cff" />
-          <stop offset="0.45" stopColor="#0a63f2" />
-          <stop offset="1" stopColor="#14b8f0" />
+          <stop offset="0" stopColor="#19b37f" />
+          <stop offset="0.45" stopColor="#0e8a62" />
+          <stop offset="1" stopColor="#3cc79a" />
         </linearGradient>
         <linearGradient id={`bm-front-${id}`} x1="14" y1="60" x2="88" y2="44" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#0a6cff" />
-          <stop offset="0.45" stopColor="#0bb4ff" />
-          <stop offset="1" stopColor="#1ff4ff" />
+          <stop offset="0" stopColor="#12a874" />
+          <stop offset="0.45" stopColor="#2cc48f" />
+          <stop offset="1" stopColor="#7ee8c0" />
         </linearGradient>
         <linearGradient id={`bm-fold-${id}`} x1="36" y1="80" x2="62" y2="54" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#0436c2" />
-          <stop offset="1" stopColor="#0a7bff" />
+          <stop offset="0" stopColor="#075c41" />
+          <stop offset="1" stopColor="#149a6c" />
         </linearGradient>
         <linearGradient id={`bm-dot-${id}`} x1="66" y1="15" x2="76" y2="34" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#25e3ff" />
-          <stop offset="1" stopColor="#0a6cff" />
+          <stop offset="0" stopColor="#6fe3b9" />
+          <stop offset="1" stopColor="#12a874" />
         </linearGradient>
       </defs>
       {/* Back strand: from the top-left lobe, passing under the front band */}
@@ -62,13 +62,13 @@ export function BrandMark({ size = 24, className }: { size?: number; className?:
   );
 }
 
-/** The written name. "EARN MONEY" carries the logo's blue-to-cyan gradient. */
+/** The written name. "EARN MONEY" carries the logo's green gradient. */
 export function BrandWordmark({ className }: { className?: string }) {
   return (
     <span
       className={`text-[12px] font-semibold tracking-[0.16em] whitespace-nowrap text-ink sm:text-[13px] sm:tracking-[0.24em] ${className ?? ""}`}
     >
-      DWP <span className="bg-gradient-to-r from-[#0a63f2] to-[#12c9f0] bg-clip-text text-transparent">EARN MONEY</span>
+      DWP <span className="bg-gradient-to-r from-[#0e8a62] to-[#3cc79a] bg-clip-text text-transparent">EARN MONEY</span>
     </span>
   );
 }

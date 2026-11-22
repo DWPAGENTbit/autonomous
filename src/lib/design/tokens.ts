@@ -57,7 +57,7 @@ export const rawColor = {
   ink3: "#5f6f69",
   ink4: "#93a19b",
   line: "#dbe5e0",
-  accent: "#0a63f2",
+  accent: "#127562",
   positive: "#0d9b63",
   caution: "#b7770b",
 } as const;

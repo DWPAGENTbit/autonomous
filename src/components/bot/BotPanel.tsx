@@ -173,11 +173,13 @@ export function BotPanel({ onBrokersChange }: { onBrokersChange?: () => void }) 
   const [note, setNote] = useState<string | null>(null);
   const [draft, setDraft] = useState<StrategyParams | null>(null);
   const [target, setTarget] = useState<string>("");
+  const [amount, setAmount] = useState<string>("");
 
   useEffect(() => {
     if (v) {
       setDraft(v.settings.params);
       setTarget(String(v.settings.monthlyTargetPct));
+      setAmount(v.settings.monthlyTargetAmount ? String(v.settings.monthlyTargetAmount) : "");
     }
   }, [v]);
 
@@ -212,7 +214,7 @@ export function BotPanel({ onBrokersChange }: { onBrokersChange?: () => void }) 
       aria-labelledby="bot-title"
       className={clsx(
         "glass scroll-mt-24 overflow-hidden p-5 md:p-8",
-        s.auto && (live ? "border-positive/30 bg-gradient-to-br from-positive-soft via-white/70 to-[#12c9f0]/10" : "border-caution/25 bg-caution-soft"),
+        s.auto && (live ? "border-positive/30 bg-gradient-to-br from-positive-soft via-white/70 to-[#3fa58c]/10" : "border-caution/25 bg-caution-soft"),
       )}
     >
       {/* Header: the master switch */}
@@ -292,16 +294,62 @@ export function BotPanel({ onBrokersChange }: { onBrokersChange?: () => void }) 
             {signedMoney(progress.realized, progress.quote)}
           </p>
           <div className="mt-4 h-2 overflow-hidden rounded-full bg-sunken" role="progressbar" aria-valuenow={Math.round(progress.ratio * 100)} aria-valuemin={0} aria-valuemax={100} aria-label="Kemajuan target bulanan">
-            <div className="h-full rounded-full bg-gradient-to-r from-[#12c9f0] to-positive" style={{ width: `${progress.ratio * 100}%` }} />
+            <div className="h-full rounded-full bg-gradient-to-r from-[#3fa58c] to-positive" style={{ width: `${progress.ratio * 100}%` }} />
           </div>
           <p className="mt-2 flex flex-wrap justify-between gap-2 text-xs text-ink-3">
             <span>
-              Target {s.monthlyTargetPct}% dari modal kerja {money(progress.capital, progress.quote)} = <b className="text-ink-2">{money(progress.target, progress.quote)}</b>
+              {progress.fixed ? (
+                <>
+                  Target Anda <b className="text-ink-2">{money(progress.target, progress.quote)}</b>
+                  {progress.targetPct !== null && ` = ${progress.targetPct.toLocaleString("id-ID", { maximumFractionDigits: 1 })}% dari modal kerja ${money(progress.capital, progress.quote)}`}
+                </>
+              ) : (
+                <>
+                  Target {s.monthlyTargetPct}% dari modal kerja {money(progress.capital, progress.quote)} = <b className="text-ink-2">{money(progress.target, progress.quote)}</b>
+                </>
+              )}
             </span>
             <span>
               {v.month.trades} kali ambil untung/keluar · {v.month.wins} untung
             </span>
           </p>
+          <form
+            className="mt-3 flex flex-wrap items-center gap-2"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              await save({ monthlyTargetAmount: Number(amount.replace(/\D/g, "")) || 0 });
+            }}
+          >
+            <label htmlFor="target-amount" className="text-xs text-ink-2">
+              Target bulan ini
+            </label>
+            <span className="flex h-9 items-center rounded-[12px] border border-line-strong bg-white/80 pl-2.5">
+              <span className="text-xs text-ink-4">Rp</span>
+              <input
+                id="target-amount"
+                inputMode="numeric"
+                placeholder={String(Math.round((progress.capital * s.monthlyTargetPct) / 100))}
+                value={amount ? Number(amount.replace(/\D/g, "")).toLocaleString("id-ID") : ""}
+                onChange={(e) => setAmount(e.target.value.replace(/\D/g, ""))}
+                className="h-full w-28 min-w-0 bg-transparent px-1.5 font-mono text-sm text-ink outline-none"
+              />
+            </span>
+            <button type="submit" className="pill pill-accent !px-3 !py-1.5 text-xs" disabled={busy}>
+              Simpan
+            </button>
+            {progress.fixed && (
+              <button type="button" className="pill !px-3 !py-1.5 text-xs" disabled={busy} onClick={() => save({ monthlyTargetAmount: 0 })}>
+                Pakai {s.monthlyTargetPct}% modal
+              </button>
+            )}
+          </form>
+          {progress.fixed && progress.targetPct !== null && progress.targetPct > 10 && (
+            <p className="mt-2 rounded-[12px] bg-caution-soft px-3 py-2 text-[11px] text-ink-2">
+              Target ini {progress.targetPct.toLocaleString("id-ID", { maximumFractionDigits: 0 })}% dari modal kerja per bulan — jauh di atas yang bisa dicapai dengan aman. Bot tetap
+              berdagang di dalam batas risiko yang Anda pilih dan tidak menaikkan risiko untuk mengejarnya; yang mendekatkan target adalah modal lebih besar
+              atau profil risiko yang Anda ubah sendiri.
+            </p>
+          )}
           <p className="mt-1 text-[11px] text-ink-4">Target adalah sasaran, bukan janji. Hanya penjualan yang sudah terjadi yang dihitung.</p>
 
           <p className="label mt-6 mb-2 text-[10px]">Koin yang dipegang bot</p>

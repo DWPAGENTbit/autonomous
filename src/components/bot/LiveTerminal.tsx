@@ -268,7 +268,7 @@ export function LiveTerminal({ view: v, equity }: { view: BotView; equity?: numb
               {flowIdx > 0 && (
                 <span
                   aria-hidden
-                  className="absolute top-[18px] left-[10%] h-0.5 bg-gradient-to-r from-[#0a63f2] to-[#19d3f0]"
+                  className="absolute top-[18px] left-[10%] h-0.5 bg-gradient-to-r from-[#127562] to-[#6cc9b1]"
                   style={{ width: `${(flowIdx / (FLOW.length - 1)) * 80}%` }}
                 />
               )}
@@ -280,7 +280,7 @@ export function LiveTerminal({ view: v, equity }: { view: BotView; equity?: numb
                     <span
                       className={clsx(
                         "inline-flex size-9 items-center justify-center rounded-full border font-mono text-sm font-semibold",
-                        on ? "border-accent bg-accent text-white shadow-[0_0_0_5px_rgb(10_99_242/0.15)]" : passed ? "border-accent bg-white text-accent" : "border-line-strong bg-white text-ink-4",
+                        on ? "border-accent bg-accent text-white shadow-[0_0_0_5px_rgb(18_117_98/0.15)]" : passed ? "border-accent bg-white text-accent" : "border-line-strong bg-white text-ink-4",
                       )}
                     >
                       {i + 1}
@@ -295,8 +295,8 @@ export function LiveTerminal({ view: v, equity }: { view: BotView; equity?: numb
             <svg viewBox="0 0 600 130" className="mt-4 hidden w-full sm:block" role="img" aria-label={stage ? `Pemeriksaan terakhir sampai tahap ${stage}` : "Mode otomatis mati"}>
               <defs>
                 <linearGradient id="live-flow-line" x1="0" x2="1">
-                  <stop offset="0" stopColor="#0a63f2" />
-                  <stop offset="1" stopColor="#19d3f0" />
+                  <stop offset="0" stopColor="#127562" />
+                  <stop offset="1" stopColor="#6cc9b1" />
                 </linearGradient>
               </defs>
               <line x1={x(0)} y1={52} x2={x(4)} y2={52} stroke="#dbe5e0" strokeWidth={2} />
@@ -306,7 +306,7 @@ export function LiveTerminal({ view: v, equity }: { view: BotView; equity?: numb
                   key={flowIdx}
                   r={4}
                   cy={52}
-                  fill="#19d3f0"
+                  fill="#6cc9b1"
                   initial={{ cx: x(Math.max(0, flowIdx - 1)), opacity: 0 }}
                   animate={{ cx: x(flowIdx), opacity: [0, 1, 1, 0] }}
                   transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
@@ -322,21 +322,21 @@ export function LiveTerminal({ view: v, equity }: { view: BotView; equity?: numb
                         cx={x(i)}
                         cy={52}
                         fill="none"
-                        stroke="#0a63f2"
+                        stroke="#127562"
                         strokeWidth={1.5}
                         initial={{ r: 22, opacity: 0.6 }}
                         animate={{ r: 34, opacity: 0 }}
                         transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
                       />
                     )}
-                    <circle cx={x(i)} cy={52} r={22} fill={on ? "#0a63f2" : "#ffffff"} stroke={on || passed ? "#0a63f2" : "#c6d3cd"} strokeWidth={on ? 0 : 1.5} />
-                    <text x={x(i)} y={57} textAnchor="middle" fontSize={14} fontWeight={600} fill={on ? "#ffffff" : passed ? "#0a63f2" : "#93a19b"} fontFamily="ui-monospace, monospace">
+                    <circle cx={x(i)} cy={52} r={22} fill={on ? "#127562" : "#ffffff"} stroke={on || passed ? "#127562" : "#c6d3cd"} strokeWidth={on ? 0 : 1.5} />
+                    <text x={x(i)} y={57} textAnchor="middle" fontSize={14} fontWeight={600} fill={on ? "#ffffff" : passed ? "#127562" : "#93a19b"} fontFamily="ui-monospace, monospace">
                       {i + 1}
                     </text>
                     <text x={x(i)} y={96} textAnchor="middle" fontSize={12} fill={on ? "#0f1d18" : "#5f6f69"} fontWeight={on ? 600 : 400}>
                       {FLOW_LABEL[k]}
                     </text>
-                    <text x={x(i)} y={113} textAnchor="middle" fontSize={10} fill={on ? "#0a63f2" : "#93a19b"} fontFamily="ui-monospace, monospace">
+                    <text x={x(i)} y={113} textAnchor="middle" fontSize={10} fill={on ? "#127562" : "#93a19b"} fontFamily="ui-monospace, monospace">
                       {on ? stageNote : passed ? "lolos" : "menunggu"}
                     </text>
                   </g>
@@ -458,7 +458,7 @@ export function LiveTerminal({ view: v, equity }: { view: BotView; equity?: numb
                 <span className="h-1.5 rounded-full bg-sunken">
                   <motion.span
                     className={clsx("block h-full rounded-full", r.bar)}
-                    style={r.bar ? undefined : { background: "linear-gradient(90deg, #0a63f2, #19d3f0)" }}
+                    style={r.bar ? undefined : { background: "linear-gradient(90deg, #127562, #6cc9b1)" }}
                     initial={false}
                     animate={{ width: `${(r.v / max) * 100}%` }}
                   />

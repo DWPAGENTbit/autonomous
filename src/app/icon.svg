@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 100 100" fill="none">
   <defs>
-    <linearGradient id="back" x1="20" y1="18" x2="70" y2="50" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0a6cff"/><stop offset="0.6" stop-color="#0646d8"/><stop offset="1" stop-color="#0a8fd8"/></linearGradient>
-    <linearGradient id="loop" x1="17" y1="84" x2="86" y2="50" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0a9cff"/><stop offset="0.45" stop-color="#0a63f2"/><stop offset="1" stop-color="#14b8f0"/></linearGradient>
-    <linearGradient id="front" x1="14" y1="60" x2="88" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0a6cff"/><stop offset="0.45" stop-color="#0bb4ff"/><stop offset="1" stop-color="#1ff4ff"/></linearGradient>
-    <linearGradient id="fold" x1="36" y1="80" x2="62" y2="54" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0436c2"/><stop offset="1" stop-color="#0a7bff"/></linearGradient>
-    <linearGradient id="dot" x1="66" y1="15" x2="76" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#25e3ff"/><stop offset="1" stop-color="#0a6cff"/></linearGradient>
+    <linearGradient id="back" x1="20" y1="18" x2="70" y2="50" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#12a874"/><stop offset="0.6" stop-color="#0b7a55"/><stop offset="1" stop-color="#1fae7d"/></linearGradient>
+    <linearGradient id="loop" x1="17" y1="84" x2="86" y2="50" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#19b37f"/><stop offset="0.45" stop-color="#0e8a62"/><stop offset="1" stop-color="#3cc79a"/></linearGradient>
+    <linearGradient id="front" x1="14" y1="60" x2="88" y2="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#12a874"/><stop offset="0.45" stop-color="#2cc48f"/><stop offset="1" stop-color="#7ee8c0"/></linearGradient>
+    <linearGradient id="fold" x1="36" y1="80" x2="62" y2="54" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#075c41"/><stop offset="1" stop-color="#149a6c"/></linearGradient>
+    <linearGradient id="dot" x1="66" y1="15" x2="76" y2="34" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#6fe3b9"/><stop offset="1" stop-color="#12a874"/></linearGradient>
   </defs>
   <path d="M27 22 L72 49.5" stroke="url(#back)" stroke-width="17" stroke-linecap="round"/>
   <path d="M23 55 L80 53 L40 78 L24 69.5 Z" fill="url(#loop)"/>

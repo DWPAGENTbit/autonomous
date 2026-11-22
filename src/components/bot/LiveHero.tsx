@@ -29,17 +29,35 @@ function useGreeting() {
   return text;
 }
 
-function Kpi({ icon: Icon, label, children, foot }: { icon: typeof Wallet; label: string; children: React.ReactNode; foot?: React.ReactNode }) {
+function Kpi({
+  icon: Icon,
+  label,
+  children,
+  foot,
+  featured,
+}: {
+  icon: typeof Wallet;
+  label: string;
+  children: React.ReactNode;
+  foot?: React.ReactNode;
+  /** The deep-teal card, for the number that matters most. */
+  featured?: boolean;
+}) {
   return (
-    <motion.div variants={item} className="glass flex min-w-0 flex-col p-4 md:p-5">
-      <div className="mb-3 flex items-center gap-2">
-        <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-[9px] bg-white/80 text-accent shadow-[var(--shadow-raise)]">
+    <motion.div variants={item} className={clsx("lift flex min-w-0 flex-col p-4 md:p-5", featured ? "glass-teal" : "glass")}>
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <p className={clsx("truncate text-xs", featured ? "text-white/85" : "text-ink-3")}>{label}</p>
+        <span
+          className={clsx(
+            "inline-flex size-7 shrink-0 items-center justify-center rounded-full",
+            featured ? "bg-white/20 text-white" : "bg-white/70 text-ink-2 shadow-[var(--shadow-raise)]",
+          )}
+        >
           <Icon className="size-3.5" aria-hidden />
         </span>
-        <p className="truncate text-xs text-ink-3">{label}</p>
       </div>
-      <div className="truncate text-xl font-light tracking-[-0.03em] text-ink sm:text-2xl md:text-[1.7rem]">{children}</div>
-      <p className="mt-auto pt-3 text-[11px] text-ink-3">{foot}</p>
+      <div className={clsx("truncate text-xl font-medium tracking-[-0.03em] sm:text-2xl md:text-[1.75rem]", featured ? "text-white" : "text-ink")}>{children}</div>
+      <p className={clsx("mt-auto pt-3 text-[11px]", featured ? "text-white/80" : "text-ink-3")}>{foot}</p>
     </motion.div>
   );
 }
@@ -97,7 +115,7 @@ export function LiveHero({
         <div
           aria-hidden
           className="pointer-events-none absolute -top-28 -right-20 size-80 rounded-full opacity-80 blur-3xl"
-          style={{ background: "radial-gradient(circle, rgba(25,211,240,0.42), rgba(10,99,242,0.14) 55%, transparent 72%)" }}
+          style={{ background: "radial-gradient(circle, rgba(108,201,177,0.42), rgba(18,117,98,0.14) 55%, transparent 72%)" }}
         />
         <div className="relative flex flex-wrap items-center gap-2">
           <span className="pill !py-1 text-[11px]">
@@ -171,7 +189,7 @@ export function LiveHero({
               key={t.k}
               href={t.href}
               className={clsx(
-                "group flex min-w-0 items-center gap-3 rounded-[16px] border border-glass-edge bg-white/55 p-3 transition-colors hover:bg-white/85",
+                "lift group flex min-w-0 items-center gap-3 rounded-[18px] border border-glass-edge bg-white/50 p-3 hover:bg-white/80",
                 t.warn && "ring-1 ring-caution/40",
               )}
             >
@@ -191,7 +209,11 @@ export function LiveHero({
       <motion.div variants={item} className="glass col-span-12 flex flex-col items-center p-6 md:col-span-6 xl:col-span-4">
         <div className="flex w-full items-center justify-between gap-2">
           <p className="text-sm font-medium text-ink">Target cuan bulan ini</p>
-          {v && <span className="pill !py-0.5 text-[10px]">{v.settings.monthlyTargetPct}% modal kerja</span>}
+          {v && progress && (
+            <Link href="/akun#bot" className="pill !py-0.5 text-[10px]" title="Ubah target di halaman Akun">
+              {progress.fixed ? "Target Anda" : `${v.settings.monthlyTargetPct}% modal kerja`}
+            </Link>
+          )}
         </div>
         <div className="relative mt-2">
           <TargetDial progress={progress?.ratio ?? 0} />
@@ -222,8 +244,8 @@ export function LiveHero({
         >
           {total !== null ? <AnimatedValue value={total} format={(x) => money(x, "IDR")} /> : "…"}
         </Kpi>
-        <Kpi icon={TrendingUp} label="Cuan bulan ini" foot={v ? `${v.month.trades} kali jual · ${v.month.wins} untung` : "…"}>
-          {progress ? <span className={toneOf(progress.realized)}>{signedMoney(progress.realized, progress.quote)}</span> : "…"}
+        <Kpi featured icon={TrendingUp} label="Cuan bulan ini" foot={v ? `${v.month.trades} kali jual · ${v.month.wins} untung` : "…"}>
+          {progress ? signedMoney(progress.realized, progress.quote) : "…"}
         </Kpi>
         <Kpi icon={Coins} label="Koin milik bot" foot={held ? (held.count ? `${held.count} posisi · modal ${money(held.cost, progress!.quote)}` : "Belum ada posisi") : "…"}>
           {held && progress ? money(held.value, progress.quote) : "…"}

@@ -124,7 +124,7 @@ export function Sidebar() {
                   <span
                     className={clsx(
                       "inline-flex size-8 shrink-0 items-center justify-center rounded-[10px] transition-colors",
-                      active ? "bg-gradient-to-br from-[#12c9f0] to-accent text-white shadow-[0_6px_16px_rgb(10_99_242/0.32)]" : "bg-sunken text-ink-3",
+                      active ? "bg-[#16130f] text-white shadow-[0_6px_16px_rgb(22_19_15/0.3)]" : "bg-white/45 text-ink-3",
                     )}
                   >
                     <Icon className="size-4" aria-hidden />
@@ -149,7 +149,7 @@ export function Sidebar() {
       <div
         className={clsx(
           "mt-auto hidden rounded-[18px] border p-4 xl:block",
-          demo ? "border-caution/25 bg-caution-soft" : "border-positive/25 bg-gradient-to-br from-positive-soft via-white/60 to-[#12c9f0]/10",
+          demo ? "border-caution/25 bg-caution-soft" : "border-positive/25 bg-gradient-to-br from-positive-soft via-white/60 to-[#3fa58c]/10",
         )}
       >
         <p className={clsx("font-mono text-[10px] font-semibold tracking-[0.12em] uppercase", demo ? "text-caution" : "text-positive")}>
@@ -213,7 +213,7 @@ export function MobileTabBar() {
   const approvals = useAppStore((s) => (demo ? s.approvals.length : 0));
   return (
     <nav aria-label="Utama" className="fixed inset-x-2 bottom-2 z-40 pb-[env(safe-area-inset-bottom)] lg:hidden">
-      <ul className="glass-strong grid grid-cols-6 rounded-[22px] p-1">
+      <ul className="glass-strong grid grid-cols-6 rounded-[28px] p-1">
         {NAV.map((item) => {
           const active = isActive(pathname, item.href);
           const Icon = item.icon;
@@ -225,7 +225,7 @@ export function MobileTabBar() {
               <Link
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={clsx("relative flex h-14 flex-col items-center justify-center gap-1 text-[10.5px]", active ? "font-medium text-accent" : "text-ink-3")}
+                className={clsx("relative flex h-14 flex-col items-center justify-center gap-1 text-[10.5px]", active ? "font-semibold text-ink" : "text-ink-3")}
               >
                 <span className="relative">
                   <Icon className="size-[18px]" aria-hidden />
