@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { BROKERS, executeOrder, limitFor } from "@/lib/server/brokers";
 import { BrokerError, type BrokerId, type Fill } from "@/lib/server/brokers/types";
 import { idrTickers, type Ticker } from "@/lib/server/market";
-import { activeBrokers, allowedPairs, FEE_PCT, MIN_ORDER, monthKey, positionKey, startOfDay, tradeMode } from "./settings";
+import { activeBrokers, allowedPairs, FEE_PCT, isStablePair, MIN_ORDER, monthKey, positionKey, startOfDay, tradeMode } from "./settings";
 import { decide, type Decision, type MarketView } from "./strategy";
 import { loadState, saveState, updateState } from "./store";
 import type { AgentStep, BotState, JournalEntry, LastDecision, Position, TradeMode } from "./types";
@@ -176,6 +176,7 @@ export async function runTick(by: string): Promise<TickResult> {
         buysToday: today.filter((j) => j.pair === pair && j.action === "buy").length,
         lossToday: -today.filter((j) => j.action === "sell" && (j.pnl ?? 0) < 0).reduce((sum, j) => sum + (j.pnl ?? 0), 0),
         now,
+        sellOnly: isStablePair(pair),
       });
       decisions.push({ at: now, mode, broker: id, pair, action: decision.action, steps: decision.steps });
       if (decision.action === "hold") continue;

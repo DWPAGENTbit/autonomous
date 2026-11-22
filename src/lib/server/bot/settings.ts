@@ -1,6 +1,9 @@
 import { BROKERS, liveTrading, pairsFor } from "@/lib/server/brokers";
 import type { BrokerId } from "@/lib/server/brokers/types";
 import type { BotSettings, BotState, Profile, StrategyParams, TradeMode } from "./types";
+import { isStablePair } from "@/lib/stablecoins";
+
+export { isStablePair };
 
 /** Three ready-made risk profiles. Every number can still be changed by hand. */
 export const PROFILES: Record<Profile, StrategyParams> = {
@@ -68,7 +71,7 @@ export function defaultSettings(): BotSettings {
     params: { ...PROFILES.seimbang },
     brokers: {
       // Indodax works on its own; Tokocrypto is optional and stays off until switched on.
-      indodax: { enabled: true, pairs: pairsFor("indodax").filter((p) => p !== "usdt_idr").slice(0, 1) },
+      indodax: { enabled: true, pairs: pairsFor("indodax").filter((p) => !isStablePair(p)).slice(0, 1) },
       tokocrypto: { enabled: false, pairs: pairsFor("tokocrypto").slice(0, 1) },
     },
     watchlist: { indodax: [], tokocrypto: [] },

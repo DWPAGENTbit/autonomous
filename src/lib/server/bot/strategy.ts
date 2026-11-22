@@ -33,6 +33,8 @@ export interface DecideInput {
   /** Realized losses today on this exchange, as a positive number. */
   lossToday: number;
   now: number;
+  /** A stablecoin (USDT and the like): too flat to trade, so only an existing position is sold. */
+  sellOnly?: boolean;
 }
 
 export type Decision =
@@ -89,6 +91,15 @@ export function decide(i: DecideInput): Decision {
     say(agent, text);
     return { action: "hold", steps };
   };
+
+  if (i.sellOnly) {
+    return hold(
+      "Analis",
+      pos
+        ? `${base} adalah stablecoin: harganya hampir tidak bergerak, jadi bot tidak menambah beli. Yang sudah dipegang tetap dijual saat untung +${p.takeProfitPct}% bersih.`
+        : `${base} adalah stablecoin: harganya hampir tidak bergerak, jadi bot tidak membelinya. Modal dipakai untuk koin lain.`,
+    );
+  }
 
   if (i.lossToday > 0 && i.lossToday >= (capital * p.dailyLossPct) / 100) {
     return hold("Risiko", `Rugi hari ini ${money(i.lossToday, quote)} sudah mencapai batas harian ${p.dailyLossPct}%. Tidak membeli lagi hari ini.`);

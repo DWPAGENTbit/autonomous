@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AlertTriangle, ArrowUpRight, Bot, ChevronDown, Play, Radar, ShieldCheck, Sparkles, TrendingUp, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { StatusDot } from "@/components/shared/primitives";
+import { isStablePair } from "@/lib/stablecoins";
 import type { AgentStep, BotSettings, JournalEntry, LastDecision, Profile, StrategyParams } from "@/lib/server/bot/types";
 import { AGENT_TONE, baseOf, type BotView, capitalShort, dateTimeOf, money, monthProgress, quoteOf, signedMoney, timeOf, useBot } from "./bot-client";
 
@@ -338,7 +339,7 @@ export function BotPanel({ onBrokersChange }: { onBrokersChange?: () => void }) 
         <div className="col-span-12 space-y-4 lg:col-span-5">
           <div className="rounded-[18px] border border-glass-edge bg-white/65 p-5">
             <p className="text-sm font-medium text-ink">Bursa aktif</p>
-            <p className="mt-0.5 text-xs text-ink-3">Indodax bisa jalan sendiri. Tokocrypto opsional — nyalakan kapan saja.</p>
+            <p className="mt-0.5 text-xs text-ink-3">Indodax bisa jalan sendiri. Tokocrypto opsional — nyalakan kapan saja. Stablecoin (mis. USDT) tidak dibeli bot; yang sudah dipegang tetap dijual saat untung.</p>
             <ul className="mt-3 space-y-3">
               {v.brokers.map((b) => (
                 <li key={b.id} className="rounded-[14px] border border-line p-3">
@@ -365,6 +366,7 @@ export function BotPanel({ onBrokersChange }: { onBrokersChange?: () => void }) 
                             className={clsx("rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors", on ? "border-accent bg-accent text-white" : "border-line-strong text-ink-3 hover:text-ink")}
                           >
                             {baseOf(pair)}/{quoteOf(pair)}
+                            {isStablePair(pair) && <span className="ml-1 font-normal opacity-80">· jual saja</span>}
                           </button>
                         );
                       })}
