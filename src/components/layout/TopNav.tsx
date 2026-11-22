@@ -164,16 +164,22 @@ export function TopNav() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 px-3 pt-3 sm:px-4 lg:px-6">
+    <header className="sticky top-0 z-30 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-4 lg:px-6">
       <div
         className={clsx(
-          "mx-auto flex h-14 max-w-[1360px] items-center justify-between gap-3 rounded-full px-3 pl-4 transition-[background-color,box-shadow,border-color] duration-200",
-          scrolled ? "glass-strong" : "border border-transparent",
+          "mx-auto flex h-14 max-w-[1360px] items-center justify-between gap-3 rounded-full px-3 pl-3 transition-[background-color,box-shadow,border-color] duration-200 lg:pl-4",
+          scrolled ? "glass-strong" : "glass-strong lg:border-transparent lg:bg-transparent lg:shadow-none lg:backdrop-blur-none",
         )}
       >
-        <Link href="/" className="flex shrink-0 items-center gap-2 lg:hidden" aria-label="DWP EARN MONEY — Dashboard">
-          <BrandMark size={22} />
-          <BrandWordmark className="!tracking-[0.12em]" />
+        {/* Phones: app-style header — logo, brand and the page you are on */}
+        <Link href="/" className="flex min-w-0 items-center gap-2.5 lg:hidden" aria-label="DWP EARN MONEY — Dashboard">
+          <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-white shadow-[var(--shadow-raise)]">
+            <BrandMark size={24} />
+          </span>
+          <span className="min-w-0 leading-tight">
+            <BrandWordmark className="!text-[9.5px] !tracking-[0.14em]" />
+            <span className="block truncate text-[15px] font-medium text-ink">{current?.long ?? "Dashboard cuan"}</span>
+          </span>
         </Link>
         <div className="hidden min-w-0 items-baseline gap-3 lg:flex">
           <p className="text-lg font-medium tracking-[-0.01em] text-ink">{current?.long ?? "DWP EARN MONEY"}</p>

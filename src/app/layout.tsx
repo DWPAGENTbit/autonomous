@@ -10,6 +10,9 @@ const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", dis
 export const metadata: Metadata = {
   title: { default: "DWP EARN MONEY", template: "%s · DWP EARN MONEY" },
   applicationName: "DWP EARN MONEY",
+  appleWebApp: { capable: true, title: "DWP Earn", statusBarStyle: "default" },
+  icons: { icon: "/icon.svg", apple: "/icons/apple-touch-icon.png" },
+  formatDetection: { telephone: false },
   description:
     "DWP EARN MONEY — platform cari cuan berbasis tim agen: temukan peluang, kelola modal, dan jaga risiko. Data agen adalah simulasi; halaman Akun terhubung ke akun nyata.",
 };
@@ -17,6 +20,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: "#eef3f8",
   colorScheme: "light",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

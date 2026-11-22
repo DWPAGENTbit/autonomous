@@ -1,0 +1,13 @@
+{
+  "appId": "com.dwp.earnmoney",
+  "appName": "DWP EARN MONEY",
+  "webDir": "www",
+  "server": {
+    "url": "https://autonomous-sooty.vercel.app",
+    "cleartext": false
+  },
+  "android": {
+    "backgroundColor": "#eef3f8",
+    "allowMixedContent": false
+  }
+}

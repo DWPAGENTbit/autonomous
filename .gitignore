@@ -5,3 +5,13 @@ next-env.d.ts
 *.tsbuildinfo
 .env*.local
 .vercel
+
+# Android app shell
+mobile/node_modules/
+mobile/*.log
+mobile/*.apk
+mobile/android/app/build/
+mobile/android/build/
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/android/capacitor-cordova-android-plugins/
