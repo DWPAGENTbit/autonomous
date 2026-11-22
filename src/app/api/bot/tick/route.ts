@@ -1,6 +1,6 @@
 import { isAuthed, sameOrigin } from "@/lib/server/auth";
 import { SCHEDULE, runTick } from "@/lib/server/bot/engine";
-import { scheduleAuthorized } from "@/lib/server/bot/store";
+import { scheduleAuthorized, storageKind } from "@/lib/server/bot/store";
 import { cronAuthorized } from "@/lib/server/bot/view";
 import { json } from "@/lib/server/http";
 
@@ -20,7 +20,7 @@ async function handle(req: Request, write: boolean) {
   if (by) {
     try {
       const r = await runTick(by);
-      return json({ ok: true, ran: r.ran, actions: r.actions });
+      return json({ ok: true, ran: r.ran, actions: r.actions, storage: storageKind() });
     } catch (e) {
       console.error("[bot] scheduled tick failed", e);
       return json({ ok: false }, 500);
