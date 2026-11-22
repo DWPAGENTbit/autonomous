@@ -6,6 +6,8 @@ import sharp from "sharp";
 
 const src = process.argv[2] ?? "src/app/icon.svg";
 const BG = { r: 255, g: 255, b: 255, alpha: 1 };
+/** Launch screen colour: the warm canvas of the app. */
+const SPLASH_BG = { r: 233, g: 227, b: 220, alpha: 1 };
 
 /** The logo on a white square, scaled to `scale` of the canvas. */
 async function tile(size, scale, out, { round = false, transparent = false } = {}) {
@@ -38,14 +40,14 @@ if (existsSync(res)) {
     // Adaptive icon foreground: 108dp canvas, logo inside the 66dp safe zone.
     await tile(Math.round(px * 2.25), 0.5, join(res, `mipmap-${d}`, "ic_launcher_foreground.png"), { transparent: true });
   }
-  // Launch screen: logo centred on white.
+  // Launch screen: logo centred on the warm canvas.
   const splash = { "drawable": [480, 320], "drawable-port-mdpi": [320, 480], "drawable-port-hdpi": [480, 800], "drawable-port-xhdpi": [720, 1280], "drawable-port-xxhdpi": [960, 1600], "drawable-port-xxxhdpi": [1280, 1920], "drawable-land-mdpi": [480, 320], "drawable-land-hdpi": [800, 480], "drawable-land-xhdpi": [1280, 720], "drawable-land-xxhdpi": [1600, 960], "drawable-land-xxxhdpi": [1920, 1280] };
   for (const [folder, [w, h]] of Object.entries(splash)) {
     const dir = join(res, folder);
     if (!existsSync(dir)) continue;
     const s = Math.round(Math.min(w, h) * 0.32);
     const logo = await sharp(src, { density: 600 }).resize(s, s, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toBuffer();
-    await sharp({ create: { width: w, height: h, channels: 4, background: BG } }).composite([{ input: logo, gravity: "center" }]).png().toFile(join(dir, "splash.png"));
+    await sharp({ create: { width: w, height: h, channels: 4, background: SPLASH_BG } }).composite([{ input: logo, gravity: "center" }]).png().toFile(join(dir, "splash.png"));
   }
 }
 console.log("icons generated from", src);

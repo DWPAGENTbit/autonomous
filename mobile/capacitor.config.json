@@ -3,11 +3,12 @@
   "appName": "DWP EARN MONEY",
   "webDir": "www",
   "server": {
-    "url": "https://autonomous-sooty.vercel.app",
+    "allowNavigation": ["autonomous-sooty.vercel.app"],
+    "errorPath": "index.html",
     "cleartext": false
   },
   "android": {
-    "backgroundColor": "#eef3f8",
+    "backgroundColor": "#e9e3dc",
     "allowMixedContent": false
   }
 }
