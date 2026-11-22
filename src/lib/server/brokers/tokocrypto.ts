@@ -71,6 +71,9 @@ export const tokocrypto: BrokerAdapter = {
 
   async place(params) {
     const data = await signed("POST", "/open/v1/orders", params);
-    return { orderId: String(data.orderId ?? "") };
+    const base = Number(data.executedQty);
+    const quote = Number(data.executedQuoteQty);
+    const fill = base > 0 && quote > 0 ? { base, quote } : undefined;
+    return { orderId: String(data.orderId ?? ""), fill };
   },
 };

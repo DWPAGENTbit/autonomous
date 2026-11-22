@@ -1,10 +1,11 @@
 "use client";
 
 import clsx from "clsx";
-import { CheckCircle2, Circle, RefreshCw, ShieldAlert, ShieldCheck } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ManualAccount } from "@/components/accounts/ManualAccount";
 import { OrderPanel } from "@/components/accounts/OrderPanel";
+import { BotPanel } from "@/components/bot/BotPanel";
 import { StatusDot } from "@/components/shared/primitives";
 import type { Balance, BrokerStatus, StatusResponse } from "@/lib/server/brokers/types";
 
@@ -115,94 +116,26 @@ function ApiAccount({ broker, live }: { broker: BrokerStatus; live: boolean }) {
   );
 }
 
-/** Live trading at a glance: which mode is on, and what is still needed to go live. */
-function LiveTradingStatus({ status }: { status: StatusResponse }) {
-  const steps = [
-    ...status.brokers.map((b) => ({
-      done: b.configured,
-      label: `API ${b.name} terhubung`,
-      hint: b.configured ? "Kunci API terbaca di server." : `Isi ${b.id.toUpperCase()}_API_KEY dan ${b.id.toUpperCase()}_API_SECRET di Vercel.`,
-    })),
-    {
-      done: status.live,
-      label: "Order sungguhan dinyalakan",
-      hint: status.live ? "DWP_LIVE_TRADING = on." : "Isi DWP_LIVE_TRADING = on di Vercel, lalu redeploy. Kosongkan untuk kembali ke mode uji.",
-    },
-  ];
-  const Icon = status.live ? ShieldAlert : ShieldCheck;
-  return (
-    <section
-      aria-label="Status live trading"
-      className={clsx(
-        "overflow-hidden rounded-[22px] border p-5 md:p-7",
-        status.live ? "border-negative/25 bg-negative-soft" : "border-caution/25 bg-caution-soft",
-      )}
-    >
-      <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-12 lg:col-span-5">
-          <div className="flex items-center gap-3">
-            <span
-              className={clsx(
-                "inline-flex size-11 items-center justify-center rounded-[14px] text-white",
-                status.live ? "bg-negative shadow-[0_8px_20px_rgb(217_67_75/0.35)]" : "bg-caution shadow-[0_8px_20px_rgb(183_119_11/0.3)]",
-              )}
-            >
-              <Icon className="size-5" aria-hidden />
-            </span>
-            <div>
-              <p className="flex items-center gap-2 text-lg font-medium text-ink">
-                Live trading: {status.live ? "AKTIF" : "mode uji"}
-                <StatusDot tone={status.live ? "negative" : "caution"} pulse={status.live} />
-              </p>
-              <RealBadge />
-            </div>
-          </div>
-          <p className="mt-4 text-sm leading-relaxed text-ink-2">
-            {status.live
-              ? "Order yang Anda setujui di bawah dikirim ke bursa dengan uang sungguhan, dibatasi nilai maksimum per order."
-              : "Order dicek lengkap tetapi tidak dikirim ke bursa. Aman untuk mencoba alurnya sebelum memakai uang sungguhan."}
-          </p>
-          <p className="mt-2 text-xs text-ink-3">
-            Pengaturan ada di Vercel → proyek platform ini → Settings → Environment Variables. Setelah mengubahnya, redeploy.
-          </p>
-        </div>
-        <ol className="col-span-12 space-y-2 lg:col-span-7">
-          {steps.map((st, i) => (
-            <li key={st.label} className="flex items-start gap-3 rounded-[16px] border border-glass-edge bg-white/65 p-3.5">
-              {st.done ? (
-                <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-positive" aria-hidden />
-              ) : (
-                <Circle className="mt-0.5 size-5 shrink-0 text-ink-4" aria-hidden />
-              )}
-              <div className="min-w-0">
-                <p className="text-sm font-medium text-ink">
-                  <span className="mr-1.5 font-mono text-[11px] text-ink-4">{i + 1}.</span>
-                  {st.label}
-                  <span className="sr-only">{st.done ? " (selesai)" : " (belum)"}</span>
-                </p>
-                <p className="mt-0.5 text-xs break-words text-ink-3">{st.hint}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
 export function AccountsView() {
   const [status, setStatus] = useState<StatusResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const load = useCallback(() => {
     fetch("/api/broker/status", { cache: "no-store" })
       .then(async (r) => (r.ok ? setStatus(await r.json()) : setError("Sesi berakhir. Muat ulang halaman untuk masuk lagi.")))
       .catch(() => setError("Server tidak bisa dihubungi."));
   }, []);
 
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const active = status?.brokers.filter((b) => b.enabled) ?? [];
+  const off = status?.brokers.filter((b) => !b.enabled) ?? [];
+
   return (
     <div className="space-y-12">
-      {status && <LiveTradingStatus status={status} />}
+      <BotPanel onBrokersChange={load} />
 
       {error && (
         <p role="alert" className="text-sm text-negative">
@@ -212,14 +145,19 @@ export function AccountsView() {
 
       <section aria-labelledby="api-accounts">
         <h2 id="api-accounts" className="label mb-2">
-          Terhubung otomatis
+          Saldo &amp; order manual
         </h2>
         <p className="mb-8 max-w-[64ch] text-sm text-ink-2">
-          Saldo dibaca langsung dari bursa. Order hanya dikirim setelah Anda meninjau dan menyetujuinya, dan server menolak order di
-          atas batas per order. Sinyal agen di halaman lain adalah simulasi dan tidak pernah dipakai untuk order sungguhan.
+          Saldo dibaca langsung dari bursa yang aktif. Bot di atas trading sendiri; di sini Anda tetap bisa order manual kapan saja. Server
+          menolak setiap order di atas batas per order, baik dari bot maupun manual.
         </p>
         <div className="space-y-5">
-          {status ? status.brokers.map((b) => <ApiAccount key={b.id} broker={b} live={status.live} />) : !error && <p className="text-sm text-ink-3">Memuat…</p>}
+          {status ? active.map((b) => <ApiAccount key={b.id} broker={b} live={status.live} />) : !error && <p className="text-sm text-ink-3">Memuat…</p>}
+          {off.length > 0 && (
+            <p className="rounded-[16px] border border-line px-4 py-3 text-sm text-ink-3">
+              Nonaktif: {off.map((b) => b.name).join(", ")}. Nyalakan di bagian &ldquo;Bursa aktif&rdquo; di atas bila ingin dipakai.
+            </p>
+          )}
         </div>
       </section>
 

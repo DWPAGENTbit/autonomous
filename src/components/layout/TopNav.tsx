@@ -256,8 +256,8 @@ export function Footer() {
           {demo
             ? "Mode Demo: harga, posisi, peluang, dan hasil adalah data simulasi dengan modal fiktif — bukan uang sungguhan."
             : "Mode Live: saldo dibaca dari akun bursa Anda dan dinilai dengan harga Indodax saat ini."}{" "}
-          Order nyata hanya dikirim dari halaman Akun, setelah Anda setujui. Tidak ada yang di sini merupakan saran investasi; keputusan
-          dan risiko tetap milik Anda.
+          Order nyata dikirim oleh bot otomatis bila Anda menyalakannya, atau manual dari halaman Akun — selalu di dalam batas per order.
+          Hasil trading tidak dijamin dan tidak ada yang di sini merupakan saran investasi; keputusan dan risiko tetap milik Anda.
         </p>
       </div>
     </footer>

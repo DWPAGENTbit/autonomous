@@ -26,11 +26,22 @@ export interface OrderPreview extends OrderInput {
   problems: string[];
 }
 
+/** What actually traded, as reported by the exchange. */
+export interface Fill {
+  /** Base asset bought or sold. */
+  base: number;
+  /** Quote currency spent (buy) or received (sell). */
+  quote: number;
+  /** Fee in the quote currency, when the exchange reports it. */
+  fee?: number;
+}
+
 export interface OrderResult {
   ok: boolean;
   live: boolean;
   message: string;
   orderId?: string;
+  fill?: Fill;
   sent?: Record<string, string>;
 }
 
@@ -38,6 +49,8 @@ export interface BrokerStatus {
   id: BrokerId;
   name: string;
   configured: boolean;
+  /** Switched on by the owner (Indodax can run alone; Tokocrypto is optional). */
+  enabled: boolean;
   pairs: string[];
   limits: Record<string, number>;
 }
@@ -59,7 +72,7 @@ export interface BrokerAdapter {
   price(pair: string): Promise<number | null>;
   /** The exact, unsigned parameters an order would send. */
   orderParams(input: OrderInput, clientId: string): Record<string, string>;
-  place(params: Record<string, string>): Promise<{ orderId: string }>;
+  place(params: Record<string, string>): Promise<{ orderId: string; fill?: Fill }>;
 }
 
 /** Plain decimal string with no exponent. */

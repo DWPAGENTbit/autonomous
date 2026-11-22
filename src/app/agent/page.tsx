@@ -3,7 +3,8 @@ import { Timeline } from "@/components/activity/Timeline";
 import { AgentPipeline, AgentStatus } from "@/components/agent/AgentStatus";
 import { AutonomyPolicy } from "@/components/agent/AutonomyPolicy";
 import { DecisionIndex, FocusedDecision } from "@/components/decisions/DecisionLog";
-import { DemoBanner, DemoOnlyNotice, OnlyMode } from "@/components/mode/ModeSwitch";
+import { BotAgentsLive } from "@/components/bot/BotPanel";
+import { DemoBanner, OnlyMode } from "@/components/mode/ModeSwitch";
 import { PageIntro, PANEL, SHELL } from "@/components/shared/PageIntro";
 import { Reveal, SectionHeader } from "@/components/shared/primitives";
 
@@ -13,14 +14,13 @@ export default function AgentPage() {
   return (
     <>
       <OnlyMode mode="live">
-        <PageIntro index="04" area="Agen" title="Tim agen DWP." />
-        <DemoOnlyNotice title="Agen otonom hanya berjalan di mode Demo.">
-          <p>
-            Di mode Live, agen tidak mengirim order sendiri. Setiap order nyata Anda buat dan setujui di halaman Akun, dengan batas
-            nominal per order.
-          </p>
-          <p>Keputusan agen, alasannya, dan linimasa kerjanya bisa Anda lihat di mode Demo.</p>
-        </DemoOnlyNotice>
+        <PageIntro index="04" area="Agen" title="Tim agen yang trading dengan uang Anda.">
+          Pemindai membaca harga, Analis mencari titik masuk dan ambil untung, Risiko menjaga batas, Eksekutor mengirim order — semuanya
+          sendiri saat mode otomatis menyala. Setiap langkah dan alasannya tercatat di sini.
+        </PageIntro>
+        <section className={PANEL} aria-label="Tim agen nyata">
+          <BotAgentsLive />
+        </section>
       </OnlyMode>
 
       <OnlyMode mode="demo">

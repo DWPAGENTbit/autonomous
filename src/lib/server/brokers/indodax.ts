@@ -1,5 +1,5 @@
 import { createHmac } from "node:crypto";
-import { BrokerError, decimal, type Balance, type BrokerAdapter, type OrderInput } from "./types";
+import { BrokerError, decimal, type Balance, type BrokerAdapter, type Fill, type OrderInput } from "./types";
 
 /** Indodax private REST API (POST https://indodax.com/tapi), HMAC-SHA512 signed. */
 const TAPI = "https://indodax.com/tapi";
@@ -24,6 +24,21 @@ async function tapi(params: Record<string, string>): Promise<Record<string, unkn
   const json = (await res.json().catch(() => null)) as { success?: number; error?: string; return?: Record<string, unknown> } | null;
   if (!json || json.success !== 1 || !json.return) throw new BrokerError(json?.error ?? `Indodax membalas HTTP ${res.status}.`);
   return json.return;
+}
+
+/** Reads the receive_ and spend_ fields of a trade reply, e.g. buy: receive_btc + spend_rp; sell: spend_btc + receive_rp. */
+function indodaxFill(params: Record<string, string>, r: Record<string, unknown>): Fill | undefined {
+  const [base = "", quote = "idr"] = params.pair.split("_");
+  const quoteKey = quote === "idr" ? "rp" : quote;
+  const n = (k: string) => {
+    const v = Number(r[k]);
+    return Number.isFinite(v) && v > 0 ? v : 0;
+  };
+  const buy = params.type === "buy";
+  const baseQty = n(buy ? `receive_${base}` : `spend_${base}`);
+  const quoteQty = n(buy ? `spend_${quoteKey}` : `receive_${quoteKey}`);
+  if (!baseQty || !quoteQty) return undefined;
+  return { base: baseQty, quote: quoteQty, fee: n("fee") || undefined };
 }
 
 export const indodax: BrokerAdapter = {
@@ -77,6 +92,6 @@ export const indodax: BrokerAdapter = {
 
   async place(params) {
     const r = await tapi(params);
-    return { orderId: String(r.order_id ?? "") };
+    return { orderId: String(r.order_id ?? ""), fill: indodaxFill(params, r) };
   },
 };

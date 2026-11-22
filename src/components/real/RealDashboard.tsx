@@ -4,6 +4,7 @@ import clsx from "clsx";
 import Link from "next/link";
 import { ArrowUpRight, Coins, Landmark, PiggyBank, RefreshCw, ShieldAlert, ShieldCheck, Wallet } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { BotSummaryCard } from "@/components/bot/BotPanel";
 import { StatusDot } from "@/components/shared/primitives";
 import type { RealPortfolio } from "@/lib/server/portfolio";
 import type { Ticker } from "@/lib/server/market";
@@ -186,6 +187,9 @@ export function RealDashboard({ showMarkets = true }: { showMarkets?: boolean })
   return (
     <section className="mx-auto max-w-[1360px] px-3 pt-4 pb-5 sm:px-4 md:pt-6 lg:px-6" aria-labelledby="real-title">
       <div className="grid grid-cols-12 gap-4 md:gap-5">
+        {/* The autonomous bot: on/off and this month's result */}
+        <BotSummaryCard />
+
         {/* Total real assets */}
         <div className="glass relative col-span-12 overflow-hidden p-6 md:p-8 xl:col-span-8">
           <div

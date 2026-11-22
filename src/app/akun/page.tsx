@@ -15,8 +15,8 @@ export default async function AccountsPage() {
   return (
     <>
       <PageIntro index="06" area="Akun nyata" title="Semua akun investasi Anda, di satu tempat.">
-        Berbeda dari halaman lain, bagian ini memakai akun sungguhan. Indodax dan Tokocrypto terhubung lewat API resmi, dan setiap order
-        hanya dikirim setelah Anda setujui. Bibit dan Stockbit tidak menyediakan API untuk pihak ketiga, jadi dicatat manual.
+        Bagian ini memakai akun sungguhan. Indodax (dan Tokocrypto bila Anda aktifkan) terhubung lewat API resmi. Nyalakan mode
+        otomatis agar tim agen trading sendiri di dalam batas risiko, atau order manual kapan saja. Bibit dan Stockbit dicatat manual.
       </PageIntro>
       <OnlyMode mode="demo">
         <div className={`${SHELL} pb-4`}>

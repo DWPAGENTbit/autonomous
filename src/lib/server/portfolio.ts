@@ -1,6 +1,7 @@
 import { BROKERS, liveTrading } from "@/lib/server/brokers";
 import { BrokerError, type BrokerId } from "@/lib/server/brokers/types";
 import { idrTickers, type Ticker } from "@/lib/server/market";
+import { loadState } from "@/lib/server/bot/store";
 
 export interface Holding {
   broker: BrokerId;
@@ -50,7 +51,9 @@ export async function realPortfolio(): Promise<RealPortfolio> {
     errors.push("Harga pasar Indodax tidak bisa diambil saat ini.");
   }
 
-  const connected = Object.values(BROKERS).filter((b) => b.configured());
+  const { state } = await loadState(30_000).catch(() => ({ state: null }));
+  const enabled = (id: BrokerId) => state?.settings.brokers[id].enabled ?? id === "indodax";
+  const connected = Object.values(BROKERS).filter((b) => b.configured() && enabled(b.id));
   const holdings: Holding[] = [];
   await Promise.all(
     connected.map(async (b) => {

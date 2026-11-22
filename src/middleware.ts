@@ -5,6 +5,8 @@ import { SESSION_COOKIE, verifySession } from "@/lib/server/session";
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
   if (pathname === "/masuk" || pathname.startsWith("/api/auth/")) return NextResponse.next();
+  // The schedule signs its own calls (Bearer CRON_SECRET); the route checks that or the session.
+  if (pathname === "/api/bot/tick") return NextResponse.next();
   if (await verifySession(req.cookies.get(SESSION_COOKIE)?.value)) return NextResponse.next();
 
   if (pathname.startsWith("/api/")) {

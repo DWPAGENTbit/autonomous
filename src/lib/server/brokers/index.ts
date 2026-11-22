@@ -41,13 +41,20 @@ export function brokerFrom(id: string): BrokerAdapter | null {
   return id === "indodax" || id === "tokocrypto" ? BROKERS[id] : null;
 }
 
-export function status(): StatusResponse {
+export function status(enabled: Record<BrokerId, boolean>): StatusResponse {
   return {
     live: liveTrading(),
     brokers: Object.values(BROKERS).map((b) => {
       const pairs = pairsFor(b.id);
       const quotes = [...new Set(pairs.map((p) => b.split(p)[1]))];
-      return { id: b.id, name: b.name, configured: b.configured(), pairs, limits: Object.fromEntries(quotes.map((q) => [q, limitFor(q)])) };
+      return {
+        id: b.id,
+        name: b.name,
+        configured: b.configured(),
+        enabled: enabled[b.id],
+        pairs,
+        limits: Object.fromEntries(quotes.map((q) => [q, limitFor(q)])),
+      };
     }),
   };
 }
@@ -89,8 +96,8 @@ export async function executeOrder(broker: BrokerAdapter, input: OrderInput): Pr
 
   console.info(`[order] ${broker.id} ${input.side} ${input.pair} ${input.amount} ${preview.amountUnit}`);
   try {
-    const { orderId } = await broker.place(params);
-    return { ok: true, live: true, orderId, message: `Order terkirim ke ${broker.name}.`, sent: params };
+    const { orderId, fill } = await broker.place(params);
+    return { ok: true, live: true, orderId, fill, message: `Order terkirim ke ${broker.name}.`, sent: params };
   } catch (e) {
     const msg = e instanceof BrokerError ? e.message : "Bursa tidak bisa dihubungi.";
     console.warn(`[order] ${broker.id} failed: ${msg}`);
