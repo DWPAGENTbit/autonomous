@@ -29,27 +29,28 @@ export function SectionHeader({
   id?: string;
 }) {
   return (
-    <header className="mb-8 grid grid-cols-12 items-end gap-x-6 gap-y-3 border-t border-line pt-5">
-      <div className="col-span-12 md:col-span-7">
-        <p className="label num mb-3">
-          <span className="text-ink-2">{index}</span>
-          <span className="mx-2 text-ink-4">—</span>
-          {title}
+    <header className="mb-7 grid grid-cols-12 items-end gap-x-6 gap-y-3">
+      <div className="col-span-12 md:col-span-8">
+        <p className="mb-3 flex items-center gap-2">
+          <span className="num inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-gradient-to-br from-[#12c9f0] to-accent px-2 font-mono text-[10px] font-semibold text-white">
+            {index}
+          </span>
+          <span className="text-sm font-medium text-ink">{title}</span>
         </p>
         {summary && (
-          <h2 id={id} className="max-w-[38ch] text-2xl font-normal tracking-[-0.015em] text-ink md:text-[1.75rem] md:leading-[2.2rem]">
+          <h2 id={id} className="max-w-[46ch] text-xl font-normal tracking-[-0.015em] text-ink-2 md:text-2xl">
             {summary}
           </h2>
         )}
       </div>
-      <div className="col-span-12 flex items-center gap-6 md:col-span-5 md:justify-end">
+      <div className="col-span-12 flex items-center gap-6 md:col-span-4 md:justify-end">
         {aside}
         {href && (
           <Link
             href={href}
-            className="group inline-flex items-center gap-1 text-sm text-ink-2 transition-colors duration-150 hover:text-ink"
+            className="pill group"
           >
-            {hrefLabel ?? "Open"}
+            {hrefLabel ?? "Buka"}
             <ArrowUpRight
               aria-hidden
               className="size-3.5 transition-transform duration-150 group-hover:-translate-y-px group-hover:translate-x-px"
@@ -142,7 +143,7 @@ export function SimBadge({ className, compact = false }: { className?: string; c
   return (
     <span
       className={clsx(
-        "inline-flex items-center gap-1.5 border border-caution/30 bg-caution-soft px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-caution",
+        "inline-flex items-center gap-1.5 rounded-full border border-caution/25 bg-caution-soft px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.1em] text-caution",
         className,
       )}
       title="Semua angka adalah data demo simulasi. Tidak ada dana atau order sungguhan."
@@ -167,11 +168,11 @@ export const Button = forwardRef<
       className={clsx(
         "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium tracking-[0.01em] transition-[background-color,border-color,color,transform] duration-150 ease-out active:translate-y-px disabled:opacity-40",
         size === "sm" ? "h-8 px-3 text-xs" : "h-10 px-4 text-sm",
-        variant === "primary" && "bg-ink text-canvas hover:bg-ink/85",
-        variant === "secondary" && "border border-line-strong bg-transparent text-ink hover:border-ink/40 hover:bg-surface",
+        variant === "primary" && "bg-gradient-to-br from-[#12c9f0] to-accent text-white shadow-[0_6px_18px_rgb(10_99_242/0.3)] hover:brightness-105",
+        variant === "secondary" && "border border-glass-edge bg-glass-strong text-ink hover:bg-white",
         variant === "ghost" && "text-ink-2 hover:bg-sunken hover:text-ink",
-        variant === "danger" && "border border-line-strong text-negative hover:border-negative/50 hover:bg-negative-soft",
-        "rounded-sm",
+        variant === "danger" && "bg-negative text-white shadow-[0_6px_18px_rgb(217_67_75/0.3)] hover:brightness-105",
+        "rounded-full",
         className,
       )}
       {...props}

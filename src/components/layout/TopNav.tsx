@@ -3,30 +3,39 @@
 import clsx from "clsx";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { BrandMark, BrandWordmark } from "@/components/brand/BrandMark";
 import { usePathname } from "next/navigation";
-import { LogOut, Pause, Play } from "lucide-react";
+import { Bot, ChartCandlestick, Landmark, LayoutDashboard, LogOut, Pause, Play, Sparkles, Wallet, type LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { AGENT_STATE_META, toneText } from "@/components/agent/agent-meta";
+import { BrandMark, BrandWordmark } from "@/components/brand/BrandMark";
 import { useAgentService } from "@/components/layout/SimulationProvider";
 import { SimBadge, StatusDot } from "@/components/shared/primitives";
 import { transition } from "@/lib/design/tokens";
 import { formatClock } from "@/lib/formatting/format";
 import { useAppStore } from "@/store/app-store";
 
-export const NAV = [
-  { href: "/", index: "01", label: "Kendali", long: "Pusat Kendali" },
-  { href: "/markets", index: "02", label: "Pasar", long: "Pasar" },
-  { href: "/opportunities", index: "03", label: "Peluang", long: "Peluang" },
-  { href: "/agent", index: "04", label: "Agen", long: "Agen" },
-  { href: "/capital", index: "05", label: "Modal", long: "Modal" },
-  { href: "/akun", index: "06", label: "Akun", long: "Akun nyata" },
-] as const;
+export const NAV: { href: string; label: string; long: string; icon: LucideIcon; note: string }[] = [
+  { href: "/", label: "Kendali", long: "Dashboard cuan", icon: LayoutDashboard, note: "Ringkasan hasil & agen" },
+  { href: "/opportunities", label: "Peluang", long: "Peluang cuan", icon: Sparkles, note: "Sumber penghasilan" },
+  { href: "/markets", label: "Pasar", long: "Pasar", icon: ChartCandlestick, note: "Harga & risiko pasar" },
+  { href: "/agent", label: "Agen", long: "Tim agen", icon: Bot, note: "Keputusan & alasannya" },
+  { href: "/capital", label: "Modal", long: "Modal & risiko", icon: Wallet, note: "Posisi & batas risiko" },
+  { href: "/akun", label: "Akun", long: "Akun nyata", icon: Landmark, note: "Indodax, Tokocrypto, Bibit" },
+];
 
 const isActive = (pathname: string, href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
-function LiveStatus() {
+async function logout() {
+  await fetch("/api/auth/logout", { method: "POST" }).catch(() => null);
+  window.location.assign("/masuk");
+}
+
+const iconButton =
+  "inline-flex size-9 items-center justify-center rounded-full border border-glass-edge bg-glass-strong text-ink-2 transition-colors hover:bg-white hover:text-ink";
+
+/** Agent state, clock and the pause switch — always one glance away. */
+function LiveControls({ compact = false }: { compact?: boolean }) {
   const { state, simTime, approvals, running } = useAppStore(
     useShallow((s) => ({ state: s.status.state, simTime: s.simTime, approvals: s.approvals.length, running: s.running })),
   );
@@ -34,49 +43,118 @@ function LiveStatus() {
   const meta = AGENT_STATE_META[state];
 
   return (
-    <div className="flex items-center gap-2 sm:gap-4">
-      {approvals > 0 && (
-        <Link href="/#approval" className="hidden items-center gap-2 text-xs text-caution hover:underline md:inline-flex">
+    <div className="flex items-center gap-2">
+      {approvals > 0 && !compact && (
+        <Link href="/#approval" className="pill hidden text-caution md:inline-flex">
           <StatusDot tone="caution" pulse />
           {approvals} menunggu Anda
         </Link>
       )}
-      <span className="hidden items-center gap-2 sm:inline-flex" aria-hidden>
+      <span className="pill hidden sm:inline-flex" aria-hidden>
         <StatusDot tone={running ? meta.tone : "muted"} pulse={running && state !== "IDLE"} />
-        <span className={clsx("label min-w-[5.5rem]", running ? toneText[meta.tone] : "text-ink-3")}>{running ? meta.label : "Dijeda"}</span>
-      </span>
-      <span className="num hidden font-mono text-xs text-ink-3 min-[420px]:inline" aria-label={`Waktu simulasi ${formatClock(simTime)}`}>
-        {formatClock(simTime)}
+        <span className={clsx("font-mono text-[10px] tracking-[0.08em] uppercase", running ? toneText[meta.tone] : "text-ink-3")}>
+          {running ? meta.label : "Dijeda"}
+        </span>
+        <span className="num hidden font-mono text-[11px] text-ink-3 md:inline" aria-label={`Waktu simulasi ${formatClock(simTime)}`}>
+          {formatClock(simTime)}
+        </span>
       </span>
       <button
         type="button"
         onClick={() => (running ? service.pause() : service.resume())}
-        className="inline-flex size-8 items-center justify-center rounded-sm text-ink-2 transition-colors hover:bg-sunken hover:text-ink"
+        className={iconButton}
         aria-label={running ? "Jeda agen" : "Lanjutkan agen"}
         title={running ? "Jeda agen" : "Lanjutkan agen"}
       >
         {running ? <Pause className="size-3.5" aria-hidden /> : <Play className="size-3.5" aria-hidden />}
       </button>
-      <button
-        type="button"
-        onClick={async () => {
-          await fetch("/api/auth/logout", { method: "POST" }).catch(() => null);
-          window.location.assign("/masuk");
-        }}
-        className="inline-flex size-8 items-center justify-center rounded-sm text-ink-2 transition-colors hover:bg-sunken hover:text-ink"
-        aria-label="Keluar"
-        title="Keluar"
-      >
+      <button type="button" onClick={logout} className={iconButton} aria-label="Keluar" title="Keluar">
         <LogOut className="size-3.5" aria-hidden />
       </button>
     </div>
   );
 }
 
-/** Compact, integrated navigation. The agent's state is always in view. */
+/** Desktop: a floating glass sidebar, as in a control dashboard. */
+export function Sidebar() {
+  const pathname = usePathname();
+  const approvals = useAppStore((s) => s.approvals.length);
+  return (
+    <aside className="glass-strong fixed top-3 bottom-3 left-3 z-40 hidden w-[4.75rem] flex-col rounded-[var(--radius-xl)] p-3 lg:flex xl:w-[15.5rem] xl:p-4">
+      <Link href="/" className="flex items-center justify-center gap-2.5 pt-1 pb-5 xl:justify-start xl:px-2" aria-label="DWP EARN MONEY — Dashboard">
+        <span className="inline-flex size-9 items-center justify-center rounded-[12px] bg-white shadow-[var(--shadow-raise)]">
+          <BrandMark size={22} />
+        </span>
+        <BrandWordmark className="hidden !text-[12px] !tracking-[0.14em] xl:inline" />
+      </Link>
+
+      <p className="label mb-2 hidden px-3 text-[10px] xl:block">Menu</p>
+      <nav aria-label="Utama">
+        <ul className="space-y-1">
+          {NAV.map((item) => {
+            const active = isActive(pathname, item.href);
+            const Icon = item.icon;
+            return (
+              <li key={item.href} className="relative">
+                {active && (
+                  <motion.span
+                    layoutId="side-active"
+                    className="absolute inset-0 rounded-[14px] bg-white shadow-[var(--shadow-raise)]"
+                    transition={transition.panel}
+                  />
+                )}
+                <Link
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  title={item.long}
+                  className={clsx(
+                    "relative flex items-center justify-center gap-3 rounded-[14px] p-2 text-sm transition-colors xl:justify-start xl:px-3 xl:py-2.5",
+                    active ? "text-ink" : "text-ink-2 hover:bg-white/50 hover:text-ink",
+                  )}
+                >
+                  <span
+                    className={clsx(
+                      "inline-flex size-8 shrink-0 items-center justify-center rounded-[10px] transition-colors",
+                      active ? "bg-gradient-to-br from-[#12c9f0] to-accent text-white shadow-[0_6px_16px_rgb(10_99_242/0.32)]" : "bg-sunken text-ink-3",
+                    )}
+                  >
+                    <Icon className="size-4" aria-hidden />
+                  </span>
+                  <span className="sr-only">{item.long}</span>
+                  <span className="hidden min-w-0 xl:block" aria-hidden>
+                    <span className="block leading-tight font-medium">{item.long}</span>
+                    <span className="block truncate text-[11px] leading-tight text-ink-3">{item.note}</span>
+                  </span>
+                  {item.href === "/" && approvals > 0 && (
+                    <span className="absolute top-1 right-1 inline-flex min-w-5 items-center justify-center rounded-full bg-caution px-1.5 text-[10px] font-semibold text-white xl:static xl:ml-auto">
+                      {approvals}
+                    </span>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      <div className="mt-auto hidden rounded-[18px] border border-glass-edge bg-gradient-to-br from-[#12c9f0]/15 via-white/60 to-accent-soft p-4 xl:block">
+        <p className="text-sm font-medium text-ink">Mode simulasi</p>
+        <p className="mt-1 text-[11px] leading-relaxed text-ink-3">
+          Angka agen adalah data demo. Uang sungguhan hanya di halaman <span className="font-medium text-ink-2">Akun nyata</span>.
+        </p>
+        <div className="mt-3">
+          <SimBadge />
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+/** Top bar: on phones it carries the brand; on desktop, the page and live controls. */
 export function TopNav() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const current = NAV.find((n) => isActive(pathname, n.href));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -86,81 +164,54 @@ export function TopNav() {
   }, []);
 
   return (
-    <header
-      className={clsx(
-        "sticky top-0 z-40 border-b bg-canvas/95 backdrop-blur-[2px] transition-colors duration-200",
-        scrolled ? "border-line" : "border-transparent",
-      )}
-    >
-      <div className="mx-auto flex h-14 max-w-[1360px] items-center justify-between gap-4 px-4 xl:gap-6 sm:px-6 md:px-10 lg:px-12">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="DWP EARN MONEY — Pusat Kendali">
-          <BrandMark size={24} />
-          <BrandWordmark />
-          <span className="hidden xl:inline">
-            <SimBadge />
-          </span>
-          <span className="xl:hidden">
-            <SimBadge compact />
-          </span>
+    <header className="sticky top-0 z-30 px-3 pt-3 sm:px-4 lg:px-6">
+      <div
+        className={clsx(
+          "mx-auto flex h-14 max-w-[1360px] items-center justify-between gap-3 rounded-full px-3 pl-4 transition-[background-color,box-shadow,border-color] duration-200",
+          scrolled ? "glass-strong" : "border border-transparent",
+        )}
+      >
+        <Link href="/" className="flex shrink-0 items-center gap-2 lg:hidden" aria-label="DWP EARN MONEY — Dashboard">
+          <BrandMark size={22} />
+          <BrandWordmark className="!tracking-[0.12em]" />
         </Link>
-
-        <nav aria-label="Utama" className="hidden lg:block">
-          <ul className="flex items-center gap-1">
-            {NAV.map((item) => {
-              const active = isActive(pathname, item.href);
-              return (
-                <li key={item.href} className="relative">
-                  <Link
-                    href={item.href}
-                    aria-current={active ? "page" : undefined}
-                    className={clsx(
-                      "flex h-14 items-center gap-1.5 px-2 text-sm transition-colors duration-150 xl:px-3",
-                      active ? "text-ink" : "text-ink-3 hover:text-ink",
-                    )}
-                  >
-                    <span className="num hidden font-mono text-[10px] text-ink-4 xl:inline">{item.index}</span>
-                    {item.label}
-                  </Link>
-                  {active && <motion.span layoutId="nav-active" className="absolute inset-x-2 bottom-0 h-px bg-ink xl:inset-x-3" transition={transition.panel} />}
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-
-        <LiveStatus />
+        <div className="hidden min-w-0 items-baseline gap-3 lg:flex">
+          <p className="text-lg font-medium tracking-[-0.01em] text-ink">{current?.long ?? "DWP EARN MONEY"}</p>
+          <p className="truncate text-xs text-ink-3">{current?.note}</p>
+        </div>
+        <LiveControls />
       </div>
     </header>
   );
 }
 
-/** On phones the areas move to the thumb. */
+/** On phones the areas move to the thumb, in a floating glass bar. */
 export function MobileTabBar() {
   const pathname = usePathname();
   const approvals = useAppStore((s) => s.approvals.length);
   return (
-    <nav
-      aria-label="Utama"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-canvas/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-[2px] lg:hidden"
-    >
-      <ul className="grid grid-cols-6">
+    <nav aria-label="Utama" className="fixed inset-x-2 bottom-2 z-40 pb-[env(safe-area-inset-bottom)] lg:hidden">
+      <ul className="glass-strong grid grid-cols-6 rounded-[22px] p-1">
         {NAV.map((item) => {
           const active = isActive(pathname, item.href);
+          const Icon = item.icon;
           return (
-            <li key={item.href}>
+            <li key={item.href} className="relative">
+              {active && (
+                <motion.span layoutId="tab-active" className="absolute inset-0.5 rounded-[18px] bg-white shadow-[var(--shadow-raise)]" transition={transition.panel} />
+              )}
               <Link
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={clsx("relative flex h-14 flex-col items-center justify-center gap-0.5 text-[11px]", active ? "text-ink" : "text-ink-3")}
+                className={clsx("relative flex h-14 flex-col items-center justify-center gap-1 text-[10.5px]", active ? "font-medium text-accent" : "text-ink-3")}
               >
-                {active && <motion.span layoutId="tab-active" className="absolute inset-x-4 top-0 h-px bg-ink" transition={transition.panel} />}
-                <span className="num font-mono text-[10px] text-ink-4">{item.index}</span>
                 <span className="relative">
-                  {item.label}
+                  <Icon className="size-[18px]" aria-hidden />
                   {item.href === "/" && approvals > 0 && (
-                    <span className="absolute -top-0.5 -right-2.5 size-1.5 rounded-full bg-caution" aria-label="Ada keputusan menunggu" />
+                    <span className="absolute -top-0.5 -right-1.5 size-2 rounded-full bg-caution ring-2 ring-white" aria-label="Ada keputusan menunggu" />
                   )}
                 </span>
+                {item.label}
               </Link>
             </li>
           );
@@ -172,13 +223,13 @@ export function MobileTabBar() {
 
 export function Footer() {
   return (
-    <footer className="mx-auto max-w-[1360px] px-4 pt-16 pb-28 sm:px-6 md:px-10 lg:px-12 lg:pb-16">
-      <div className="grid grid-cols-12 gap-6 border-t border-line pt-6">
-        <p className="col-span-12 flex items-center gap-2.5 md:col-span-4">
+    <footer className="mx-auto max-w-[1360px] px-3 pt-10 pb-28 sm:px-4 lg:px-6 lg:pb-8">
+      <div className="glass flex flex-col gap-4 p-5 md:flex-row md:items-center md:gap-8">
+        <p className="flex shrink-0 items-center gap-2.5">
           <BrandMark size={20} />
           <BrandWordmark />
         </p>
-        <p className="col-span-12 max-w-[72ch] text-xs leading-relaxed text-ink-3 md:col-span-8">
+        <p className="max-w-[80ch] text-xs leading-relaxed text-ink-3">
           Kecuali halaman Akun, setiap harga, posisi, peluang, dan hasil di platform ini adalah data demo dari simulasi
           deterministik — bukan uang sungguhan. Halaman Akun membaca akun nyata Anda, dan setiap order di sana hanya dikirim setelah
           Anda setujui. Tidak ada yang di sini merupakan saran investasi; keputusan dan risiko tetap milik Anda.

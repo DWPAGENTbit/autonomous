@@ -6,36 +6,42 @@
    ────────────────────────────────────────────────────────────── */
 
 @theme {
-  /* Surfaces */
-  --color-canvas: #f7f7f5;
-  --color-surface: #ffffff;
-  --color-sunken: #efeeea;
+  /* Surfaces — frosted glass over a soft cyan/blue backdrop */
+  --color-canvas: #eef3f8;
+  --color-surface: rgb(255 255 255 / 0.66);
+  --color-sunken: rgb(15 40 32 / 0.05);
+  --color-glass: rgb(255 255 255 / 0.55);
+  --color-glass-strong: rgb(255 255 255 / 0.78);
+  --color-glass-edge: rgb(255 255 255 / 0.75);
 
   /* Ink */
-  --color-ink: #141413;
-  --color-ink-2: #55554f;
-  --color-ink-3: #6f6e68;
-  --color-ink-4: #a3a29b;
+  --color-ink: #0d1626;
+  --color-ink-2: #3a4658;
+  --color-ink-3: #5d6a7c;
+  --color-ink-4: #929eae;
 
   /* Borders */
-  --color-line: #e7e6e1;
-  --color-line-strong: #d5d4cd;
+  --color-line: rgb(15 40 32 / 0.08);
+  --color-line-strong: rgb(15 40 32 / 0.16);
 
-  /* Meaning */
-  --color-positive: #2e7a4e;
-  --color-positive-soft: #e5efe8;
-  --color-negative: #b0412e;
-  --color-negative-soft: #f6e6e2;
-  --color-accent: #0b63e5;
-  --color-accent-soft: #e6f0fd;
-  --color-caution: #9a6410;
-  --color-caution-soft: #f4ebdb;
+  /* Meaning — blue/cyan is the brand (from the logo), green is money in, red is money out */
+  --color-positive: #0d9b63;
+  --color-positive-soft: rgb(16 185 129 / 0.14);
+  --color-negative: #d9434b;
+  --color-negative-soft: rgb(217 67 75 / 0.12);
+  --color-accent: #0a63f2;
+  --color-accent-soft: rgb(10 99 242 / 0.12);
+  --color-cyan: #19d3f0;
+  --color-gold: #c9971c;
+  --color-gold-soft: rgb(234 179 8 / 0.16);
+  --color-caution: #b7770b;
+  --color-caution-soft: rgb(245 158 11 / 0.15);
 
   /* Charts */
-  --color-chart-line: #141413;
-  --color-chart-muted: #b9b8b1;
-  --color-chart-grid: #ebeae5;
-  --color-chart-area: rgb(58 74 168 / 0.07);
+  --color-chart-line: #0a63f2;
+  --color-chart-muted: #a9b8b2;
+  --color-chart-grid: rgb(15 40 32 / 0.07);
+  --color-chart-area: rgb(10 99 242 / 0.1);
 
   /* Typography */
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
@@ -64,15 +70,17 @@
   --text-display: 4.75rem;
   --text-display--line-height: 1;
 
-  /* Radius — mostly square; rounding is the exception */
-  --radius-xs: 2px;
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
+  /* Radius — soft, glass-like */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
 
   /* Elevation — only for things that float */
-  --shadow-raise: 0 1px 2px rgb(20 20 19 / 0.04), 0 4px 16px rgb(20 20 19 / 0.04);
-  --shadow-panel: 0 1px 2px rgb(20 20 19 / 0.05), 0 24px 64px rgb(20 20 19 / 0.12);
+  --shadow-raise: 0 1px 2px rgb(15 40 32 / 0.04), 0 8px 28px rgb(15 40 32 / 0.07);
+  --shadow-panel: 0 1px 2px rgb(15 40 32 / 0.05), 0 24px 64px rgb(15 40 32 / 0.16);
+  --shadow-glass: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 1px 2px rgb(15 40 32 / 0.04), 0 12px 40px rgb(15 40 32 / 0.08);
 
   /* Motion */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -108,14 +116,14 @@
     scroll-padding-top: 5rem;
   }
   body {
-    background: var(--color-canvas);
+    background: transparent;
     font-family: var(--font-sans);
     font-size: var(--text-base);
     line-height: var(--text-base--line-height);
     font-feature-settings: "ss01", "cv11";
   }
   ::selection {
-    background: var(--color-accent-soft);
+    background: rgb(25 211 240 / 0.28);
     color: var(--color-ink);
   }
   :focus-visible {
@@ -132,6 +140,66 @@
 }
 
 @layer components {
+  /* Frosted glass panel — the platform's main surface */
+  .glass {
+    background: var(--color-glass);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    backdrop-filter: blur(22px) saturate(160%);
+    border: 1px solid var(--color-glass-edge);
+    box-shadow: var(--shadow-glass);
+    border-radius: var(--radius-lg);
+  }
+  .glass-strong {
+    background: var(--color-glass-strong);
+    -webkit-backdrop-filter: blur(26px) saturate(170%);
+    backdrop-filter: blur(26px) saturate(170%);
+    border: 1px solid var(--color-glass-edge);
+    box-shadow: var(--shadow-glass);
+  }
+  /* Soft colour field behind the glass: cyan and blue light, a hint of mint */
+  .app-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(42% 38% at 8% 6%, rgb(25 211 240 / 0.34), transparent 70%),
+      radial-gradient(36% 34% at 92% 12%, rgb(10 99 242 / 0.2), transparent 70%),
+      radial-gradient(44% 40% at 78% 88%, rgb(56 189 248 / 0.24), transparent 70%),
+      radial-gradient(38% 36% at 18% 92%, rgb(52 211 153 / 0.16), transparent 70%),
+      linear-gradient(160deg, #f3f7fb 0%, #eaf1f8 48%, #eef3f6 100%);
+  }
+  .app-backdrop::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgb(15 40 32 / 0.05) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: linear-gradient(to bottom, black, transparent 70%);
+  }
+  /* Pill buttons and chips, as in the reference dashboard */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: 999px;
+    padding: 0.4rem 0.85rem;
+    font-size: var(--text-xs);
+    font-weight: 500;
+    border: 1px solid var(--color-glass-edge);
+    background: var(--color-glass-strong);
+    color: var(--color-ink-2);
+    transition: background-color 150ms, color 150ms, border-color 150ms;
+  }
+  .pill:hover { color: var(--color-ink); background: #fff; }
+  .pill-accent {
+    background: linear-gradient(135deg, #12c9f0, #0a63f2);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 6px 18px rgb(10 99 242 / 0.32);
+  }
+  .pill-accent:hover { color: #fff; background: linear-gradient(135deg, #22d3ee, #0a63f2); }
+
   /* Small uppercase label — the system's primary wayfinding voice */
   .label {
     font-size: var(--text-micro);

@@ -40,7 +40,7 @@ function SetupSteps() {
 }
 
 const inputClass =
-  "h-11 w-full rounded-sm border border-line-strong bg-surface px-3 text-sm text-ink outline-none transition-colors focus:border-accent";
+  "h-12 w-full rounded-[14px] border border-line-strong bg-white/80 px-4 text-sm text-ink outline-none transition-colors focus:border-accent focus:ring-4 focus:ring-accent/10";
 
 /** The front door of the platform. */
 export function LoginScreen({ configured, askUsername, next }: { configured: boolean; askUsername: boolean; next: string }) {
@@ -75,29 +75,33 @@ export function LoginScreen({ configured, askUsername, next }: { configured: boo
   };
 
   return (
-    <div className="grid min-h-dvh grid-cols-1 lg:grid-cols-2">
+    <div className="grid min-h-dvh grid-cols-1 gap-4 p-3 sm:p-4 lg:grid-cols-2">
       {/* The agent, waiting behind the door. */}
-      <section
-        aria-hidden
-        className="relative hidden flex-col justify-between overflow-hidden border-r border-line p-10 lg:flex"
-        style={{ background: "radial-gradient(120% 90% at 30% 40%, #e6f0fd 0%, #f7f7f5 60%)" }}
-      >
-        <div className="flex items-center gap-2.5">
-          <BrandMark size={28} />
+      <section aria-hidden className="glass relative hidden flex-col justify-between overflow-hidden p-10 lg:flex">
+        <div
+          className="pointer-events-none absolute -top-32 -left-24 size-[28rem] rounded-full opacity-70 blur-3xl"
+          style={{ background: "radial-gradient(circle, rgba(25,211,240,0.4), rgba(10,99,242,0.14) 55%, transparent 72%)" }}
+        />
+        <div className="relative flex items-center gap-3">
+          <span className="inline-flex size-12 items-center justify-center rounded-[16px] bg-white shadow-[var(--shadow-raise)]">
+            <BrandMark size={34} />
+          </span>
           <BrandWordmark />
         </div>
-        <div className="mx-auto w-full max-w-[460px]">
+        <div className="relative mx-auto w-full max-w-[460px]">
           <AgentCore maxSize={460} />
         </div>
-        <p className="max-w-[40ch] text-sm text-ink-2">
+        <p className="relative max-w-[40ch] text-sm text-ink-2">
           Tim agen yang mencari peluang cuan, memeriksa risiko, menentukan ukuran, dan mencatat alasan setiap keputusan — modal dijaga dulu, baru dikembangkan.
         </p>
       </section>
 
-      <section className="flex items-center justify-center px-4 py-12 sm:px-10">
-        <div className="w-full max-w-sm">
-          <div className="mb-10 flex items-center gap-2.5 lg:hidden">
-            <BrandMark size={28} />
+      <section className="flex items-center justify-center py-8">
+        <div className="glass w-full max-w-md p-6 sm:p-9">
+          <div className="mb-8 flex flex-col items-start gap-4">
+            <span className="inline-flex size-16 items-center justify-center rounded-[20px] bg-white shadow-[var(--shadow-raise)]">
+              <BrandMark size={46} />
+            </span>
             <BrandWordmark />
           </div>
           <h1 className="text-3xl font-light tracking-[-0.03em] text-ink">Masuk ke platform</h1>
@@ -155,7 +159,7 @@ export function LoginScreen({ configured, askUsername, next }: { configured: boo
                 <Button
                   type="submit"
                   variant="primary"
-                  className="h-11 w-full"
+                  className="h-12 w-full"
                   disabled={busy || password.length === 0 || (askUsername && username.trim().length === 0)}
                 >
                   {busy ? "Memeriksa…" : "Masuk"}

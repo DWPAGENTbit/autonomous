@@ -76,7 +76,7 @@ export function RiskSurface({ showSectors = true }: { showSectors?: boolean }) {
         ))}
       </ul>
       <p className="mt-2 flex items-center gap-2 text-[11px] text-ink-3">
-        <span className="inline-block h-3 w-px bg-ink" aria-hidden /> Policy limit
+        <span className="inline-block h-3 w-px bg-ink" aria-hidden /> Batas kebijakan
       </p>
 
       {showSectors && risk.sectorExposure.length > 0 && (

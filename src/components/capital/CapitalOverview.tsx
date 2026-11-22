@@ -92,7 +92,7 @@ export function AllocationBar() {
             onPointerLeave={() => setFocus(null)}
             className={clsx(
               "h-full transition-opacity duration-150",
-              s.held ? (i % 2 === 0 ? "bg-ink" : "bg-ink-2") : "bg-[repeating-linear-gradient(135deg,var(--color-line-strong)_0_1px,transparent_1px_5px)]",
+              s.held ? (i % 2 === 0 ? "bg-accent" : "bg-[#12c9f0]") : "bg-[repeating-linear-gradient(135deg,var(--color-line-strong)_0_1px,transparent_1px_5px)]",
               focus && focus !== s.id && "opacity-35",
             )}
             style={{ flexGrow: s.value }}
@@ -138,7 +138,7 @@ export function CapitalOverview({ chartHeight = 220 }: { chartHeight?: number })
         </div>
         <AnimatedValue value={c.total} format={(v) => formatUsd(v)} className="block text-5xl font-light tracking-[-0.035em] text-ink md:text-6xl" />
         <p className="mt-2 text-sm text-ink-2">
-          <Delta value={c.monthPnl} format={(v) => formatSignedUsd(v)} /> · <Delta value={c.monthReturnPct} /> this month
+          <Delta value={c.monthPnl} format={(v) => formatSignedUsd(v)} /> · <Delta value={c.monthReturnPct} /> bulan ini
         </p>
         <div className="mt-10">
           <AllocationBar />

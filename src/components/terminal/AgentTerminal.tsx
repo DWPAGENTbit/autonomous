@@ -56,11 +56,11 @@ const toneBg: Record<Tone, string> = {
 };
 
 const toneStroke: Record<Tone, string> = {
-  positive: "#2e7a4e",
-  negative: "#b0412e",
-  accent: "#0b63e5",
-  caution: "#9a6410",
-  muted: "#55554f",
+  positive: "#0d9b63",
+  negative: "#d9434b",
+  accent: "#0a63f2",
+  caution: "#b7770b",
+  muted: "#3b4a45",
 };
 
 function Chip({ tone, children }: { tone: Tone; children: React.ReactNode }) {
@@ -127,7 +127,7 @@ export function AgentTerminal() {
   const x = (i: number) => 60 + i * 120;
 
   return (
-    <div className="overflow-hidden rounded-md border border-line bg-surface">
+    <div className="glass overflow-hidden">
       {/* Header */}
       <div className="grid grid-cols-12 items-center gap-x-6 gap-y-5 border-b border-line p-5 md:p-6">
         <div className="col-span-12 flex items-center gap-4 md:col-span-6">
@@ -232,11 +232,11 @@ export function AgentTerminal() {
             <svg viewBox="0 0 600 130" className="mt-4 w-full" role="img" aria-label={active ? `Tahap aktif: ${AGENTS.find((a) => a.key === active)?.name}` : "Tim dijeda"}>
               <defs>
                 <linearGradient id="flow-line" x1="0" x2="1">
-                  <stop offset="0" stopColor="#0b63e5" />
+                  <stop offset="0" stopColor="#0a63f2" />
                   <stop offset="1" stopColor="#19d3f0" />
                 </linearGradient>
               </defs>
-              <line x1={x(0)} y1={52} x2={x(4)} y2={52} stroke="#e7e6e1" strokeWidth={2} />
+              <line x1={x(0)} y1={52} x2={x(4)} y2={52} stroke="#dbe5e0" strokeWidth={2} />
               {flowIdx > 0 && <line x1={x(0)} y1={52} x2={x(flowIdx)} y2={52} stroke="url(#flow-line)" strokeWidth={2} />}
               {flowIdx >= 0 && !reduced && (
                 <motion.circle
@@ -271,17 +271,17 @@ export function AgentTerminal() {
                       cx={x(i)}
                       cy={52}
                       r={22}
-                      fill={on ? "#0b63e5" : "#ffffff"}
-                      stroke={on || done ? "#0b63e5" : "#d5d4cd"}
+                      fill={on ? "#0a63f2" : "#ffffff"}
+                      stroke={on || done ? "#0a63f2" : "#c6d3cd"}
                       strokeWidth={on ? 0 : 1.5}
                     />
-                    <text x={x(i)} y={57} textAnchor="middle" fontSize={14} fontWeight={600} fill={on ? "#ffffff" : done ? "#0b63e5" : "#a3a29b"} fontFamily="ui-monospace, monospace">
+                    <text x={x(i)} y={57} textAnchor="middle" fontSize={14} fontWeight={600} fill={on ? "#ffffff" : done ? "#0a63f2" : "#93a19b"} fontFamily="ui-monospace, monospace">
                       {i + 1}
                     </text>
-                    <text x={x(i)} y={96} textAnchor="middle" fontSize={12} fill={on ? "#141413" : "#6f6e68"} fontWeight={on ? 600 : 400}>
+                    <text x={x(i)} y={96} textAnchor="middle" fontSize={12} fill={on ? "#0f1d18" : "#5f6f69"} fontWeight={on ? 600 : 400}>
                       {a.name.split(" ")[0]}
                     </text>
-                    <text x={x(i)} y={113} textAnchor="middle" fontSize={10} fill={on ? "#0b63e5" : "#a3a29b"} fontFamily="ui-monospace, monospace">
+                    <text x={x(i)} y={113} textAnchor="middle" fontSize={10} fill={on ? "#0a63f2" : "#93a19b"} fontFamily="ui-monospace, monospace">
                       {on ? "aktif" : done ? "selesai" : "menunggu"}
                     </text>
                   </g>
@@ -344,8 +344,8 @@ export function AgentTerminal() {
               )}
             </section>
 
-            <section className="col-span-12 bg-[#141413] p-4 md:col-span-6 md:p-5" aria-label="Log langsung">
-              <p className="mb-3 flex justify-between font-mono text-[10px] text-[#a3a29b]">
+            <section className="col-span-12 border-line bg-white/45 p-4 md:col-span-6 md:border-l md:p-5" aria-label="Log langsung">
+              <p className="mb-3 flex justify-between font-mono text-[10px] text-ink-4">
                 <span>$ tail -f agen.log</span>
                 <span>{activity.length} baris</span>
               </p>
@@ -357,14 +357,14 @@ export function AgentTerminal() {
                     animate={{ opacity: 1, x: 0 }}
                     className="grid grid-cols-[3.2rem_4.6rem_1fr] gap-2"
                   >
-                    <span className="num text-[#6f6e68]">{formatClock(e.at, false)}</span>
-                    <span className={clsx("uppercase", ACTIVITY_META[e.kind].tone === "muted" ? "text-[#a3a29b]" : "text-[#19d3f0]")}>
+                    <span className="num text-ink-4">{formatClock(e.at, false)}</span>
+                    <span className={clsx("uppercase", ACTIVITY_META[e.kind].tone === "muted" ? "text-ink-4" : "text-accent")}>
                       {ACTIVITY_META[e.kind].label}
                     </span>
-                    <span className="truncate text-[#efeeea]">{e.message}</span>
+                    <span className="truncate text-ink-2">{e.message}</span>
                   </motion.li>
                 ))}
-                <li aria-hidden className="h-3 w-1.5 animate-pulse bg-[#efeeea]" />
+                <li aria-hidden className="h-3 w-1.5 animate-pulse bg-accent" />
               </ol>
             </section>
           </div>
@@ -383,7 +383,7 @@ export function AgentTerminal() {
                   <span className="h-1.5 rounded-full bg-sunken">
                     <motion.span
                       className={clsx("block h-full rounded-full", r.k !== "Kini" && "bg-ink-4")}
-                      style={r.k === "Kini" ? { background: "linear-gradient(90deg, #0b63e5, #19d3f0)" } : undefined}
+                      style={r.k === "Kini" ? { background: "linear-gradient(90deg, #0a63f2, #19d3f0)" } : undefined}
                       initial={false}
                       animate={{ width: `${(r.v / max) * 100}%` }}
                     />

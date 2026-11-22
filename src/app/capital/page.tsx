@@ -3,7 +3,7 @@ import { AgentActivity } from "@/components/activity/AgentActivity";
 import { CapitalOverview } from "@/components/capital/CapitalOverview";
 import { PositionsLedger } from "@/components/capital/PositionsLedger";
 import { RiskSurface } from "@/components/capital/RiskSurface";
-import { PageIntro, SHELL } from "@/components/shared/PageIntro";
+import { PageIntro, PANEL, SHELL } from "@/components/shared/PageIntro";
 import { Reveal, SectionHeader } from "@/components/shared/primitives";
 
 export const metadata: Metadata = { title: "Modal" };
@@ -15,13 +15,13 @@ export default function CapitalPage() {
         Portofolio simulasi. Posisi bergerak mengikuti harga simulasi; tidak ada yang di sini mewakili uang sungguhan.
       </PageIntro>
 
-      <section className={`${SHELL} pb-24`} aria-label="Ringkasan modal">
+      <section className={PANEL} aria-label="Ringkasan modal">
         <div className="border-t border-line pt-8">
           <CapitalOverview />
         </div>
       </section>
 
-      <Reveal as="section" className={`${SHELL} pb-24`}>
+      <Reveal as="section" className={PANEL}>
         <SectionHeader index="05.1" title="Risiko" summary="Setiap ukuran dibandingkan batas kebijakan yang wajib dipatuhi agen." />
         <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-12">
           <div className="col-span-12 lg:col-span-6">
@@ -34,7 +34,7 @@ export default function CapitalPage() {
         </div>
       </Reveal>
 
-      <Reveal as="section" className={`${SHELL} pb-8`}>
+      <Reveal as="section" className={PANEL}>
         <SectionHeader index="05.2" title="Posisi" summary="Apa yang dipegang, hasilnya sejauh ini, dan apa yang berisiko jika semua stop tersentuh." />
         <PositionsLedger />
       </Reveal>

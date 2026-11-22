@@ -105,7 +105,7 @@ export function OrderPanel({ broker, live }: { broker: BrokerStatus; live: boole
                   setSide(s);
                   reset();
                 }}
-                className={clsx("rounded-[3px] text-sm transition-colors", side === s ? "bg-ink text-canvas" : "text-ink-2 hover:text-ink")}
+                className={clsx("rounded-[3px] text-sm transition-colors", side === s ? "bg-accent text-white" : "text-ink-2 hover:text-ink")}
               >
                 {s === "buy" ? "Beli" : "Jual"}
               </button>

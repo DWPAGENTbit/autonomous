@@ -15,14 +15,15 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f7f7f5",
+  themeColor: "#eef3f8",
   colorScheme: "light",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id" className={`${sans.variable} ${mono.variable}`}>
-      <body className="min-h-dvh bg-canvas text-ink">
+      <body className="min-h-dvh text-ink">
+        <div aria-hidden className="app-backdrop" />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-ink focus:px-3 focus:py-2 focus:text-sm focus:text-canvas"

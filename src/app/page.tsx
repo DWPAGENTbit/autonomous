@@ -6,10 +6,10 @@ import { ApprovalPanel } from "@/components/decisions/ApprovalPanel";
 import { DecisionIndex, FocusedDecision } from "@/components/decisions/DecisionLog";
 import { MarketOverview } from "@/components/markets/MarketOverview";
 import { OpportunityFeed } from "@/components/opportunities/OpportunityFeed";
+import { PANEL, SHELL } from "@/components/shared/PageIntro";
 import { Reveal, SectionHeader } from "@/components/shared/primitives";
 import { AgentTerminal } from "@/components/terminal/AgentTerminal";
 
-const SHELL = "mx-auto max-w-[1360px] px-4 sm:px-6 md:px-10 lg:px-12";
 
 export default function CommandCenterPage() {
   return (
@@ -21,12 +21,12 @@ export default function CommandCenterPage() {
       </div>
 
       {/* The agent as a team: who does what, and why every step happened. */}
-      <section id="terminal" className={`${SHELL} scroll-mt-20 pb-24`} aria-label="Terminal agen">
+      <section id="terminal" className={`${SHELL} scroll-mt-24 pb-5`} aria-label="Terminal agen">
         <AgentTerminal />
       </section>
 
       {/* Where the money comes from, then where it sits. */}
-      <Reveal as="section" className={`${SHELL} pb-24`}>
+      <Reveal as="section" className={PANEL}>
         <SectionHeader
           index="03"
           title="Penemuan peluang"
@@ -36,7 +36,7 @@ export default function CommandCenterPage() {
         />
         <OpportunityFeed limit={4} />
       </Reveal>
-      <Reveal as="section" className={`${SHELL} pb-24`}>
+      <Reveal as="section" className={PANEL}>
         <SectionHeader
           index="05"
           title="Modal"
@@ -57,7 +57,7 @@ export default function CommandCenterPage() {
       </Reveal>
 
       {/* What is it deciding, and what has it done? */}
-      <Reveal as="section" className={`${SHELL} pb-24`}>
+      <Reveal as="section" className={PANEL}>
         <SectionHeader
           index="04"
           title="Keputusan & aktivitas"
@@ -83,7 +83,7 @@ export default function CommandCenterPage() {
         </div>
       </Reveal>
 
-      <Reveal as="section" className={`${SHELL} pb-8`}>
+      <Reveal as="section" className={PANEL}>
         <SectionHeader
           index="02"
           title="Intelijen pasar"

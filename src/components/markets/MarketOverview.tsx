@@ -21,9 +21,9 @@ export function MarketOverview() {
     <div className="space-y-12">
       <MarketRegime />
       <div className="grid grid-cols-12 gap-x-6 gap-y-12">
-        <div className="col-span-12 lg:col-span-7">
+        <div className="col-span-12 xl:col-span-7">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-            <p className="label text-[10px]">Return vs. volatility · filled = held</p>
+            <p className="label text-[10px]">Hasil vs. volatilitas · terisi = dipegang</p>
             <TimeframeSwitch value={tf} onChange={setTf} />
           </div>
           <ReturnVolatilityMap
@@ -33,7 +33,7 @@ export function MarketOverview() {
             onSelect={(s) => router.push(`/markets?symbol=${s}`)}
           />
         </div>
-        <div className="col-span-12 lg:col-span-5">
+        <div className="col-span-12 xl:col-span-5">
           <InstrumentTape />
         </div>
       </div>

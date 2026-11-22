@@ -53,13 +53,13 @@ export const cssColor = {
 
 /** Raw hex values for canvas rendering, where CSS variables are unavailable. */
 export const rawColor = {
-  ink: "#141413",
-  ink3: "#6f6e68",
-  ink4: "#a3a29b",
-  line: "#e7e6e1",
-  accent: "#0b63e5",
-  positive: "#2e7a4e",
-  caution: "#9a6410",
+  ink: "#0d1626",
+  ink3: "#5f6f69",
+  ink4: "#93a19b",
+  line: "#dbe5e0",
+  accent: "#0a63f2",
+  positive: "#0d9b63",
+  caution: "#b7770b",
 } as const;
 
 export const chart = {

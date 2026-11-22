@@ -23,10 +23,10 @@ interface Props {
 }
 
 function relativeTime(hoursAgo: number): string {
-  if (hoursAgo < 0.05) return "Now";
-  if (hoursAgo < 1) return `${Math.round(hoursAgo * 60)}m ago`;
-  if (hoursAgo < 48) return `${Math.round(hoursAgo)}h ago`;
-  return `${Math.round(hoursAgo / 24)}d ago`;
+  if (hoursAgo < 0.05) return "Kini";
+  if (hoursAgo < 1) return `${Math.round(hoursAgo * 60)} mnt lalu`;
+  if (hoursAgo < 48) return `${Math.round(hoursAgo)} jam lalu`;
+  return `${Math.round(hoursAgo / 24)} hari lalu`;
 }
 
 /**

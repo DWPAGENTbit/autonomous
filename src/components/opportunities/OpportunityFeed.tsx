@@ -51,7 +51,7 @@ export function OpportunityFeed({
   }, []);
 
   return (
-    <ul className="border-t border-line">
+    <ul className="space-y-2.5">
       <AnimatePresence initial={false}>
         {items.map((o) => (
           <motion.li
@@ -87,13 +87,13 @@ const OpportunityItem = memo(function OpportunityItem({
   const passed = opp.status === "Dilewati";
 
   return (
-    <article className={clsx("border-b border-line transition-opacity duration-300", passed && !open && "opacity-60")}>
+    <article className={clsx("rounded-[18px] border border-glass-edge bg-white/50 px-4 transition-[opacity,background-color] duration-300 hover:bg-white/80 md:px-5", open && "bg-white/80", passed && !open && "opacity-60")}>
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={open}
         aria-controls={`${opp.id}-detail`}
-        className="group grid w-full grid-cols-12 gap-x-6 gap-y-4 py-6 text-left"
+        className="group grid w-full grid-cols-12 gap-x-6 gap-y-4 py-5 text-left"
       >
         <div className="col-span-12 lg:col-span-5">
           <div className="mb-2 flex items-center gap-2">
@@ -115,9 +115,9 @@ const OpportunityItem = memo(function OpportunityItem({
             <dt className="label mb-1 text-[10px]">Probabilitas</dt>
             <dd>
               <AnimatedValue value={opp.probability * 100} format={(v) => `${Math.round(v)}%`} className="text-base text-ink" />
-              <span className="mt-1.5 block h-[2px] w-full bg-line" aria-hidden>
+              <span className="mt-1.5 block h-[4px] w-full overflow-hidden rounded-full bg-line" aria-hidden>
                 <motion.span
-                  className="block h-full origin-left bg-ink"
+                  className="block h-full origin-left rounded-full bg-gradient-to-r from-[#12c9f0] to-accent"
                   initial={false}
                   animate={{ scaleX: opp.probability }}
                   transition={transition.scene}

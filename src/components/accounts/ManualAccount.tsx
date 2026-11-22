@@ -67,7 +67,7 @@ export function ManualAccount({ id, name, kinds, href }: { id: string; name: str
   const total = items.reduce((s, h) => s + h.value, 0);
 
   return (
-    <article className="border-t border-line pt-6">
+    <article className="h-full rounded-[20px] border border-glass-edge bg-white/50 p-5 md:p-6">
       <header className="mb-5 flex flex-wrap items-baseline gap-3">
         <h3 className="text-xl text-ink">{name}</h3>
         <span className="label text-[10px]">Manual · tanpa API</span>

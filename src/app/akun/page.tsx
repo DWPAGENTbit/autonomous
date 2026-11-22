@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AccountsView } from "@/components/accounts/AccountsView";
-import { PageIntro, SHELL } from "@/components/shared/PageIntro";
+import { PageIntro, PANEL, SHELL } from "@/components/shared/PageIntro";
 import { isAuthed } from "@/lib/server/auth";
 
 export const metadata: Metadata = { title: "Akun" };
@@ -17,7 +17,7 @@ export default async function AccountsPage() {
         Berbeda dari halaman lain, bagian ini memakai akun sungguhan. Indodax dan Tokocrypto terhubung lewat API resmi, dan setiap order
         hanya dikirim setelah Anda setujui. Bibit dan Stockbit tidak menyediakan API untuk pihak ketiga, jadi dicatat manual.
       </PageIntro>
-      <section className={`${SHELL} pb-16`}>
+      <section className={PANEL}>
         <AccountsView />
       </section>
     </>

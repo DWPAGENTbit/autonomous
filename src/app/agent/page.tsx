@@ -3,7 +3,7 @@ import { Timeline } from "@/components/activity/Timeline";
 import { AgentPipeline, AgentStatus } from "@/components/agent/AgentStatus";
 import { AutonomyPolicy } from "@/components/agent/AutonomyPolicy";
 import { DecisionIndex, FocusedDecision } from "@/components/decisions/DecisionLog";
-import { PageIntro, SHELL } from "@/components/shared/PageIntro";
+import { PageIntro, PANEL, SHELL } from "@/components/shared/PageIntro";
 import { Reveal, SectionHeader } from "@/components/shared/primitives";
 
 export const metadata: Metadata = { title: "Agen" };
@@ -15,7 +15,7 @@ export default function AgentPage() {
         Langkah saat ini, batas kerjanya, setiap keputusan beserta alasannya, dan catatan aktivitas lengkap.
       </PageIntro>
 
-      <section className={`${SHELL} pb-24`} aria-label="Status agen">
+      <section className={PANEL} aria-label="Status agen">
         <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-12 border-t border-line pt-8">
           <div className="col-span-12 lg:col-span-7">
             <AgentStatus glyphSize={220} />
@@ -29,7 +29,7 @@ export default function AgentPage() {
         </div>
       </section>
 
-      <Reveal as="section" className={`${SHELL} pb-24`}>
+      <Reveal as="section" className={PANEL}>
         <SectionHeader index="04.1" title="Keputusan" summary="Setiap keputusan sebagai rantai syarat. Buka syarat mana pun, atau tanyakan alasannya." />
         <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-12">
           <div className="col-span-12 xl:col-span-8">
@@ -42,7 +42,7 @@ export default function AgentPage() {
         </div>
       </Reveal>
 
-      <Reveal as="section" className={`${SHELL} pb-8`}>
+      <Reveal as="section" className={PANEL}>
         <SectionHeader index="04.2" title="Linimasa" summary="Bukti kerja: setiap langkah agen di sesi ini, berurutan." />
         <Timeline />
       </Reveal>

@@ -10,7 +10,7 @@ import { PerformanceChart } from "@/components/markets/PerformanceChart";
 import { ReturnVolatilityMap } from "@/components/markets/ReturnVolatilityMap";
 import { TimeframeSwitch } from "@/components/markets/TimeframeSwitch";
 import { TradingWorkspace } from "@/components/markets/TradingWorkspace";
-import { SHELL } from "@/components/shared/PageIntro";
+import { PANEL, SHELL } from "@/components/shared/PageIntro";
 import { Delta, Reveal, SectionHeader } from "@/components/shared/primitives";
 import { useMarketStats, useSeries } from "@/hooks/use-derived";
 import { extent } from "@/lib/analytics/series";
@@ -45,11 +45,11 @@ export function MarketsWorkspace() {
 
   return (
     <>
-      <section className={`${SHELL} pb-20`} aria-label="Rezim pasar">
+      <section className={PANEL} aria-label="Rezim pasar">
         <MarketRegime />
       </section>
 
-      <section className={`${SHELL} pb-24`} aria-labelledby="chart-title">
+      <section className={PANEL} aria-labelledby="chart-title">
         <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-12 border-t border-line pt-6">
           <div className="col-span-12 lg:col-span-8">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-6">
@@ -100,7 +100,7 @@ export function MarketsWorkspace() {
         </div>
       </section>
 
-      <Reveal as="section" className={`${SHELL} pb-24`}>
+      <Reveal as="section" className={PANEL}>
         <SectionHeader
           index="02.1"
           title="Eksekusi"
@@ -109,7 +109,7 @@ export function MarketsWorkspace() {
         <TradingWorkspace symbol={symbol} />
       </Reveal>
 
-      <Reveal as="section" className={`${SHELL} pb-8`}>
+      <Reveal as="section" className={PANEL}>
         <SectionHeader
           index="02.2"
           title="Hubungan"
@@ -118,7 +118,7 @@ export function MarketsWorkspace() {
         />
         <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-12">
           <div className="col-span-12 lg:col-span-7">
-            <p className="label mb-3 text-[10px]">Return vs. volatility · {tf} · filled = held</p>
+            <p className="label mb-3 text-[10px]">Hasil vs. volatilitas · {tf} · terisi = dipegang</p>
             <ReturnVolatilityMap stats={stats} held={held.split(",") as MarketSymbol[]} timeframeLabel={tf} onSelect={select} height={340} />
           </div>
           <div className="col-span-12 lg:col-span-5">

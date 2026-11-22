@@ -15,12 +15,12 @@ import type { AgentState, Decision, MarketSymbol } from "@/types/domain";
  * you what the agent is doing.
  */
 
-const BLUE = "#0b63e5";
+const BLUE = "#0a63f2";
 const CYAN = "#19d3f0";
-const AMBER = "#c27c0e";
-const POSITIVE = "46,122,78";
-const INK2 = "#55554f";
-const INK3 = "#8a8983";
+const AMBER = "#c9971c";
+const POSITIVE = "13,155,99";
+const INK2 = "#3b4a45";
+const INK3 = "#7d8c86";
 
 const MARKETS: { id: MarketSymbol; label: string }[] = [
   { id: "BTC", label: "BTC" },
@@ -140,14 +140,14 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
     ctx.lineWidth = 2;
     for (let k = 0; k < 26; k++) {
       const a = sweep - k * 0.035;
-      ctx.strokeStyle = `rgba(11,99,229,${0.24 * (1 - k / 26)})`;
+      ctx.strokeStyle = `rgba(10,99,242,${0.24 * (1 - k / 26)})`;
       line(ctx, g.c + Math.cos(a) * g.core * 1.25, g.c + Math.sin(a) * g.core * 1.25, g.c + Math.cos(a) * g.rOut, g.c + Math.sin(a) * g.rOut);
     }
     ctx.lineWidth = 1.5;
     for (const n of [...g.markets, ...g.sources]) {
       const d = angDist(n.a, sweep);
       if (d > 0.4) continue;
-      ctx.strokeStyle = `rgba(11,99,229,${0.6 * (1 - d / 0.4)})`;
+      ctx.strokeStyle = `rgba(10,99,242,${0.6 * (1 - d / 0.4)})`;
       circle(ctx, n.x, n.y, f.size * 0.036);
       ctx.stroke();
     }
@@ -171,16 +171,16 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
     const active = Math.floor(f.t * 1.4) % g.markets.length;
     const p = frac(f.t * 1.4);
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(11,99,229,0.1)";
+    ctx.strokeStyle = "rgba(10,99,242,0.1)";
     for (const m of g.markets) line(ctx, g.c, g.c, m.x, m.y);
     const m = g.markets[active];
     ctx.lineWidth = 1.75;
-    ctx.strokeStyle = "rgba(11,99,229,0.75)";
+    ctx.strokeStyle = "rgba(10,99,242,0.75)";
     line(ctx, g.c, g.c, m.x, m.y);
     ctx.fillStyle = CYAN;
     circle(ctx, g.c + (m.x - g.c) * p, g.c + (m.y - g.c) * p, 3);
     ctx.fill();
-    ctx.strokeStyle = `rgba(11,99,229,${0.7 * (1 - p)})`;
+    ctx.strokeStyle = `rgba(10,99,242,${0.7 * (1 - p)})`;
     circle(ctx, m.x, m.y, f.size * (0.03 + 0.03 * p));
     ctx.stroke();
   },
@@ -194,7 +194,7 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
       const base = (i / paths) * TAU + f.t * 0.15;
       const reach = 0.5 + 0.5 * hash(i);
       const start = g.core * 1.3;
-      ctx.strokeStyle = i % 3 === 0 ? `rgba(25,211,240,${0.18 + 0.2 * hash(i + 7)})` : `rgba(11,99,229,${0.1 + 0.16 * hash(i + 3)})`;
+      ctx.strokeStyle = i % 3 === 0 ? `rgba(25,211,240,${0.18 + 0.2 * hash(i + 7)})` : `rgba(10,99,242,${0.1 + 0.16 * hash(i + 3)})`;
       ctx.beginPath();
       let ex = 0;
       let ey = 0;
@@ -208,7 +208,7 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
         else ctx.lineTo(ex, ey);
       }
       ctx.stroke();
-      ctx.fillStyle = hash(i + 11) > 0.42 ? `rgba(${POSITIVE},0.7)` : "rgba(176,65,46,0.6)";
+      ctx.fillStyle = hash(i + 11) > 0.42 ? `rgba(${POSITIVE},0.7)` : "rgba(217,67,75,0.6)";
       circle(ctx, ex, ey, 1.8);
       ctx.fill();
     }
@@ -220,7 +220,7 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
     [...g.markets, ...g.sources].forEach((n, i) => particle(f, g, n, frac(f.t * 0.9 + i * 0.13), i < 6 ? BLUE : CYAN, 2));
     const q = frac(f.t * 0.8);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = `rgba(11,99,229,${0.5 * q})`;
+    ctx.strokeStyle = `rgba(10,99,242,${0.5 * q})`;
     circle(ctx, g.c, g.c, g.core * (2.8 - 1.5 * q));
     ctx.stroke();
   },
@@ -230,7 +230,7 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
     const { ctx } = f;
     const m = targetNode(f, g);
     const grad = ctx.createLinearGradient(g.c, g.c, m.x, m.y);
-    grad.addColorStop(0, "rgba(11,99,229,0.85)");
+    grad.addColorStop(0, "rgba(10,99,242,0.85)");
     grad.addColorStop(1, "rgba(25,211,240,0.85)");
     ctx.strokeStyle = grad;
     ctx.lineWidth = 3;
@@ -254,7 +254,7 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
     ctx.lineWidth = 1.5;
     for (let k = 0; k < 2; k++) {
       const q = frac(f.t * 0.45 + k * 0.5);
-      ctx.strokeStyle = `rgba(11,99,229,${0.35 * (1 - q)})`;
+      ctx.strokeStyle = `rgba(10,99,242,${0.35 * (1 - q)})`;
       circle(ctx, g.c, g.c, g.core * 1.2 + q * (g.rOut - g.core * 1.2));
       ctx.stroke();
     }
@@ -275,11 +275,11 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
     const m = targetNode(f, g);
     ctx.setLineDash([4, 5]);
     ctx.lineWidth = 1.5;
-    ctx.strokeStyle = `rgba(194,124,14,${0.45 + 0.3 * s})`;
+    ctx.strokeStyle = `rgba(201,151,28,${0.45 + 0.3 * s})`;
     line(ctx, g.c, g.c, m.x, m.y);
     ctx.setLineDash([]);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = `rgba(194,124,14,${0.25 + 0.35 * s})`;
+    ctx.strokeStyle = `rgba(201,151,28,${0.25 + 0.35 * s})`;
     circle(ctx, g.c, g.c, g.core * (1.55 + 0.12 * s));
     ctx.stroke();
     circle(ctx, m.x, m.y, f.size * (0.034 + 0.008 * s));
@@ -323,7 +323,7 @@ function drawCore(f: Frame, g: Geo) {
   const r = g.core * (1 + 0.035 * Math.sin(f.t * 2));
 
   const glow = ctx.createRadialGradient(g.c, g.c, r * 0.6, g.c, g.c, r * 2.7);
-  glow.addColorStop(0, waiting ? "rgba(194,124,14,0.22)" : "rgba(25,211,240,0.3)");
+  glow.addColorStop(0, waiting ? "rgba(201,151,28,0.22)" : "rgba(25,211,240,0.3)");
   glow.addColorStop(1, "rgba(25,211,240,0)");
   ctx.fillStyle = glow;
   circle(ctx, g.c, g.c, r * 2.7);
@@ -364,7 +364,7 @@ function draw(f: Frame) {
   const g = geometry(size, f.rot);
 
   ctx.lineWidth = 1;
-  ctx.strokeStyle = "rgba(11,99,229,0.14)";
+  ctx.strokeStyle = "rgba(10,99,242,0.14)";
   circle(ctx, g.c, g.c, g.rIn);
   ctx.stroke();
   ctx.setLineDash([2, 5]);

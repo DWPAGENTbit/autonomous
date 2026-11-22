@@ -81,7 +81,7 @@ export function Timeline() {
             onClick={() => setFilter(f.key)}
             className={clsx(
               "h-8 rounded-sm px-3 text-xs transition-colors duration-150",
-              filter === f.key ? "bg-ink text-canvas" : "text-ink-2 hover:bg-sunken hover:text-ink",
+              filter === f.key ? "bg-accent text-white" : "text-ink-2 hover:bg-sunken hover:text-ink",
             )}
           >
             {f.label}
