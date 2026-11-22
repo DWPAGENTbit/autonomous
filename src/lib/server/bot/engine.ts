@@ -8,8 +8,10 @@ import { loadState, saveState, updateState } from "./store";
 import type { AgentStep, BotState, JournalEntry, LastDecision, Position, TradeMode } from "./types";
 
 /** Idle checks are written at most this often, to keep storage writes low. */
-/** Idle checks are saved only this often (Vercel Hobby: 2,000 Blob writes a month). */
-const HEARTBEAT_MS = 3 * 60 * 60_000;
+/** Idle checks are saved only this often; enough to show the bot and its schedule are alive. */
+const HEARTBEAT_MS = 60 * 60_000;
+/** Runs by the 15-minute schedule are labelled with this. */
+export const SCHEDULE = "jadwal";
 /** A run holding the lock longer than this is considered dead. */
 const LOCK_MS = 90_000;
 
@@ -76,10 +78,26 @@ export async function runTick(by: string): Promise<TickResult> {
   const state = snap.state;
   const s = state.settings;
 
-  if (!s.auto) return { ran: false, actions: 0, message: "Mode otomatis sedang mati.", decisions: [] };
+  // Even while off, note now and then that the schedule is alive.
+  const stale = (at: number | null | undefined) => !at || now - at > HEARTBEAT_MS;
+  const heartbeatDue = stale(state.lastTick?.at) || (by === SCHEDULE && stale(state.lastScheduledAt));
+  const mark = (st: BotState, summary: string) => {
+    st.lastTick = { at: now, by, summary };
+    if (by === SCHEDULE) st.lastScheduledAt = now;
+  };
+
+  const idle = async (message: string, mode?: TradeMode): Promise<TickResult> => {
+    if (heartbeatDue) {
+      mark(state, message);
+      await saveState(state, snap.etag).catch(() => null);
+    }
+    return { ran: false, mode, actions: 0, message, decisions: [] };
+  };
+
+  if (!s.auto) return idle("Mode otomatis sedang mati.");
   const mode = tradeMode(s);
   const brokers = activeBrokers(s);
-  if (!brokers.length) return { ran: false, mode, actions: 0, message: "Tidak ada bursa aktif yang punya kunci API.", decisions: [] };
+  if (!brokers.length) return idle("Tidak ada bursa aktif yang punya kunci API.", mode);
 
   let tickers = new Map<string, Ticker>();
   if (brokers.includes("indodax")) tickers = await idrTickers().catch(() => tickers);
@@ -169,12 +187,12 @@ export async function runTick(by: string): Promise<TickResult> {
   const summary = `${decisions.length} pasangan dicek · ${plans.length ? `${plans.length} order` : "tidak ada order"}`;
   const record: Effect = (st) => {
     for (const d of decisions) st.decisions[positionKey(d.mode, d.broker, d.pair)] = d;
-    st.lastTick = { at: now, by, summary };
+    mark(st, summary);
   };
 
   // Nothing to trade: write only now and then.
   if (!plans.length) {
-    if (fixes.length || !state.lastTick || now - state.lastTick.at > HEARTBEAT_MS) {
+    if (fixes.length || heartbeatDue) {
       for (const f of [...fixes, record]) f(state);
       await saveState(state, snap.etag).catch(() => null);
     }

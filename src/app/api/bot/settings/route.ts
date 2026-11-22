@@ -18,7 +18,7 @@ export async function POST(req: Request) {
 
   // On Vercel the bot must remember its positions between runs, so it needs real storage.
   if (body.auto === true && process.env.VERCEL === "1" && storageKind() === "memory") {
-    return json({ error: "Penyimpanan bot belum dibuat. Buat Blob store di Vercel (Storage → Blob), lalu redeploy." }, 409);
+    return json({ error: "Penyimpanan bot (Supabase) belum tersambung. Jalankan supabase/dwp-bot.sql dan isi kuncinya di Vercel, lalu redeploy." }, 409);
   }
 
   try {

@@ -78,7 +78,7 @@ export function defaultSettings(): BotSettings {
 }
 
 export function emptyState(): BotState {
-  return { version: 1, settings: defaultSettings(), positions: {}, journal: [], months: {}, decisions: {}, lastTick: null, lock: null };
+  return { version: 1, settings: defaultSettings(), positions: {}, journal: [], months: {}, decisions: {}, lastTick: null, lastScheduledAt: null, lock: null };
 }
 
 /** Pair formats each exchange uses: Indodax "pepe_idr", Tokocrypto "SOL_USDT". */

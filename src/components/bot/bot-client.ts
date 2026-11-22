@@ -26,7 +26,7 @@ interface TickReply {
 
 /**
  * How often an open app re-reads the bot. The schedule runs the bot every 15 minutes,
- * so reading more often shows nothing new and only spends Vercel Blob reads.
+ * so reading more often shows nothing new and only spends Vercel and Supabase quota.
  */
 const REFRESH_MS = 5 * 60_000;
 

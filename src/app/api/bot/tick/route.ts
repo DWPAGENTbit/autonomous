@@ -1,5 +1,6 @@
 import { isAuthed, sameOrigin } from "@/lib/server/auth";
-import { runTick } from "@/lib/server/bot/engine";
+import { SCHEDULE, runTick } from "@/lib/server/bot/engine";
+import { scheduleAuthorized } from "@/lib/server/bot/store";
 import { cronAuthorized } from "@/lib/server/bot/view";
 import { json } from "@/lib/server/http";
 
@@ -9,14 +10,16 @@ export const preferredRegion = "sin1";
 export const maxDuration = 60;
 
 /**
- * One autonomous check. Called by the schedule (Bearer CRON_SECRET) or by the
- * signed-in owner's open app. The schedule gets only a short answer, because its
- * logs may be public; the owner gets the agents' full reasoning.
+ * One autonomous check. Called every 15 minutes by the schedule in Supabase (its own
+ * key, checked by the database), once a day by Vercel Cron as a backup (CRON_SECRET),
+ * or by the signed-in owner. Schedules get only a short answer; the owner gets the
+ * agents' full reasoning.
  */
 async function handle(req: Request, write: boolean) {
-  if (cronAuthorized(req)) {
+  const by = cronAuthorized(req) ? "jadwal harian" : (await scheduleAuthorized(req)) ? SCHEDULE : null;
+  if (by) {
     try {
-      const r = await runTick("jadwal");
+      const r = await runTick(by);
       return json({ ok: true, ran: r.ran, actions: r.actions });
     } catch (e) {
       console.error("[bot] scheduled tick failed", e);

@@ -92,7 +92,7 @@ export async function botView(fresh = false): Promise<BotView> {
     liveSwitch: liveTrading(),
     storage: storageKind(),
     hosted: process.env.VERCEL === "1",
-    scheduled: Boolean(process.env.CRON_SECRET && process.env.CRON_SECRET.length >= 16),
+    scheduled: Boolean(state.lastScheduledAt && Date.now() - state.lastScheduledAt < 150 * 60_000),
     lastTick: state.lastTick,
     brokers: (Object.keys(BROKERS) as BrokerId[]).map((id) => ({
       id,

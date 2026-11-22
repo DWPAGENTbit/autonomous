@@ -138,10 +138,10 @@ export function JournalList({ journal, empty }: { journal: JournalEntry[]; empty
 function warnings(v: BotView) {
   const out: { tone: "negative" | "caution"; text: React.ReactNode }[] = [];
   if (v.hosted && v.storage === "memory")
-    out.push({ tone: "negative", text: "Penyimpanan bot belum dibuat, jadi bot belum bisa dinyalakan. Ini sekali saja di Vercel (Storage → Blob)." });
+    out.push({ tone: "negative", text: "Penyimpanan bot (Supabase) belum tersambung, jadi bot belum bisa dinyalakan. Jalankan supabase/dwp-bot.sql di Supabase dan isi kuncinya di Vercel." });
   if (!v.brokers.some((b) => b.enabled && b.configured)) out.push({ tone: "negative", text: "Belum ada bursa aktif yang punya kunci API." });
   if (!v.scheduled)
-    out.push({ tone: "caution", text: "Jadwal otomatis belum tersambung: bot baru berjalan sekali sehari atau saat Anda menekan Cek sekarang. Setelah jadwal GitHub diatur, bot jalan tiap 15 menit walau HP mati." });
+    out.push({ tone: "caution", text: "Jadwal 15 menit belum tersambung: bot baru berjalan sekali sehari atau saat Anda menekan Cek sekarang. Jadwalnya dibuat oleh skrip supabase/dwp-bot.sql; setelah itu bot jalan tiap 15 menit walau HP mati." });
   if (!v.liveSwitch) out.push({ tone: "caution", text: "DWP_LIVE_TRADING belum on di Vercel, jadi bot berjalan di mode uji (tanpa uang sungguhan)." });
   const p = monthProgress(v);
   const min = v.minOrder[p.quote] ?? 0;
@@ -482,7 +482,7 @@ export function BotPanel({ onBrokersChange }: { onBrokersChange?: () => void }) 
         </button>
         <span>
           {v.lastTick
-            ? `Pemeriksaan tercatat ${dateTimeOf(v.lastTick.at)} (${v.lastTick.by}) — ${v.lastTick.summary}. Bila tidak ada transaksi, catatan disimpan tiap 3 jam untuk hemat kuota Vercel.`
+            ? `Pemeriksaan tercatat ${dateTimeOf(v.lastTick.at)} (${v.lastTick.by}) — ${v.lastTick.summary.replace(/\.$/, "")}. Bila tidak ada transaksi, catatan disimpan tiap jam.`
             : "Belum pernah berjalan."}
         </span>
         {note && <span className="text-ink-2">· {note}</span>}

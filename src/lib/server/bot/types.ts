@@ -115,6 +115,8 @@ export interface BotState {
   /** What the agents concluded on the last check, per position key. */
   decisions: Record<string, LastDecision>;
   lastTick: { at: number; by: string; summary: string } | null;
+  /** Last run by the 15-minute schedule (Supabase), to tell whether it is connected. */
+  lastScheduledAt: number | null;
   /** Held while a tick is sending orders, so two ticks never trade at once. */
   lock: { id: string; until: number } | null;
 }
