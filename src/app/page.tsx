@@ -8,12 +8,28 @@ import { MarketOverview } from "@/components/markets/MarketOverview";
 import { OpportunityFeed } from "@/components/opportunities/OpportunityFeed";
 import { PANEL, SHELL } from "@/components/shared/PageIntro";
 import { Reveal, SectionHeader } from "@/components/shared/primitives";
+import { RealDashboard } from "@/components/real/RealDashboard";
 import { AgentTerminal } from "@/components/terminal/AgentTerminal";
-
 
 export default function CommandCenterPage() {
   return (
     <>
+      <h1 className="sr-only">DWP EARN MONEY — dashboard cuan</h1>
+
+      {/* Real money first: what the owner actually holds, at live prices. */}
+      <RealDashboard />
+
+      {/* Everything below is the agent simulation, clearly separated. */}
+      <div className={`${SHELL} pt-6 pb-1`}>
+        <div className="flex flex-wrap items-center gap-3 rounded-[18px] border border-caution/25 bg-caution-soft px-4 py-3">
+          <span className="font-mono text-[10px] font-semibold tracking-[0.12em] text-caution uppercase">Simulasi agen · data demo</span>
+          <p className="text-xs text-ink-2">
+            Bagian di bawah adalah latihan strategi tim agen dengan modal fiktif $10.000. Tidak memakai dan tidak mengubah uang Anda —
+            order nyata hanya lewat halaman Akun, dengan persetujuan Anda.
+          </p>
+        </div>
+      </div>
+
       <CommandHero />
 
       <div id="approval" className="scroll-mt-20">

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { MarketsWorkspace } from "@/components/markets/MarketsWorkspace";
+import { LiveMarketsPanel } from "@/components/real/RealDashboard";
 import { PageIntro } from "@/components/shared/PageIntro";
 
 export const metadata: Metadata = { title: "Pasar" };
@@ -8,9 +9,11 @@ export const metadata: Metadata = { title: "Pasar" };
 export default function MarketsPage() {
   return (
     <>
-      <PageIntro index="02" area="Pasar" title="Di mana agen melihat peluang, dan di mana ia melihat risiko.">
-        Enam pasar yang dipantau, rezim yang terbentuk dari semuanya, dan setup persis yang akan diambil strategi. Harga adalah simulasi.
+      <PageIntro index="02" area="Pasar" title="Harga nyata dari Indodax, lalu cara agen membaca pasar.">
+        Bagian pertama adalah harga live sungguhan. Di bawahnya, ruang latihan strategi agen dengan enam pasar simulasi — rezim, korelasi,
+        dan setup yang akan diambil — sebagai data demo.
       </PageIntro>
+      <LiveMarketsPanel />
       <Suspense fallback={null}>
         <MarketsWorkspace />
       </Suspense>

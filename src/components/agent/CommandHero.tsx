@@ -166,9 +166,9 @@ export function CommandHero() {
             </span>
             <SimBadge />
           </div>
-          <h1 id="hero-title" className="relative mt-5 max-w-[22ch] text-3xl leading-[1.08] font-light tracking-[-0.035em] text-ink sm:text-4xl lg:text-5xl">
+          <h2 id="hero-title" className="relative mt-5 max-w-[22ch] text-3xl leading-[1.08] font-light tracking-[-0.035em] text-ink sm:text-4xl lg:text-5xl">
             {headline}
-          </h1>
+          </h2>
           <p className="relative mt-4 max-w-[60ch] text-base text-ink-2">
             Bulan ini agen menghasilkan <Delta value={capital.monthPnl} format={(v) => formatSignedUsd(v)} className="font-medium" /> (
             <Delta value={capital.monthReturnPct} />) dari modal Anda, dengan {active.length} peluang di luar pasar sedang dikerjakan.

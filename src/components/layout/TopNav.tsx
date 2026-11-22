@@ -138,9 +138,10 @@ export function Sidebar() {
       </nav>
 
       <div className="mt-auto hidden rounded-[18px] border border-glass-edge bg-gradient-to-br from-[#12c9f0]/15 via-white/60 to-accent-soft p-4 xl:block">
-        <p className="text-sm font-medium text-ink">Mode simulasi</p>
+        <p className="text-sm font-medium text-ink">Nyata vs simulasi</p>
         <p className="mt-1 text-[11px] leading-relaxed text-ink-3">
-          Angka agen adalah data demo. Uang sungguhan hanya di halaman <span className="font-medium text-ink-2">Akun nyata</span>.
+          <span className="font-medium text-positive">Nyata:</span> total aset, saldo, harga live, dan order di Akun.{" "}
+          <span className="font-medium text-caution">Simulasi:</span> keputusan agen, peluang, dan modal $10.000.
         </p>
         <div className="mt-3">
           <SimBadge />
