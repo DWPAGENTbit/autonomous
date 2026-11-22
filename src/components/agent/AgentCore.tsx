@@ -337,7 +337,7 @@ function drawCore(f: Frame, g: Geo) {
   circle(ctx, g.c, g.c, r);
   ctx.fill();
 
-  // The DWP mark: a forward "play" shape with the agent's dot.
+  // The DWP EARN MONEY mark: a forward "play" shape with the agent's dot.
   ctx.strokeStyle = "#ffffff";
   ctx.lineWidth = r * 0.17;
   ctx.lineJoin = "round";

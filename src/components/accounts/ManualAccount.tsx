@@ -117,7 +117,7 @@ export function ManualAccount({ id, name, kinds, href }: { id: string; name: str
           value={kind}
           onChange={(e) => setKind(e.target.value)}
           aria-label="Jenis aset"
-          className="col-span-5 h-10 rounded-sm border border-line-strong bg-surface px-2 text-sm text-ink sm:col-span-3"
+          className="col-span-5 min-w-0 h-10 rounded-sm border border-line-strong bg-surface px-2 text-sm text-ink sm:col-span-3"
         >
           {kinds.map((k) => (
             <option key={k}>{k}</option>
@@ -129,7 +129,7 @@ export function ManualAccount({ id, name, kinds, href }: { id: string; name: str
           onChange={(e) => setValue(e.target.value.replace(/[^0-9.,]/g, ""))}
           placeholder="Nilai (Rp)"
           aria-label="Nilai saat ini dalam rupiah"
-          className="col-span-7 h-10 rounded-sm border border-line-strong bg-surface px-3 font-mono text-sm text-ink outline-none focus:border-ink/50 sm:col-span-4"
+          className="col-span-7 min-w-0 h-10 rounded-sm border border-line-strong bg-surface px-3 font-mono text-sm text-ink outline-none focus:border-ink/50 sm:col-span-4"
         />
         <Button type="submit" size="sm" className="col-span-12 sm:col-span-4" disabled={!asset.trim() || !value}>
           Catat nilai

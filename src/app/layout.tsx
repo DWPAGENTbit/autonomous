@@ -8,8 +8,10 @@ const sans = Geist({ subsets: ["latin"], variable: "--font-geist-sans", display:
 const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  title: { default: "DWP Agent", template: "%s · DWP Agent" },
-  description: "Sistem operasi ekonomi cerdas. Prototipe simulasi dengan data demo.",
+  title: { default: "DWP EARN MONEY", template: "%s · DWP EARN MONEY" },
+  applicationName: "DWP EARN MONEY",
+  description:
+    "DWP EARN MONEY — platform cari cuan berbasis tim agen: temukan peluang, kelola modal, dan jaga risiko. Data agen adalah simulasi; halaman Akun terhubung ke akun nyata.",
 };
 
 export const viewport: Viewport = {

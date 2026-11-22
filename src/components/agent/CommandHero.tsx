@@ -32,10 +32,10 @@ export function CommandHero() {
   const capital = useCapital();
   const history = useAppStore((s) => s.portfolio.equityHistory);
   const headline = !running
-    ? "Agen ekonomi Anda sedang dijeda."
+    ? "Mesin cuan Anda sedang dijeda."
     : approvals > 0
-      ? "Agen ekonomi Anda membutuhkan Anda."
-      : "Agen ekonomi Anda sedang aktif.";
+      ? "Ada peluang yang menunggu persetujuan Anda."
+      : "Agen Anda sedang bekerja mencari cuan.";
 
   return (
     <motion.section
@@ -46,12 +46,12 @@ export function CommandHero() {
       aria-labelledby="hero-title"
     >
       <motion.p variants={item} className="label num mb-4">
-        {greetingFor(simTime)} <span className="mx-1.5 text-ink-4">·</span> Sesi simulasi
+        {greetingFor(simTime)} <span className="mx-1.5 text-ink-4">·</span> DWP EARN MONEY <span className="mx-1.5 text-ink-4">·</span> Sesi simulasi
       </motion.p>
       <motion.h1
         variants={item}
         id="hero-title"
-        className="max-w-[18ch] text-4xl leading-[1.05] font-light tracking-[-0.035em] text-ink sm:text-5xl lg:text-display"
+        className="max-w-[20ch] text-4xl leading-[1.05] font-light tracking-[-0.035em] text-ink sm:text-5xl lg:text-display"
       >
         {headline}
       </motion.h1>

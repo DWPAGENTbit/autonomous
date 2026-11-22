@@ -25,6 +25,37 @@ export default function CommandCenterPage() {
         <AgentTerminal />
       </section>
 
+      {/* Where the money comes from, then where it sits. */}
+      <Reveal as="section" className={`${SHELL} pb-24`}>
+        <SectionHeader
+          index="03"
+          title="Penemuan peluang"
+          summary="Sumber cuan di luar pasar yang ditemukan agen — diurutkan dari nilai harapan per jam."
+          href="/opportunities"
+          hrefLabel="Semua peluang"
+        />
+        <OpportunityFeed limit={4} />
+      </Reveal>
+      <Reveal as="section" className={`${SHELL} pb-24`}>
+        <SectionHeader
+          index="05"
+          title="Modal"
+          summary="Di mana uang Anda berada, berapa hasilnya, dan seberapa besar risiko yang dibawanya."
+          href="/capital"
+          hrefLabel="Detail modal"
+        />
+        <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-12">
+          <div className="col-span-12 space-y-10 lg:col-span-7">
+            <CapitalLedger />
+            <AllocationBar />
+            <EquityCurve height={180} />
+          </div>
+          <div className="col-span-12 lg:col-span-5">
+            <RiskSurface showSectors={false} />
+          </div>
+        </div>
+      </Reveal>
+
       {/* What is it deciding, and what has it done? */}
       <Reveal as="section" className={`${SHELL} pb-24`}>
         <SectionHeader
@@ -52,27 +83,7 @@ export default function CommandCenterPage() {
         </div>
       </Reveal>
 
-      <Reveal as="section" className={`${SHELL} pb-24`}>
-        <SectionHeader
-          index="05"
-          title="Modal"
-          summary="Di mana uangnya berada, dan seberapa besar risiko yang dibawanya."
-          href="/capital"
-          hrefLabel="Detail modal"
-        />
-        <div className="grid grid-cols-12 gap-x-4 lg:gap-x-10 gap-y-12">
-          <div className="col-span-12 space-y-10 lg:col-span-7">
-            <CapitalLedger />
-            <AllocationBar />
-            <EquityCurve height={180} />
-          </div>
-          <div className="col-span-12 lg:col-span-5">
-            <RiskSurface showSectors={false} />
-          </div>
-        </div>
-      </Reveal>
-
-      <Reveal as="section" className={`${SHELL} pb-24`}>
+      <Reveal as="section" className={`${SHELL} pb-8`}>
         <SectionHeader
           index="02"
           title="Intelijen pasar"
@@ -83,16 +94,6 @@ export default function CommandCenterPage() {
         <MarketOverview />
       </Reveal>
 
-      <Reveal as="section" className={`${SHELL} pb-8`}>
-        <SectionHeader
-          index="03"
-          title="Penemuan peluang"
-          summary="Pekerjaan yang ditemukan agen di luar pasar — dinilai dari nilai harapan per jam."
-          href="/opportunities"
-          hrefLabel="Semua peluang"
-        />
-        <OpportunityFeed limit={4} />
-      </Reveal>
     </>
   );
 }

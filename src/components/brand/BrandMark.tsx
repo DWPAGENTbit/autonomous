@@ -1,7 +1,7 @@
 import { useId } from "react";
 
 /**
- * The DWP Agent mark: a forward "play" ribbon in the blue-to-cyan brand
+ * The DWP EARN MONEY mark: a forward "play" ribbon in the blue-to-cyan brand
  * gradient, with the agent's dot at the top right.
  */
 export function BrandMark({ size = 24, className }: { size?: number; className?: string }) {
@@ -23,5 +23,16 @@ export function BrandMark({ size = 24, className }: { size?: number; className?:
       />
       <circle cx="26" cy="5.5" r="3" fill="#19d3f0" />
     </svg>
+  );
+}
+
+/** The written name. "EARN MONEY" carries the accent so the promise reads first. */
+export function BrandWordmark({ className }: { className?: string }) {
+  return (
+    <span
+      className={`text-[12px] font-semibold tracking-[0.16em] whitespace-nowrap text-ink sm:text-[13px] sm:tracking-[0.24em] ${className ?? ""}`}
+    >
+      DWP <span className="text-accent">EARN MONEY</span>
+    </span>
   );
 }

@@ -3,7 +3,7 @@
 import { ArrowRight, Eye, EyeOff, Lock } from "lucide-react";
 import { useState } from "react";
 import { AgentCore } from "@/components/agent/AgentCore";
-import { BrandMark } from "@/components/brand/BrandMark";
+import { BrandMark, BrandWordmark } from "@/components/brand/BrandMark";
 import { Button } from "@/components/shared/primitives";
 
 export const ENV_VARS: { name: string; note: string; required?: boolean }[] = [
@@ -21,7 +21,7 @@ function SetupSteps() {
         <Lock className="size-3" aria-hidden /> Belum diatur
       </p>
       <p className="text-sm text-ink-2">
-        Platform terkunci sampai pemilik mengatur kata sandi di Vercel → proyek <span className="font-mono text-ink">autonomous</span> →
+        Platform terkunci sampai pemilik mengatur kata sandi di Vercel → proyek platform ini →
         Settings → Environment Variables, lalu redeploy.
       </p>
       <dl className="mt-5 divide-y divide-line border-y border-line">
@@ -84,13 +84,13 @@ export function LoginScreen({ configured, askUsername, next }: { configured: boo
       >
         <div className="flex items-center gap-2.5">
           <BrandMark size={28} />
-          <span className="text-[13px] font-semibold tracking-[0.28em] text-ink">DWP AGENT</span>
+          <BrandWordmark />
         </div>
         <div className="mx-auto w-full max-w-[460px]">
           <AgentCore maxSize={460} />
         </div>
         <p className="max-w-[40ch] text-sm text-ink-2">
-          Tim agen yang memindai, memeriksa risiko, menentukan ukuran, dan mencatat alasan setiap keputusan.
+          Tim agen yang mencari peluang cuan, memeriksa risiko, menentukan ukuran, dan mencatat alasan setiap keputusan — modal dijaga dulu, baru dikembangkan.
         </p>
       </section>
 
@@ -98,10 +98,10 @@ export function LoginScreen({ configured, askUsername, next }: { configured: boo
         <div className="w-full max-w-sm">
           <div className="mb-10 flex items-center gap-2.5 lg:hidden">
             <BrandMark size={28} />
-            <span className="text-[13px] font-semibold tracking-[0.28em] text-ink">DWP AGENT</span>
+            <BrandWordmark />
           </div>
           <h1 className="text-3xl font-light tracking-[-0.03em] text-ink">Masuk ke platform</h1>
-          <p className="mt-2 text-sm text-ink-3">Khusus pemilik. Sesi berlaku 12 jam.</p>
+          <p className="mt-2 text-sm text-ink-3">Ruang kendali DWP EARN MONEY. Khusus pemilik; sesi berlaku 12 jam.</p>
 
           <div className="mt-8">
             {!configured ? (

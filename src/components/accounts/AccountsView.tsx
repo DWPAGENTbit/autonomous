@@ -105,7 +105,7 @@ function ApiAccount({ broker, live }: { broker: BrokerStatus; live: boolean }) {
         </span>
         <span className="label ml-auto text-[10px]">Kripto · API resmi</span>
       </header>
-      <div className="grid grid-cols-12 gap-x-8 gap-y-10">
+      <div className="grid grid-cols-12 gap-x-4 gap-y-10 lg:gap-x-8">
         <div className="col-span-12 lg:col-span-5">
           <Balances broker={broker} />
         </div>
@@ -166,11 +166,11 @@ export function AccountsView() {
           Dicatat manual
         </h2>
         <p className="mb-8 max-w-[64ch] text-sm text-ink-2">
-          Bibit dan Stockbit tidak menyediakan API untuk aplikasi pihak ketiga, jadi DWP Agent tidak bisa membaca saldo atau mengirim
+          Bibit dan Stockbit tidak menyediakan API untuk aplikasi pihak ketiga, jadi DWP EARN MONEY tidak bisa membaca saldo atau mengirim
           order ke sana. Lakukan transaksi di aplikasinya, lalu catat nilainya di sini agar semua aset terlihat di satu tempat.
           Catatan disimpan di browser ini saja.
         </p>
-        <div className="grid grid-cols-12 gap-x-10 gap-y-14">
+        <div className="grid grid-cols-12 gap-x-4 gap-y-14 lg:gap-x-10">
           <div className="col-span-12 lg:col-span-6">
             <ManualAccount id="bibit" name="Bibit" kinds={["Reksa dana", "SBN", "Saham", "Deposito"]} href="https://bibit.id" />
           </div>

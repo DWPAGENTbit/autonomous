@@ -1,8 +1,8 @@
 {
-  "name": "autonomous",
+  "name": "dwp-earn-money",
   "version": "0.1.0",
   "private": true,
-  "description": "AUTONOMOUS — an intelligent economic operating system (simulation prototype).",
+  "description": "DWP EARN MONEY — agent-driven earn-money platform (simulation prototype with real-account page).",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

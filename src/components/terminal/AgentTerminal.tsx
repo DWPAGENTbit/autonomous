@@ -141,7 +141,7 @@ export function AgentTerminal() {
           </button>
           <div className="min-w-0">
             <p className="text-xl tracking-[-0.01em] text-ink md:text-2xl">
-              <span className="font-semibold text-accent">DWP</span> Terminal Agen
+              <span className="font-semibold text-accent">DWP</span> Terminal Earn Money
             </p>
             <p className="mt-1 flex flex-wrap items-center gap-2 font-mono text-[11px] text-ink-3">
               <span className={clsx("inline-flex items-center gap-1.5", running ? "text-positive" : "text-ink-3")}>

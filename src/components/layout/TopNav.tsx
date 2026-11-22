@@ -3,7 +3,7 @@
 import clsx from "clsx";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { BrandMark } from "@/components/brand/BrandMark";
+import { BrandMark, BrandWordmark } from "@/components/brand/BrandMark";
 import { usePathname } from "next/navigation";
 import { LogOut, Pause, Play } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -34,7 +34,7 @@ function LiveStatus() {
   const meta = AGENT_STATE_META[state];
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-2 sm:gap-4">
       {approvals > 0 && (
         <Link href="/#approval" className="hidden items-center gap-2 text-xs text-caution hover:underline md:inline-flex">
           <StatusDot tone="caution" pulse />
@@ -45,7 +45,7 @@ function LiveStatus() {
         <StatusDot tone={running ? meta.tone : "muted"} pulse={running && state !== "IDLE"} />
         <span className={clsx("label min-w-[5.5rem]", running ? toneText[meta.tone] : "text-ink-3")}>{running ? meta.label : "Dijeda"}</span>
       </span>
-      <span className="num font-mono text-xs text-ink-3" aria-label={`Waktu simulasi ${formatClock(simTime)}`}>
+      <span className="num hidden font-mono text-xs text-ink-3 min-[420px]:inline" aria-label={`Waktu simulasi ${formatClock(simTime)}`}>
         {formatClock(simTime)}
       </span>
       <button
@@ -92,10 +92,10 @@ export function TopNav() {
         scrolled ? "border-line" : "border-transparent",
       )}
     >
-      <div className="mx-auto flex h-14 max-w-[1360px] items-center justify-between gap-6 px-4 sm:px-6 md:px-10 lg:px-12">
-        <Link href="/" className="flex items-center gap-2.5" aria-label="DWP Agent — Pusat Kendali">
+      <div className="mx-auto flex h-14 max-w-[1360px] items-center justify-between gap-4 px-4 xl:gap-6 sm:px-6 md:px-10 lg:px-12">
+        <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="DWP EARN MONEY — Pusat Kendali">
           <BrandMark size={24} />
-          <span className="text-[13px] font-semibold tracking-[0.28em] whitespace-nowrap text-ink">DWP AGENT</span>
+          <BrandWordmark />
           <span className="hidden xl:inline">
             <SimBadge />
           </span>
@@ -114,14 +114,14 @@ export function TopNav() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={clsx(
-                      "flex h-14 items-center gap-1.5 px-3 text-sm transition-colors duration-150",
+                      "flex h-14 items-center gap-1.5 px-2 text-sm transition-colors duration-150 xl:px-3",
                       active ? "text-ink" : "text-ink-3 hover:text-ink",
                     )}
                   >
-                    <span className="num font-mono text-[10px] text-ink-4">{item.index}</span>
+                    <span className="num hidden font-mono text-[10px] text-ink-4 xl:inline">{item.index}</span>
                     {item.label}
                   </Link>
-                  {active && <motion.span layoutId="nav-active" className="absolute inset-x-3 bottom-0 h-px bg-ink" transition={transition.panel} />}
+                  {active && <motion.span layoutId="nav-active" className="absolute inset-x-2 bottom-0 h-px bg-ink xl:inset-x-3" transition={transition.panel} />}
                 </li>
               );
             })}
@@ -174,13 +174,14 @@ export function Footer() {
   return (
     <footer className="mx-auto max-w-[1360px] px-4 pt-16 pb-28 sm:px-6 md:px-10 lg:px-12 lg:pb-16">
       <div className="grid grid-cols-12 gap-6 border-t border-line pt-6">
-        <p className="col-span-12 flex items-center gap-2.5 text-[13px] font-semibold tracking-[0.28em] text-ink md:col-span-4">
+        <p className="col-span-12 flex items-center gap-2.5 md:col-span-4">
           <BrandMark size={20} />
-          DWP AGENT
+          <BrandWordmark />
         </p>
         <p className="col-span-12 max-w-[72ch] text-xs leading-relaxed text-ink-3 md:col-span-8">
-          Ini prototipe simulasi. Setiap harga, posisi, peluang, dan hasil di halaman ini adalah data demo dari simulasi
-          deterministik. Tidak ada dana, akun, marketplace, atau order sungguhan yang terhubung, dan tidak ada yang di sini merupakan saran investasi.
+          Kecuali halaman Akun, setiap harga, posisi, peluang, dan hasil di platform ini adalah data demo dari simulasi
+          deterministik — bukan uang sungguhan. Halaman Akun membaca akun nyata Anda, dan setiap order di sana hanya dikirim setelah
+          Anda setujui. Tidak ada yang di sini merupakan saran investasi; keputusan dan risiko tetap milik Anda.
         </p>
       </div>
     </footer>

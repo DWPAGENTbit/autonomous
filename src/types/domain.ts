@@ -1,5 +1,5 @@
 /**
- * Domain model for AUTONOMOUS.
+ * Domain model for DWP EARN MONEY.
  * Every type here is a product concept, not a UI concern.
  */
 
