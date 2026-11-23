@@ -55,6 +55,7 @@ function normalize(raw: unknown): BotState {
     decisions: r.decisions && typeof r.decisions === "object" ? r.decisions : {},
     lastTick: r.lastTick ?? null,
     lastScheduledAt: typeof r.lastScheduledAt === "number" ? r.lastScheduledAt : null,
+    scan: r.scan && Array.isArray(r.scan.pairs) ? r.scan : null,
     lock: r.lock ?? null,
   };
 }

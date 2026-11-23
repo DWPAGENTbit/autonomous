@@ -47,6 +47,8 @@ export interface BotSettings {
   monthlyTargetPct: number;
   /** Monthly target as an amount in the main quote currency (Rupiah); 0 = use monthlyTargetPct. */
   monthlyTargetAmount: number;
+  /** The bot picks the coins itself from Indodax's most traded IDR markets, on top of the chosen pairs. */
+  autoPairs: boolean;
   updatedAt: number;
 }
 
@@ -85,6 +87,8 @@ export interface JournalEntry {
   quote?: number;
   /** Realized profit or loss of a sell, in the quote currency. */
   pnl?: number;
+  /** Sold outside the bot (by hand, on the exchange or in the app); the bot only noticed it. */
+  external?: boolean;
   message: string;
   steps: AgentStep[];
 }
@@ -119,6 +123,8 @@ export interface BotState {
   lastTick: { at: number; by: string; summary: string } | null;
   /** Last run by the 15-minute schedule (Supabase), to tell whether it is connected. */
   lastScheduledAt: number | null;
+  /** Markets the last run checked besides the chosen pairs, as `${broker}:${pair}`. */
+  scan: { at: number; pairs: string[] } | null;
   /** Held while a tick is sending orders, so two ticks never trade at once. */
   lock: { id: string; until: number } | null;
 }

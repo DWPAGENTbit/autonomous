@@ -33,8 +33,10 @@ export interface DecideInput {
   /** Realized losses today on this exchange, as a positive number. */
   lossToday: number;
   now: number;
-  /** A stablecoin (USDT and the like): too flat to trade, so only an existing position is sold. */
+  /** Only look after an existing position: no new buys (a stablecoin, or a pair no longer chosen). */
   sellOnly?: boolean;
+  /** A stablecoin (USDT and the like): too flat to profit from, so the bot sells what it holds at once. */
+  stable?: boolean;
 }
 
 export type Decision =
@@ -69,7 +71,9 @@ export function decide(i: DecideInput): Decision {
     const value = qty * m.price;
     const wantsProfit = netPct >= p.takeProfitPct;
     const wantsStop = p.stopLossPct > 0 && netPct <= -p.stopLossPct;
-    if (wantsProfit || wantsStop) {
+    // A stablecoin barely moves, so waiting for profit would hold the money forever: free it now.
+    const wantsOut = Boolean(i.stable);
+    if (wantsProfit || wantsStop || wantsOut) {
       if (value < i.minOrder) {
         say("Risiko", `Nilainya ${money(value, quote)}, di bawah minimum order ${money(i.minOrder, quote)}. Ditahan dulu.`);
       } else {
@@ -77,7 +81,9 @@ export function decide(i: DecideInput): Decision {
           "Risiko",
           wantsProfit
             ? `Target untung ${pct(p.takeProfitPct)} tercapai. Ambil untung.`
-            : `Turun melewati batas rugi ${pct(-p.stopLossPct)}. Keluar untuk membatasi kerugian.`,
+            : wantsStop
+              ? `Turun melewati batas rugi ${pct(-p.stopLossPct)}. Keluar untuk membatasi kerugian.`
+              : `${base} adalah stablecoin: dijual sekarang supaya modalnya kembali ke ${quote} dan bisa dipakai untuk koin lain.`,
         );
         say("Eksekutor", `Jual ${qty.toPrecision(6)} ${base} (± ${money(value, quote)}).`);
         return { action: "sell", qty, why: wantsProfit ? "untung" : "batas-rugi", steps };
@@ -93,12 +99,8 @@ export function decide(i: DecideInput): Decision {
   };
 
   if (i.sellOnly) {
-    return hold(
-      "Analis",
-      pos
-        ? `${base} adalah stablecoin: harganya hampir tidak bergerak, jadi bot tidak menambah beli. Yang sudah dipegang tetap dijual saat untung +${p.takeProfitPct}% bersih.`
-        : `${base} adalah stablecoin: harganya hampir tidak bergerak, jadi bot tidak membelinya. Modal dipakai untuk koin lain.`,
-    );
+    if (i.stable) return hold("Analis", `${base} adalah stablecoin: harganya hampir tidak bergerak, jadi bot tidak membelinya. Modal dipakai untuk koin lain.`);
+    return hold("Analis", `${base} tidak lagi dipilih, jadi bot tidak menambah beli. Yang sudah dipegang tetap dijual saat untung +${p.takeProfitPct}% bersih.`);
   }
 
   if (i.lossToday > 0 && i.lossToday >= (capital * p.dailyLossPct) / 100) {

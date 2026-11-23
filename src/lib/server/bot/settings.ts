@@ -77,12 +77,13 @@ export function defaultSettings(): BotSettings {
     watchlist: { indodax: [], tokocrypto: [] },
     monthlyTargetPct: 3,
     monthlyTargetAmount: 0,
+    autoPairs: false,
     updatedAt: 0,
   };
 }
 
 export function emptyState(): BotState {
-  return { version: 1, settings: defaultSettings(), positions: {}, journal: [], months: {}, decisions: {}, lastTick: null, lastScheduledAt: null, lock: null };
+  return { version: 1, settings: defaultSettings(), positions: {}, journal: [], months: {}, decisions: {}, lastTick: null, lastScheduledAt: null, scan: null, lock: null };
 }
 
 /** Pair formats each exchange uses: Indodax "pepe_idr", Tokocrypto "SOL_USDT". */
@@ -133,6 +134,7 @@ export function cleanSettings(input: unknown, base: BotSettings = defaultSetting
     watchlist,
     monthlyTargetPct: clamp(raw.monthlyTargetPct, [0.1, 100], base.monthlyTargetPct),
     monthlyTargetAmount: Math.round(clamp(raw.monthlyTargetAmount, [0, 1e12], base.monthlyTargetAmount ?? 0)),
+    autoPairs: typeof raw.autoPairs === "boolean" ? raw.autoPairs : (base.autoPairs ?? false),
     updatedAt: typeof raw.updatedAt === "number" ? raw.updatedAt : base.updatedAt,
   };
 }

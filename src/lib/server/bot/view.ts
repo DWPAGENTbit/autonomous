@@ -44,6 +44,8 @@ export interface BotView {
   watch: WatchQuote[];
   decisions: LastDecision[];
   journal: JournalEntry[];
+  /** Markets the last run checked besides the chosen pairs (picked by the bot or held), as `${broker}:${pair}`. */
+  scan: string[];
 }
 
 /** Checks `Authorization: Bearer <CRON_SECRET>` from the scheduler (Vercel Cron or GitHub Actions). */
@@ -96,6 +98,10 @@ export async function botView(fresh = false): Promise<BotView> {
   );
 
   const key = monthKey(mode);
+  const scan = state.scan?.pairs ?? [];
+  const checked = (id: BrokerId, pair: string) =>
+    s.brokers[id].pairs.includes(pair) || scan.includes(`${id}:${pair}`) || positions.some((p) => p.broker === id && p.pair === pair);
+  const watched = active.flatMap((id) => [...new Set([...s.brokers[id].pairs, ...scan.filter((k) => k.startsWith(`${id}:`)).map((k) => k.slice(id.length + 1))])].map((pair) => ({ id, pair })));
   return {
     settings: s,
     profiles: PROFILES,
@@ -118,17 +124,16 @@ export async function botView(fresh = false): Promise<BotView> {
     capital,
     month: { key, ...(state.months[key] ?? { realized: {}, trades: 0, wins: 0 }) },
     positions,
-    watch: active.flatMap((id) =>
-      s.brokers[id].pairs.map((pair) => {
+    watch: watched.map(({ id, pair }) => {
         const [base, quote] = BROKERS[id].split(pair);
         const t = id === "indodax" && quote === "IDR" ? tickers?.get(base) : undefined;
         const held = positions.find((p) => p.broker === id && p.pair === pair);
         return { broker: id, pair, price: t?.last ?? held?.price ?? null, change24hPct: t?.change24hPct ?? null };
       }),
-    ),
     decisions: Object.values(state.decisions)
-      .filter((d) => d.mode === mode && active.includes(d.broker) && s.brokers[d.broker].pairs.includes(d.pair))
+      .filter((d) => d.mode === mode && active.includes(d.broker) && checked(d.broker, d.pair))
       .sort((a, b) => b.at - a.at),
     journal: state.journal.filter((j) => j.mode === mode).slice(0, 40),
+    scan,
   };
 }

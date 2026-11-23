@@ -1,4 +1,5 @@
 import { brokerFrom, executeOrder, parseOrder } from "@/lib/server/brokers";
+import { syncNow } from "@/lib/server/bot/engine";
 import { SETTINGS_MAX_AGE, loadState } from "@/lib/server/bot/store";
 import { guard, json } from "@/lib/server/http";
 import { manualPairs } from "@/lib/server/pairs";
@@ -19,5 +20,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!input) return json({ error: "Isi order tidak lengkap." }, 400);
   const { state } = await loadState(SETTINGS_MAX_AGE);
   const result = await executeOrder(broker, input, await manualPairs(broker, input.pair, state.settings));
+  // A hand-placed sell may take coins the bot was holding: update its records now, not at the next check.
+  if (result.ok && result.live) await syncNow().catch(() => null);
   return json(result, result.ok ? 200 : 422);
 }

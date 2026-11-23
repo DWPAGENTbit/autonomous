@@ -182,5 +182,5 @@ export function botHoldings(view: BotView, quote: string) {
 export function ordersThisMonth(view: BotView) {
   const now = new Date();
   const start = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
-  return view.journal.filter((j) => j.ok && j.action !== "error" && j.at >= start).length;
+  return view.journal.filter((j) => j.ok && !j.external && j.action !== "error" && j.at >= start).length;
 }

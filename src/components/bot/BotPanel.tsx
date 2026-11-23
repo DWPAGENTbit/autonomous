@@ -102,7 +102,9 @@ export function JournalList({ journal, empty }: { journal: JournalEntry[]; empty
       {journal.map((j) => (
         <li key={j.id} className="py-2.5">
           <button type="button" onClick={() => setOpen(open === j.id ? null : j.id)} className="flex w-full items-center gap-3 text-left" aria-expanded={open === j.id}>
-            <span className={clsx("w-12 shrink-0 rounded-full px-2 py-0.5 text-center text-[11px] font-medium", ACTION_TONE[j.action])}>{ACTION_LABEL[j.action]}</span>
+            <span className={clsx("w-12 shrink-0 rounded-full px-2 py-0.5 text-center text-[11px] font-medium", j.external ? "bg-sunken text-ink-2" : ACTION_TONE[j.action])} title={j.external ? "Dijual di luar bot" : undefined}>
+              {j.external ? "Manual" : ACTION_LABEL[j.action]}
+            </span>
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm text-ink">
                 {baseOf(j.pair)}
@@ -387,7 +389,7 @@ export function BotPanel({ onBrokersChange }: { onBrokersChange?: () => void }) 
         <div className="col-span-12 space-y-4 lg:col-span-5">
           <div className="rounded-[18px] border border-glass-edge bg-white/65 p-5">
             <p className="text-sm font-medium text-ink">Bursa aktif</p>
-            <p className="mt-0.5 text-xs text-ink-3">Indodax bisa jalan sendiri. Tokocrypto opsional — nyalakan kapan saja. Stablecoin (mis. USDT) tidak dibeli bot; yang sudah dipegang tetap dijual saat untung.</p>
+            <p className="mt-0.5 text-xs text-ink-3">Indodax bisa jalan sendiri. Tokocrypto opsional — nyalakan kapan saja. Stablecoin (mis. USDT) tidak dibeli bot; yang sudah dipegang langsung dijual supaya modalnya kembali ke Rupiah.</p>
             <ul className="mt-3 space-y-3">
               {v.brokers.map((b) => (
                 <li key={b.id} className="rounded-[14px] border border-line p-3">
@@ -400,6 +402,21 @@ export function BotPanel({ onBrokersChange }: { onBrokersChange?: () => void }) 
                     </span>
                     <Switch checked={b.enabled} onChange={(on) => patchBroker(b.id, { enabled: on })} label={`Aktifkan ${b.name}`} disabled={busy} tone="accent" />
                   </div>
+                  {b.enabled && b.configured && b.id === "indodax" && (
+                    <div className="mt-3 flex items-start gap-3 rounded-[12px] bg-accent-soft p-3">
+                      <span className="min-w-0 flex-1">
+                        <span className="flex items-center gap-1.5 text-sm font-medium text-ink">
+                          <Sparkles className="size-3.5 text-accent" aria-hidden /> Bot pilih koin sendiri
+                        </span>
+                        <span className="mt-0.5 block text-[11px] leading-relaxed text-ink-2">
+                          {s.autoPairs
+                            ? "Tiap cek, bot memindai 6 koin Rupiah paling ramai di Indodax dan memutuskan sendiri kapan beli dan jual. Pasangan yang Anda pilih di bawah tetap ikut."
+                            : "Nyalakan supaya bot memindai sendiri 6 koin Rupiah paling ramai di Indodax, bukan hanya pasangan yang Anda pilih di bawah."}
+                        </span>
+                      </span>
+                      <Switch checked={s.autoPairs} onChange={(on) => save({ autoPairs: on })} label="Bot pilih koin sendiri" disabled={busy} tone="accent" />
+                    </div>
+                  )}
                   {b.enabled && (
                     <div className="mt-2 flex flex-wrap gap-1.5" role="group" aria-label={`Pasangan ${b.name}`}>
                       {b.pairs.map((pair) => {
