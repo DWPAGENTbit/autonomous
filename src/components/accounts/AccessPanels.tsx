@@ -59,13 +59,13 @@ function LoginSuccess() {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 18 }}
       >
-        <circle cx={48} cy={48} r={44} fill="rgb(18 117 98 / 0.12)" />
+        <circle cx={48} cy={48} r={44} fill="color-mix(in srgb, var(--ac) 12%, transparent)" />
         <motion.circle
           cx={48}
           cy={48}
           r={34}
           fill="none"
-          stroke="#127562"
+          stroke="var(--ac)"
           strokeWidth={4}
           strokeLinecap="round"
           initial={{ pathLength: 0 }}
@@ -75,7 +75,7 @@ function LoginSuccess() {
         <motion.path
           d="M33 49 L44 60 L64 38"
           fill="none"
-          stroke="#127562"
+          stroke="var(--ac)"
           strokeWidth={5}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -92,7 +92,7 @@ function LoginSuccess() {
       </motion.p>
       <div className="mt-6 h-1 w-40 overflow-hidden rounded-full bg-sunken">
         <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-[#3fa58c] to-[#127562]"
+          className="h-full rounded-full bg-gradient-to-r from-[var(--ac-2)] to-[var(--ac)]"
           initial={{ width: "0%" }}
           animate={{ width: "100%" }}
           transition={{ duration: 1.2, ease: "easeInOut" }}
@@ -149,7 +149,7 @@ export function LoginScreen({ configured, askUsername, next }: { configured: boo
       <section aria-hidden className="glass animate-page-in relative hidden flex-col justify-between overflow-hidden p-10 lg:flex">
         <div
           className="pointer-events-none absolute -top-32 -left-24 size-[28rem] rounded-full opacity-70 blur-3xl"
-          style={{ background: "radial-gradient(circle, rgba(108,201,177,0.4), rgba(18,117,98,0.14) 55%, transparent 72%)" }}
+          style={{ background: "radial-gradient(circle, color-mix(in srgb, var(--ac-3) 40%, transparent), color-mix(in srgb, var(--ac) 14%, transparent) 55%, transparent 72%)" }}
         />
         <div className="relative flex items-center gap-3">
           <span className="inline-flex size-12 items-center justify-center rounded-[16px] bg-white shadow-[var(--shadow-raise)]">

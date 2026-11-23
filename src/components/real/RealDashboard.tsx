@@ -88,7 +88,7 @@ export function RealBadgeLive({ at }: { at?: number }) {
   );
 }
 
-const DONUT = ["#127562", "#3fa58c", "#0d9b63", "#f5a524", "#8b5cf6", "#94a3b8"];
+const DONUT = ["var(--ac)", "var(--ac-2)", "#0d9b63", "#f5a524", "#8b5cf6", "#94a3b8"];
 
 function AllocationDonut({ slices }: { slices: { label: string; value: number }[] }) {
   const total = slices.reduce((s, x) => s + x.value, 0);
@@ -192,7 +192,7 @@ function RealAssets({ data, showMarkets, title }: { data: RealData; showMarkets:
         <div
           aria-hidden
           className="pointer-events-none absolute -top-28 -right-20 size-80 rounded-full opacity-80 blur-3xl"
-          style={{ background: "radial-gradient(circle, rgba(13,155,99,0.25), rgba(108,201,177,0.2) 55%, transparent 72%)" }}
+          style={{ background: "radial-gradient(circle, rgba(13,155,99,0.25), color-mix(in srgb, var(--ac-3) 20%, transparent) 55%, transparent 72%)" }}
         />
         <div className="relative flex flex-wrap items-center gap-2">
           <RealBadgeLive at={p?.at} />

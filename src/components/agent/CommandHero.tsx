@@ -102,7 +102,7 @@ export function CommandHero() {
           <div
             aria-hidden
             className="pointer-events-none absolute -top-28 -right-20 size-80 rounded-full opacity-80 blur-3xl"
-            style={{ background: "radial-gradient(circle, rgba(108,201,177,0.42), rgba(18,117,98,0.14) 55%, transparent 72%)" }}
+            style={{ background: "radial-gradient(circle, color-mix(in srgb, var(--ac-3) 42%, transparent), color-mix(in srgb, var(--ac) 14%, transparent) 55%, transparent 72%)" }}
           />
           <div className="relative flex flex-wrap items-center gap-2">
             <span className="pill !py-1 text-[11px]">
@@ -215,7 +215,7 @@ export function CommandHero() {
                 <div
                   aria-hidden
                   className="pointer-events-none absolute inset-[8%] rounded-full opacity-70 blur-3xl"
-                  style={{ background: "radial-gradient(circle, rgba(108,201,177,0.3), rgba(18,117,98,0.08) 55%, transparent 70%)" }}
+                  style={{ background: "radial-gradient(circle, color-mix(in srgb, var(--ac-3) 30%, transparent), color-mix(in srgb, var(--ac) 8%, transparent) 55%, transparent 70%)" }}
                 />
                 <AgentCore maxSize={420} />
               </div>

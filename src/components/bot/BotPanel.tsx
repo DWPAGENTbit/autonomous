@@ -214,7 +214,7 @@ export function BotPanel({ onBrokersChange }: { onBrokersChange?: () => void }) 
       aria-labelledby="bot-title"
       className={clsx(
         "glass scroll-mt-24 overflow-hidden p-5 md:p-8",
-        s.auto && (live ? "border-positive/30 bg-gradient-to-br from-positive-soft via-white/70 to-[#3fa58c]/10" : "border-caution/25 bg-caution-soft"),
+        s.auto && (live ? "border-positive/30 bg-gradient-to-br from-positive-soft via-white/70 to-[var(--ac-2)]/10" : "border-caution/25 bg-caution-soft"),
       )}
     >
       {/* Header: the master switch */}
@@ -294,7 +294,7 @@ export function BotPanel({ onBrokersChange }: { onBrokersChange?: () => void }) 
             {signedMoney(progress.realized, progress.quote)}
           </p>
           <div className="mt-4 h-2 overflow-hidden rounded-full bg-sunken" role="progressbar" aria-valuenow={Math.round(progress.ratio * 100)} aria-valuemin={0} aria-valuemax={100} aria-label="Kemajuan target bulanan">
-            <div className="h-full rounded-full bg-gradient-to-r from-[#3fa58c] to-positive" style={{ width: `${progress.ratio * 100}%` }} />
+            <div className="h-full rounded-full bg-gradient-to-r from-[var(--ac-2)] to-positive" style={{ width: `${progress.ratio * 100}%` }} />
           </div>
           <p className="mt-2 flex flex-wrap justify-between gap-2 text-xs text-ink-3">
             <span>

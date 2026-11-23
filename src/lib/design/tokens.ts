@@ -1,3 +1,4 @@
+import { liveAccent } from "@/lib/accent";
 /**
  * Design tokens consumed from JavaScript (motion, charts, canvas).
  * CSS-facing tokens live in `src/app/globals.css` under `@theme`;
@@ -57,7 +58,9 @@ export const rawColor = {
   ink3: "#5f6f69",
   ink4: "#93a19b",
   line: "#dbe5e0",
-  accent: "#127562",
+  get accent() {
+    return liveAccent().ac;
+  },
   positive: "#0d9b63",
   caution: "#b7770b",
 } as const;

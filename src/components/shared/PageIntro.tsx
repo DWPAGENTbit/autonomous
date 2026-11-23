@@ -8,7 +8,7 @@ export function PageIntro({ index, area, title, children }: { index: string; are
         <div
           aria-hidden
           className="pointer-events-none absolute -top-24 -right-16 size-72 rounded-full opacity-70 blur-3xl"
-          style={{ background: "radial-gradient(circle, rgba(108,201,177,0.45), rgba(18,117,98,0.12) 60%, transparent 72%)" }}
+          style={{ background: "radial-gradient(circle, color-mix(in srgb, var(--ac-3) 45%, transparent), color-mix(in srgb, var(--ac) 12%, transparent) 60%, transparent 72%)" }}
         />
         <p className="pill relative mb-5 !py-1 font-mono !text-[10px] tracking-[0.1em] uppercase">
           <span className="text-accent">{index}</span>

@@ -32,7 +32,7 @@ export function SectionHeader({
     <header className="mb-7 grid grid-cols-12 items-end gap-x-6 gap-y-3">
       <div className="col-span-12 md:col-span-8">
         <p className="mb-3 flex items-center gap-2">
-          <span className="num inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-gradient-to-br from-[#3fa58c] to-accent px-2 font-mono text-[10px] font-semibold text-white">
+          <span className="num inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-gradient-to-br from-[var(--ac-2)] to-accent px-2 font-mono text-[10px] font-semibold text-white">
             {index}
           </span>
           <span className="text-sm font-medium text-ink">{title}</span>

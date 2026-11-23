@@ -58,7 +58,7 @@ const toneBg: Record<Tone, string> = {
 const toneStroke: Record<Tone, string> = {
   positive: "#0d9b63",
   negative: "#d9434b",
-  accent: "#127562",
+  accent: "var(--ac)",
   caution: "#b7770b",
   muted: "#3b4a45",
 };
@@ -232,8 +232,8 @@ export function AgentTerminal() {
             <svg viewBox="0 0 600 130" className="mt-4 w-full" role="img" aria-label={active ? `Tahap aktif: ${AGENTS.find((a) => a.key === active)?.name}` : "Tim dijeda"}>
               <defs>
                 <linearGradient id="flow-line" x1="0" x2="1">
-                  <stop offset="0" stopColor="#127562" />
-                  <stop offset="1" stopColor="#6cc9b1" />
+                  <stop offset="0" stopColor="var(--ac)" />
+                  <stop offset="1" stopColor="var(--ac-3)" />
                 </linearGradient>
               </defs>
               <line x1={x(0)} y1={52} x2={x(4)} y2={52} stroke="#dbe5e0" strokeWidth={2} />
@@ -243,7 +243,7 @@ export function AgentTerminal() {
                   key={flowIdx}
                   r={4}
                   cy={52}
-                  fill="#6cc9b1"
+                  fill="var(--ac-3)"
                   initial={{ cx: x(Math.max(0, flowIdx - 1)), opacity: 0 }}
                   animate={{ cx: x(flowIdx), opacity: [0, 1, 1, 0] }}
                   transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
@@ -271,17 +271,17 @@ export function AgentTerminal() {
                       cx={x(i)}
                       cy={52}
                       r={22}
-                      fill={on ? "#127562" : "#ffffff"}
-                      stroke={on || done ? "#127562" : "#c6d3cd"}
+                      fill={on ? "var(--ac)" : "#ffffff"}
+                      stroke={on || done ? "var(--ac)" : "#c6d3cd"}
                       strokeWidth={on ? 0 : 1.5}
                     />
-                    <text x={x(i)} y={57} textAnchor="middle" fontSize={14} fontWeight={600} fill={on ? "#ffffff" : done ? "#127562" : "#93a19b"} fontFamily="ui-monospace, monospace">
+                    <text x={x(i)} y={57} textAnchor="middle" fontSize={14} fontWeight={600} fill={on ? "#ffffff" : done ? "var(--ac)" : "#93a19b"} fontFamily="ui-monospace, monospace">
                       {i + 1}
                     </text>
                     <text x={x(i)} y={96} textAnchor="middle" fontSize={12} fill={on ? "#0f1d18" : "#5f6f69"} fontWeight={on ? 600 : 400}>
                       {a.name.split(" ")[0]}
                     </text>
-                    <text x={x(i)} y={113} textAnchor="middle" fontSize={10} fill={on ? "#127562" : "#93a19b"} fontFamily="ui-monospace, monospace">
+                    <text x={x(i)} y={113} textAnchor="middle" fontSize={10} fill={on ? "var(--ac)" : "#93a19b"} fontFamily="ui-monospace, monospace">
                       {on ? "aktif" : done ? "selesai" : "menunggu"}
                     </text>
                   </g>
@@ -383,7 +383,7 @@ export function AgentTerminal() {
                   <span className="h-1.5 rounded-full bg-sunken">
                     <motion.span
                       className={clsx("block h-full rounded-full", r.k !== "Kini" && "bg-ink-4")}
-                      style={r.k === "Kini" ? { background: "linear-gradient(90deg, #127562, #6cc9b1)" } : undefined}
+                      style={r.k === "Kini" ? { background: "linear-gradient(90deg, var(--ac), var(--ac-3))" } : undefined}
                       initial={false}
                       animate={{ width: `${(r.v / max) * 100}%` }}
                     />

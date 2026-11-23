@@ -4,6 +4,7 @@ import { useReducedMotion } from "motion/react";
 import { useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useElementSize } from "@/hooks/use-element-size";
+import { liveAccent } from "@/lib/accent";
 import type { AppState } from "@/lib/simulation/initial-state";
 import { useAppStore } from "@/store/app-store";
 import type { AgentState, Decision, MarketSymbol } from "@/types/domain";
@@ -15,8 +16,6 @@ import type { AgentState, Decision, MarketSymbol } from "@/types/domain";
  * you what the agent is doing.
  */
 
-const BLUE = "#127562";
-const CYAN = "#6cc9b1";
 const AMBER = "#c9971c";
 const POSITIVE = "13,155,99";
 const INK2 = "#3b4a45";
@@ -140,14 +139,14 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
     ctx.lineWidth = 2;
     for (let k = 0; k < 26; k++) {
       const a = sweep - k * 0.035;
-      ctx.strokeStyle = `rgba(18,117,98,${0.24 * (1 - k / 26)})`;
+      ctx.strokeStyle = `rgba(${liveAccent().rgb},${0.24 * (1 - k / 26)})`;
       line(ctx, g.c + Math.cos(a) * g.core * 1.25, g.c + Math.sin(a) * g.core * 1.25, g.c + Math.cos(a) * g.rOut, g.c + Math.sin(a) * g.rOut);
     }
     ctx.lineWidth = 1.5;
     for (const n of [...g.markets, ...g.sources]) {
       const d = angDist(n.a, sweep);
       if (d > 0.4) continue;
-      ctx.strokeStyle = `rgba(18,117,98,${0.6 * (1 - d / 0.4)})`;
+      ctx.strokeStyle = `rgba(${liveAccent().rgb},${0.6 * (1 - d / 0.4)})`;
       circle(ctx, n.x, n.y, f.size * 0.036);
       ctx.stroke();
     }
@@ -157,12 +156,12 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
   RESEARCHING: (f, g) => {
     const { ctx } = f;
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(108,201,177,0.14)";
+    ctx.strokeStyle = `rgba(${liveAccent().rgb3},0.14)`;
     for (const s of g.sources) line(ctx, s.x, s.y, g.c, g.c);
     g.sources.forEach((s, j) => {
-      for (let k = 0; k < 3; k++) particle(f, g, s, frac(f.t * 0.45 + j * 0.21 + k / 3), CYAN, 2.4);
+      for (let k = 0; k < 3; k++) particle(f, g, s, frac(f.t * 0.45 + j * 0.21 + k / 3), liveAccent().ac3, 2.4);
     });
-    g.markets.forEach((m, i) => particle(f, g, m, frac(f.t * 0.35 + i * 0.29), BLUE, 1.8));
+    g.markets.forEach((m, i) => particle(f, g, m, frac(f.t * 0.35 + i * 0.29), liveAccent().ac, 1.8));
   },
 
   // Candidates are tested one at a time.
@@ -171,16 +170,16 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
     const active = Math.floor(f.t * 1.4) % g.markets.length;
     const p = frac(f.t * 1.4);
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(18,117,98,0.1)";
+    ctx.strokeStyle = `rgba(${liveAccent().rgb},0.1)`;
     for (const m of g.markets) line(ctx, g.c, g.c, m.x, m.y);
     const m = g.markets[active];
     ctx.lineWidth = 1.75;
-    ctx.strokeStyle = "rgba(18,117,98,0.75)";
+    ctx.strokeStyle = `rgba(${liveAccent().rgb},0.75)`;
     line(ctx, g.c, g.c, m.x, m.y);
-    ctx.fillStyle = CYAN;
+    ctx.fillStyle = liveAccent().ac3;
     circle(ctx, g.c + (m.x - g.c) * p, g.c + (m.y - g.c) * p, 3);
     ctx.fill();
-    ctx.strokeStyle = `rgba(18,117,98,${0.7 * (1 - p)})`;
+    ctx.strokeStyle = `rgba(${liveAccent().rgb},${0.7 * (1 - p)})`;
     circle(ctx, m.x, m.y, f.size * (0.03 + 0.03 * p));
     ctx.stroke();
   },
@@ -194,7 +193,7 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
       const base = (i / paths) * TAU + f.t * 0.15;
       const reach = 0.5 + 0.5 * hash(i);
       const start = g.core * 1.3;
-      ctx.strokeStyle = i % 3 === 0 ? `rgba(108,201,177,${0.18 + 0.2 * hash(i + 7)})` : `rgba(18,117,98,${0.1 + 0.16 * hash(i + 3)})`;
+      ctx.strokeStyle = i % 3 === 0 ? `rgba(${liveAccent().rgb3},${0.18 + 0.2 * hash(i + 7)})` : `rgba(${liveAccent().rgb},${0.1 + 0.16 * hash(i + 3)})`;
       ctx.beginPath();
       let ex = 0;
       let ey = 0;
@@ -217,10 +216,10 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
   // Everything converges; the core tightens.
   DECIDING: (f, g) => {
     const { ctx } = f;
-    [...g.markets, ...g.sources].forEach((n, i) => particle(f, g, n, frac(f.t * 0.9 + i * 0.13), i < 6 ? BLUE : CYAN, 2));
+    [...g.markets, ...g.sources].forEach((n, i) => particle(f, g, n, frac(f.t * 0.9 + i * 0.13), i < 6 ? liveAccent().ac : liveAccent().ac3, 2));
     const q = frac(f.t * 0.8);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = `rgba(18,117,98,${0.5 * q})`;
+    ctx.strokeStyle = `rgba(${liveAccent().rgb},${0.5 * q})`;
     circle(ctx, g.c, g.c, g.core * (2.8 - 1.5 * q));
     ctx.stroke();
   },
@@ -230,8 +229,8 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
     const { ctx } = f;
     const m = targetNode(f, g);
     const grad = ctx.createLinearGradient(g.c, g.c, m.x, m.y);
-    grad.addColorStop(0, "rgba(18,117,98,0.85)");
-    grad.addColorStop(1, "rgba(108,201,177,0.85)");
+    grad.addColorStop(0, `rgba(${liveAccent().rgb},0.85)`);
+    grad.addColorStop(1, `rgba(${liveAccent().rgb3},0.85)`);
     ctx.strokeStyle = grad;
     ctx.lineWidth = 3;
     line(ctx, g.c, g.c, m.x, m.y);
@@ -243,7 +242,7 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
     }
     const q = frac(f.t * 1.2);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = `rgba(108,201,177,${1 - q})`;
+    ctx.strokeStyle = `rgba(${liveAccent().rgb3},${1 - q})`;
     circle(ctx, m.x, m.y, f.size * (0.03 + 0.035 * q));
     ctx.stroke();
   },
@@ -254,7 +253,7 @@ const EFFECTS: Record<AgentState, (f: Frame, g: Geo) => void> = {
     ctx.lineWidth = 1.5;
     for (let k = 0; k < 2; k++) {
       const q = frac(f.t * 0.45 + k * 0.5);
-      ctx.strokeStyle = `rgba(18,117,98,${0.35 * (1 - q)})`;
+      ctx.strokeStyle = `rgba(${liveAccent().rgb},${0.35 * (1 - q)})`;
       circle(ctx, g.c, g.c, g.core * 1.2 + q * (g.rOut - g.core * 1.2));
       ctx.stroke();
     }
@@ -296,10 +295,10 @@ function drawNodes(f: Frame, g: Geo) {
   for (const m of g.markets) {
     const held = f.held.includes(m.id ?? "");
     circle(ctx, m.x, m.y, size * 0.019);
-    ctx.fillStyle = held ? BLUE : "#ffffff";
+    ctx.fillStyle = held ? liveAccent().ac : "#ffffff";
     ctx.fill();
     ctx.lineWidth = 1.5;
-    ctx.strokeStyle = BLUE;
+    ctx.strokeStyle = liveAccent().ac;
     ctx.stroke();
     const lr = g.rIn + size * 0.058;
     ctx.fillStyle = INK2;
@@ -309,7 +308,7 @@ function drawNodes(f: Frame, g: Geo) {
   ctx.font = `${Math.max(9, Math.round(size * 0.023))}px ${f.font}`;
   for (const s of g.sources) {
     circle(ctx, s.x, s.y, size * 0.012);
-    ctx.fillStyle = CYAN;
+    ctx.fillStyle = liveAccent().ac3;
     ctx.fill();
     const lr = g.rOut + size * 0.05;
     ctx.fillStyle = INK3;
@@ -323,16 +322,16 @@ function drawCore(f: Frame, g: Geo) {
   const r = g.core * (1 + 0.035 * Math.sin(f.t * 2));
 
   const glow = ctx.createRadialGradient(g.c, g.c, r * 0.6, g.c, g.c, r * 2.7);
-  glow.addColorStop(0, waiting ? "rgba(201,151,28,0.22)" : "rgba(108,201,177,0.3)");
-  glow.addColorStop(1, "rgba(108,201,177,0)");
+  glow.addColorStop(0, waiting ? "rgba(201,151,28,0.22)" : `rgba(${liveAccent().rgb3},0.3)`);
+  glow.addColorStop(1, `rgba(${liveAccent().rgb3},0)`);
   ctx.fillStyle = glow;
   circle(ctx, g.c, g.c, r * 2.7);
   ctx.fill();
 
   const body = ctx.createLinearGradient(g.c - r, g.c + r, g.c + r, g.c - r);
   body.addColorStop(0, "#0a3fc4");
-  body.addColorStop(0.55, BLUE);
-  body.addColorStop(1, CYAN);
+  body.addColorStop(0.55, liveAccent().ac);
+  body.addColorStop(1, liveAccent().ac3);
   ctx.fillStyle = body;
   circle(ctx, g.c, g.c, r);
   ctx.fill();
@@ -364,11 +363,11 @@ function draw(f: Frame) {
   const g = geometry(size, f.rot);
 
   ctx.lineWidth = 1;
-  ctx.strokeStyle = "rgba(18,117,98,0.14)";
+  ctx.strokeStyle = `rgba(${liveAccent().rgb},0.14)`;
   circle(ctx, g.c, g.c, g.rIn);
   ctx.stroke();
   ctx.setLineDash([2, 5]);
-  ctx.strokeStyle = "rgba(108,201,177,0.35)";
+  ctx.strokeStyle = `rgba(${liveAccent().rgb3},0.35)`;
   circle(ctx, g.c, g.c, g.rOut);
   ctx.stroke();
   ctx.setLineDash([]);

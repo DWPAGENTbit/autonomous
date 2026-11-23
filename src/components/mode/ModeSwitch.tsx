@@ -43,7 +43,7 @@ export function ModeSwitch({ className }: { className?: string }) {
             title={o.title}
             onClick={() => setMode(o.mode)}
             className={clsx(
-              "relative inline-flex h-7 items-center gap-1 rounded-full px-2.5 text-[11px] font-medium transition-colors sm:h-8 sm:gap-1.5 sm:px-3 sm:text-xs",
+              "relative inline-flex h-7 items-center gap-1 rounded-full px-2 text-[11px] font-medium transition-colors sm:h-8 sm:gap-1.5 sm:px-3 sm:text-xs",
               active ? "text-white" : "text-ink-3 hover:text-ink",
             )}
           >
@@ -63,7 +63,7 @@ export function ModeSwitch({ className }: { className?: string }) {
               {o.mode === "live" ? (
                 <span className={clsx("size-1.5 rounded-full", active ? "bg-white" : "bg-positive")} aria-hidden />
               ) : (
-                <FlaskConical className="size-3" aria-hidden />
+                <FlaskConical className="hidden size-3 sm:block" aria-hidden />
               )}
               {o.label}
             </span>
@@ -86,7 +86,7 @@ export function DemoBanner() {
     <div className="mx-auto max-w-[1360px] px-3 pt-4 sm:px-4 md:pt-6 lg:px-6">
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-[18px] border border-caution/25 bg-caution-soft px-4 py-3">
         <span className="inline-flex items-center gap-1.5 font-mono text-[10px] font-semibold tracking-[0.12em] text-caution uppercase">
-          <FlaskConical className="size-3" aria-hidden /> Mode demo
+          <FlaskConical className="hidden size-3 sm:block" aria-hidden /> Mode demo
         </span>
         <p className="order-last w-full text-xs text-ink-2 sm:order-none sm:w-auto sm:min-w-0 sm:flex-1">
           Latihan strategi tim agen dengan modal fiktif $10.000. Tidak memakai dan tidak mengubah uang Anda.

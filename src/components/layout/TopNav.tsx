@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { AGENT_STATE_META, toneText } from "@/components/agent/agent-meta";
 import { BrandMark, BrandWordmark } from "@/components/brand/BrandMark";
+import { AccentPicker } from "@/components/layout/AccentPicker";
 import { ModeSwitch } from "@/components/mode/ModeSwitch";
 import { useAgentService } from "@/components/layout/SimulationProvider";
 import { StatusDot } from "@/components/shared/primitives";
@@ -76,6 +77,7 @@ function LiveControls({ compact = false }: { compact?: boolean }) {
           </button>
         </>
       )}
+      <AccentPicker buttonClass={iconButton} />
       <button type="button" onClick={logout} className={iconButton} aria-label="Keluar" title="Keluar">
         <LogOut className="size-3.5" aria-hidden />
       </button>
@@ -149,7 +151,7 @@ export function Sidebar() {
       <div
         className={clsx(
           "mt-auto hidden rounded-[18px] border p-4 xl:block",
-          demo ? "border-caution/25 bg-caution-soft" : "border-positive/25 bg-gradient-to-br from-positive-soft via-white/60 to-[#3fa58c]/10",
+          demo ? "border-caution/25 bg-caution-soft" : "border-positive/25 bg-gradient-to-br from-positive-soft via-white/60 to-[var(--ac-2)]/10",
         )}
       >
         <p className={clsx("font-mono text-[10px] font-semibold tracking-[0.12em] uppercase", demo ? "text-caution" : "text-positive")}>
