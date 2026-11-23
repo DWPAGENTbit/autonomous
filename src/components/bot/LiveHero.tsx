@@ -17,6 +17,8 @@ const item = {
 };
 
 const toneOf = (v: number) => (v > 0 ? "text-positive" : v < 0 ? "text-negative" : "text-ink");
+/** Rupiah amounts in whole rupiah: the exchange has no sen. */
+const whole = (v: number, quote: string) => (quote === "IDR" ? Math.round(v) : v);
 const pctText = (v: number | null) => (v === null ? "—" : `${v > 0 ? "+" : ""}${v.toFixed(2)}%`);
 
 /** Greeting by the viewer's clock; set after mount so server and phone never disagree. */
@@ -250,8 +252,18 @@ export function LiveHero({
         <Kpi icon={Coins} label="Koin milik bot" foot={held ? (held.count ? `${held.count} posisi · modal ${money(held.cost, progress!.quote)}` : "Belum ada posisi") : "…"}>
           {held && progress ? money(held.value, progress.quote) : "…"}
         </Kpi>
-        <Kpi icon={Target} label="Belum terealisasi" foot="Bila dijual sekarang, setelah biaya">
-          {held && progress ? <span className={toneOf(held.unrealized)}>{signedMoney(held.unrealized, progress.quote)}</span> : "…"}
+        <Kpi
+          icon={Target}
+          label="Belum terealisasi"
+          foot={
+            held && progress
+              ? held.count
+                ? `Nilai − modal · setelah biaya jual ${signedMoney(whole(held.unrealized, progress.quote), progress.quote)}`
+                : "Belum ada koin yang dipegang bot"
+              : "…"
+          }
+        >
+          {held && progress ? <span className={toneOf(whole(held.gain, progress.quote))}>{signedMoney(whole(held.gain, progress.quote), progress.quote)}</span> : "…"}
         </Kpi>
       </div>
     </motion.div>

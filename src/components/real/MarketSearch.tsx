@@ -7,6 +7,7 @@ import { addStock, type ManualAccountId } from "@/components/accounts/manual-sto
 import { OrderPanel } from "@/components/accounts/OrderPanel";
 import { useBot } from "@/components/bot/bot-client";
 import { RealBadgeLive, rupiah } from "@/components/real/RealDashboard";
+import { PANEL } from "@/components/shared/PageIntro";
 import type { StatusResponse } from "@/lib/server/brokers/types";
 import type { Ticker } from "@/lib/server/market";
 import type { StockQuote } from "@/lib/server/stocks";
@@ -126,7 +127,7 @@ export function MarketSearch() {
   };
 
   return (
-    <section id="cari" className="glass mx-3 mb-5 max-w-[1312px] scroll-mt-24 p-5 sm:mx-4 md:p-8 lg:mx-6 min-[1640px]:mx-auto" aria-labelledby="search-title">
+    <section id="cari" className={clsx(PANEL, "scroll-mt-24")} aria-labelledby="search-title">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 id="search-title" className="text-xl font-normal tracking-[-0.015em] text-ink md:text-2xl">

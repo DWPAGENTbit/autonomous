@@ -170,11 +170,15 @@ export function capitalShort(view: BotView) {
 /** What the bot holds in one quote currency: market value, cost, and result if sold now after fees. */
 export function botHoldings(view: BotView, quote: string) {
   const mine = view.positions.filter((p) => quoteOf(p.pair) === quote);
+  const priced = mine.filter((p) => p.value !== null && p.netPct !== null);
   return {
     count: mine.length,
     value: mine.reduce((s, p) => s + (p.value ?? p.cost), 0),
     cost: mine.reduce((s, p) => s + p.cost, 0),
-    unrealized: mine.reduce((s, p) => s + (p.netPct !== null ? (p.cost * p.netPct) / 100 : 0), 0),
+    /** Value now minus what the bot paid, as on the exchange's own screen. */
+    gain: priced.reduce((s, p) => s + p.value! - p.cost, 0),
+    /** What would really land if sold now, after the exchange's selling fee. */
+    unrealized: priced.reduce((s, p) => s + (p.cost * p.netPct!) / 100, 0),
   };
 }
 

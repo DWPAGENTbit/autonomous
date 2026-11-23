@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { FlaskConical, Landmark, Radio } from "lucide-react";
 import { useEffect } from "react";
+import { PANEL } from "@/components/shared/PageIntro";
 import { transition } from "@/lib/design/tokens";
 import { type Mode, useMode, useModeStore } from "@/store/mode-store";
 
@@ -103,7 +104,7 @@ export function DemoBanner() {
 export function DemoOnlyNotice({ title, children }: { title: string; children: React.ReactNode }) {
   const setMode = useModeStore((s) => s.setMode);
   return (
-    <section className="glass mx-3 mb-5 max-w-[1312px] p-6 sm:mx-4 md:p-8 lg:mx-6 min-[1640px]:mx-auto">
+    <section className={PANEL}>
       <span className="inline-flex items-center gap-1.5 rounded-full border border-positive/25 bg-positive-soft px-2 py-0.5 font-mono text-[10px] font-medium tracking-[0.1em] text-positive uppercase">
         <span className="size-1.5 rounded-full bg-positive" aria-hidden /> Mode live
       </span>
