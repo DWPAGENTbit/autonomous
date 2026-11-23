@@ -140,6 +140,53 @@ export async function syncPositions(
 }
 
 /**
+ * Lets go of leftovers the bot can do nothing with: a position worth less than the
+ * exchange minimum that the bot will not add to (a stablecoin, or a coin no longer
+ * chosen or picked). It cannot be sold, yet it would keep blocking part of the coin
+ * allocation. The coins stay in the owner's account; only the bot's record goes.
+ */
+export async function releaseLeftovers(
+  state: BotState,
+  mode: TradeMode,
+  now: number,
+  tickers: Map<string, Ticker> | null,
+): Promise<number> {
+  const s = state.settings;
+  const picked = s.autoPairs && tickers ? autoPicked(tickers) : [];
+  let released = 0;
+  for (const [key, p] of Object.entries(state.positions)) {
+    if (p.mode !== mode) continue;
+    const addsTo = !isStablePair(p.pair) && (s.brokers[p.broker].pairs.includes(p.pair) || (p.broker === "indodax" && picked.includes(p.pair)));
+    if (addsTo) continue;
+    const [base, quote] = BROKERS[p.broker].split(p.pair);
+    const minOrder = MIN_ORDER[quote] ?? 0;
+    const fromTicker = p.broker === "indodax" && quote === "IDR" ? tickers?.get(base)?.last : undefined;
+    const price = fromTicker ?? (await BROKERS[p.broker].price(p.pair).catch(() => null));
+    if (!price || p.qty * price >= minOrder) continue;
+
+    delete state.positions[key];
+    const money = (v: number) => (quote === "IDR" ? `Rp${Math.round(v).toLocaleString("id-ID")}` : `${v.toFixed(2)} ${quote}`);
+    state.journal.unshift({
+      id: randomUUID(),
+      at: now,
+      mode,
+      broker: p.broker,
+      pair: p.pair,
+      action: "sell",
+      ok: true,
+      external: true,
+      released: true,
+      price,
+      qty: p.qty,
+      message: `Sisa ${p.qty} ${base} (± ${money(p.qty * price)}) dilepas dari catatan bot: nilainya di bawah minimum order ${BROKERS[p.broker].name} ${money(minOrder)}, jadi tidak bisa dijual, dan bot tidak menambah ${base}. Ruang beli bot kembali penuh. Koinnya tetap di akun Anda; tukar di aplikasi ${BROKERS[p.broker].name} bila perlu.`,
+      steps: [{ agent: "Risiko", text: `${base} di bawah minimum order dan tidak akan ditambah: dilepas supaya tidak menahan alokasi.` }],
+    });
+    released++;
+  }
+  return released;
+}
+
+/**
  * One pass of the autonomous agent: first make the records match the exchange, then
  * for every active exchange look at the chosen pairs, the coins the bot picked itself
  * and the coins it holds, decide, and — within the risk limits — trade.
@@ -172,8 +219,11 @@ export async function runTick(by: string): Promise<TickResult> {
   const tickers = needTickers ? await idrTickers().catch(() => new Map<string, Ticker>()) : new Map<string, Ticker>();
 
   // First, make the records match what is really on the exchange.
-  const synced = await syncPositions(state, mode, now, balancesOf, tickers);
-  const syncNote = synced ? ` · ${synced} posisi disesuaikan dengan saldo` : "";
+  const matched = await syncPositions(state, mode, now, balancesOf, tickers);
+  const released = await releaseLeftovers(state, mode, now, tickers);
+  const synced = matched + released;
+  const syncNote =
+    (matched ? ` · ${matched} posisi disesuaikan dengan saldo` : "") + (released ? ` · ${released} sisa koin kecil dilepas` : "");
 
   const idle = async (message: string): Promise<TickResult> => {
     if (heartbeatDue || synced) {

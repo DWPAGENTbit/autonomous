@@ -142,7 +142,7 @@ export function LiveTerminal({ view: v, equity }: { view: BotView; equity?: numb
     for (const d of v.decisions.slice(0, 3))
       d.steps.forEach((st, i) => lines.push({ id: `${d.broker}-${d.pair}-${i}`, at: d.at, tag: st.agent, tone: AGENT_TONE[st.agent], text: `${baseOf(d.pair)}: ${st.text}` }));
     for (const j of v.journal.slice(0, 5))
-      lines.push({ id: j.id, at: j.at, tag: j.external ? "Manual" : ACTION[j.action].label, tone: j.ok ? "text-positive" : "text-negative", text: `${baseOf(j.pair)}: ${j.message}` });
+      lines.push({ id: j.id, at: j.at, tag: j.released ? "Dilepas" : j.external ? "Manual" : ACTION[j.action].label, tone: j.ok ? "text-positive" : "text-negative", text: `${baseOf(j.pair)}: ${j.message}` });
     return lines.sort((a, b) => b.at - a.at).slice(0, 8);
   }, [v.decisions, v.journal]);
 
@@ -382,7 +382,7 @@ export function LiveTerminal({ view: v, equity }: { view: BotView; equity?: numb
                     )}
                   </div>
                   <dl className="num mt-3 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 font-mono text-xs">
-                    <dt className="text-ink-3">{lastTrade.external ? "dijual manual" : ACTION[lastTrade.action].label.toLowerCase()}</dt>
+                    <dt className="text-ink-3">{lastTrade.released ? "dilepas" : lastTrade.external ? "dijual manual" : ACTION[lastTrade.action].label.toLowerCase()}</dt>
                     <dd className="text-ink">
                       {lastTrade.price !== undefined ? priceText(lastTrade.price, quoteOf(lastTrade.pair)) : "—"} · pkl {timeOf(lastTrade.at)}
                     </dd>

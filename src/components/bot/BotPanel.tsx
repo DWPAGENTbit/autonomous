@@ -102,8 +102,8 @@ export function JournalList({ journal, empty }: { journal: JournalEntry[]; empty
       {journal.map((j) => (
         <li key={j.id} className="py-2.5">
           <button type="button" onClick={() => setOpen(open === j.id ? null : j.id)} className="flex w-full items-center gap-3 text-left" aria-expanded={open === j.id}>
-            <span className={clsx("w-12 shrink-0 rounded-full px-2 py-0.5 text-center text-[11px] font-medium", j.external ? "bg-sunken text-ink-2" : ACTION_TONE[j.action])} title={j.external ? "Dijual di luar bot" : undefined}>
-              {j.external ? "Manual" : ACTION_LABEL[j.action]}
+            <span className={clsx("w-12 shrink-0 rounded-full px-2 py-0.5 text-center text-[11px] font-medium", j.external ? "bg-sunken text-ink-2" : ACTION_TONE[j.action])} title={j.released ? "Terlalu kecil untuk dijual; koin tetap di akun Anda" : j.external ? "Dijual di luar bot" : undefined}>
+              {j.released ? "Dilepas" : j.external ? "Manual" : ACTION_LABEL[j.action]}
             </span>
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm text-ink">

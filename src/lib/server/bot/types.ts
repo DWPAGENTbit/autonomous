@@ -89,6 +89,8 @@ export interface JournalEntry {
   pnl?: number;
   /** Sold outside the bot (by hand, on the exchange or in the app); the bot only noticed it. */
   external?: boolean;
+  /** Handed back to the owner: too small to sell and not a coin the bot adds to. Not a sale. */
+  released?: boolean;
   message: string;
   steps: AgentStep[];
 }
