@@ -73,6 +73,20 @@ export interface BrokerAdapter {
   /** The exact, unsigned parameters an order would send. */
   orderParams(input: OrderInput, clientId: string): Record<string, string>;
   place(params: Record<string, string>): Promise<{ orderId: string; fill?: Fill }>;
+  /** Orders waiting on the book (e.g. limit orders placed in the exchange's own app). */
+  openOrders?(): Promise<OpenOrder[]>;
+}
+
+/** An order that is not (fully) filled yet; its money or coins are locked meanwhile. */
+export interface OpenOrder {
+  pair: string;
+  side: "buy" | "sell";
+  price: number;
+  /** Rupiah still waiting (buy) or coins still waiting (sell). */
+  remaining: number;
+  /** IDR for a buy, the coin for a sell. */
+  unit: string;
+  at: number;
 }
 
 /** Plain decimal string with no exponent. */

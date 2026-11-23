@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import Link from "next/link";
-import { ArrowUpRight, Coins, Landmark, PiggyBank, RefreshCw, ShieldAlert, ShieldCheck, Wallet } from "lucide-react";
+import { ArrowUpRight, Coins, Landmark, Lock, PiggyBank, RefreshCw, ShieldAlert, ShieldCheck, Wallet } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { BotSummaryCard } from "@/components/bot/BotPanel";
 import { useBot } from "@/components/bot/bot-client";
@@ -309,6 +309,14 @@ function RealAssets({ data, showMarkets, title }: { data: RealData; showMarkets:
                   <p className="num truncate text-xs text-ink-3">
                     {amountFmt(h.amount)} {h.priceIdr !== null && h.asset !== "IDR" ? `× ${rupiah(h.priceIdr)}` : ""}
                   </p>
+                  {(h.locked ?? 0) > 0 && (
+                    <p className="mt-0.5 flex items-center gap-1 text-[11px] text-caution">
+                      <Lock className="size-3 shrink-0" aria-hidden />
+                      <span className="num truncate">
+                        {h.asset === "IDR" ? rupiah(h.locked) : `${amountFmt(h.locked)} ${h.asset}`} terkunci di order yang belum terisi
+                      </span>
+                    </p>
+                  )}
                 </div>
                 <div className="text-right">
                   <p className="num text-sm font-medium text-ink">{h.priceIdr === null ? "—" : rupiah(h.valueIdr)}</p>
@@ -319,6 +327,33 @@ function RealAssets({ data, showMarkets, title }: { data: RealData; showMarkets:
           </ul>
         ) : (
           <p className="text-sm text-ink-3">{p ? "Belum ada saldo di bursa yang terhubung." : "Memuat…"}</p>
+        )}
+        {p && (p.openOrders ?? []).length > 0 && (
+          <div className="mt-4 rounded-[14px] border border-caution/25 bg-caution-soft p-3">
+            <p className="flex items-center gap-1.5 text-xs font-medium text-ink">
+              <Lock className="size-3.5 text-caution" aria-hidden /> Order belum terisi ({p.openOrders.length})
+            </p>
+            <p className="mt-0.5 text-[11px] leading-relaxed text-ink-2">
+              Order limit ini masih menunggu harga tercapai. Uang atau koinnya tertahan sampai order terisi atau dibatalkan di aplikasi Indodax.
+            </p>
+            <ul className="mt-2 space-y-1.5">
+              {p.openOrders.map((o, i) => {
+                const [base] = o.pair.toUpperCase().split("_");
+                return (
+                  <li key={`${o.pair}-${o.at}-${i}`} className="flex items-center justify-between gap-2 text-xs">
+                    <span className="min-w-0 truncate text-ink">
+                      <b className={clsx("font-medium", o.side === "buy" ? "text-positive" : "text-negative")}>{o.side === "buy" ? "Beli" : "Jual"}</b> {base} di{" "}
+                      <span className="num">{rupiah(o.price)}</span>
+                    </span>
+                    <span className="num shrink-0 text-ink-3">
+                      sisa {o.unit === "IDR" ? rupiah(o.remaining) : `${amountFmt(o.remaining)} ${o.unit}`}
+                      {o.at ? ` · ${new Date(o.at).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}` : ""}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         )}
       </div>
 

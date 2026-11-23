@@ -1,5 +1,5 @@
 import { BROKERS, liveTrading } from "@/lib/server/brokers";
-import { BrokerError, type BrokerId } from "@/lib/server/brokers/types";
+import { BrokerError, type BrokerId, type OpenOrder } from "@/lib/server/brokers/types";
 import { idrTickers, type Ticker } from "@/lib/server/market";
 import { SETTINGS_MAX_AGE, loadState } from "@/lib/server/bot/store";
 
@@ -7,6 +7,8 @@ export interface Holding {
   broker: BrokerId;
   asset: string;
   amount: number;
+  /** Part of `amount` locked in orders not filled yet. */
+  locked: number;
   /** Price per unit in IDR, or null if no IDR market exists for it. */
   priceIdr: number | null;
   valueIdr: number;
@@ -26,6 +28,8 @@ export interface RealPortfolio {
   change7dPct: number | null;
   cashIdr: number;
   holdings: Holding[];
+  /** Orders still waiting on the exchanges; they hold part of the balances above. */
+  openOrders: (OpenOrder & { broker: BrokerId })[];
   errors: string[];
 }
 
@@ -55,14 +59,17 @@ export async function realPortfolio(): Promise<RealPortfolio> {
   const enabled = (id: BrokerId) => state?.settings.brokers[id].enabled ?? id === "indodax";
   const connected = Object.values(BROKERS).filter((b) => b.configured() && enabled(b.id));
   const holdings: Holding[] = [];
+  const openOrders: RealPortfolio["openOrders"] = [];
   await Promise.all(
     connected.map(async (b) => {
       try {
-        for (const bal of await b.balances()) {
+        const [balances, orders] = await Promise.all([b.balances(), b.openOrders?.().catch(() => []) ?? []]);
+        for (const bal of balances) {
           const amount = bal.free + bal.locked;
           if (amount <= 0) continue;
-          holdings.push({ broker: b.id, asset: bal.asset, amount, ...value(tickers.get(bal.asset), bal.asset, amount) });
+          holdings.push({ broker: b.id, asset: bal.asset, amount, locked: bal.locked, ...value(tickers.get(bal.asset), bal.asset, amount) });
         }
+        for (const o of orders) openOrders.push({ ...o, broker: b.id });
       } catch (e) {
         errors.push(e instanceof BrokerError ? `${b.name}: ${e.message}` : `${b.name} tidak bisa dihubungi.`);
       }
@@ -86,6 +93,7 @@ export async function realPortfolio(): Promise<RealPortfolio> {
     change7dPct: total7dAgo > 0 ? ((totalIdr - total7dAgo) / total7dAgo) * 100 : null,
     cashIdr,
     holdings,
+    openOrders,
     errors,
   };
 }

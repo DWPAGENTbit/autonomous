@@ -1,5 +1,5 @@
 import { createHmac } from "node:crypto";
-import { BrokerError, decimal, type Balance, type BrokerAdapter, type Fill, type OrderInput } from "./types";
+import { BrokerError, decimal, type Balance, type BrokerAdapter, type Fill, type OpenOrder, type OrderInput } from "./types";
 
 /** Indodax private REST API (POST https://indodax.com/tapi), HMAC-SHA512 signed. */
 const TAPI = "https://indodax.com/tapi";
@@ -93,5 +93,27 @@ export const indodax: BrokerAdapter = {
   async place(params) {
     const r = await tapi(params);
     return { orderId: String(r.order_id ?? ""), fill: indodaxFill(params, r) };
+  },
+
+  async openOrders() {
+    const r = await tapi({ method: "openOrders" });
+    const books = (r.orders ?? {}) as Record<string, Record<string, unknown>[]>;
+    const out: OpenOrder[] = [];
+    for (const [pair, list] of Object.entries(books)) {
+      const [base = "", quote = "idr"] = pair.split("_");
+      for (const o of Array.isArray(list) ? list : []) {
+        const side = o.type === "sell" ? "sell" : "buy";
+        const key = side === "buy" ? (quote === "idr" ? "remain_idr" : `remain_${quote}`) : `remain_${base}`;
+        out.push({
+          pair,
+          side,
+          price: Number(o.price) || 0,
+          remaining: Number(o[key]) || 0,
+          unit: (side === "buy" ? quote : base).toUpperCase(),
+          at: Number(o.submit_time) * 1000 || 0,
+        });
+      }
+    }
+    return out.sort((a, b) => b.at - a.at);
   },
 };
